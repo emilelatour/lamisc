@@ -9,7 +9,8 @@ LazyData: true
 ByteCompile: true
 Imports: 
     dplyr,
-    ggplot2,
+    ggplot2, 
+    here, 
     janitor (>= 0.4.0.9000),
     knitr,
     magrittr,
