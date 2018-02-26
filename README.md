@@ -1,13 +1,17 @@
 # lamisc
 
-The goal of lamisc is to ...
+## Purpose
+
+My personal package with things that make my life easier. 
+
+So far this includes
+
++ an R markdown template that was inspired by @ismayc, [Creating a basic template package in R](http://ismayc.github.io/ecots2k16/template_pkg/)
 
 ## Installation
 
-You can install the released version of lamisc from [CRAN](https://CRAN.R-project.org) with:
-
 ``` r
-install.packages("lamisc")
+devtools::install_github("emilelatour/lamisc")
 ```
 
 ## Example
