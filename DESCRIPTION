@@ -2,7 +2,7 @@ Package: lamisc
 Version: 0.0.0.9000
 Title: Latour's Little Helpers
 Description: This package contains the little things that I've written to help me out in my daily work. Most are helpful for data cleaning; there are some color palettes; some templates; maybe some plots. Most of this grew from doing repeated tasks and realizing that it was time to make a function. Extend that and I've realized that it's time to make a package.
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Authors@R: person("Emile", "Latour", email = "latour@ohsu.edu", role = c("aut", "cre"))
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
