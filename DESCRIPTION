@@ -10,18 +10,20 @@ ByteCompile: true
 Imports: 
     dplyr,
     ggplot2,
-    janitor,
+    janitor (>= 0.4.0.9000),
     knitr,
     magrittr,
     purrr,
     readxl,
+    rlang, 
     tableone,
     tibble,
-    tidyr, 
-    rlang
+    tidyr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
 Suggests: 
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+
+
