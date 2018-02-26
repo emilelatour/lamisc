@@ -97,6 +97,8 @@ if (!require("janitor")) devtools::install_github("sfirke/janitor")
 if (packageVersion("janitor") < "0.4.0.9000") {
   devtools::install_github("sfirke/janitor")
 }
+
+if (!require("lamisc")) devtools::install_github("emilelatour/lamisc")
   
 # Load the list of packages
 pacman::p_load(
