@@ -1,12 +1,4 @@
 
-#' @importFrom magrittr %>%
-#' @name %>%
-#' @rdname pipe
-#' @export
-#' @param lhs,rhs  Inference functions
-
-
-
 #### plot_colors --------------------------------
 
 # These are some custom palettes that I like to use. References and links are
