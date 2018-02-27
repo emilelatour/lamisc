@@ -10,6 +10,7 @@ ByteCompile: true
 Imports: 
     dplyr,
     ggplot2, 
+    grDevices, 
     here, 
     janitor (>= 0.4.0.9000),
     knitr,

@@ -13,7 +13,9 @@
 #'
 #' @examples
 #' library(lamisc)
-#' pie_palette(la_palette("sb_deep"))
+#' library(beyonce)
+#' view_palette(my_pals("sb_deep"))
+#' view_palette(beyonce_palette(1))
 
 #### plot_colors --------------------------------
 
@@ -26,7 +28,7 @@
 # Function to print pie chart to preview what a palette looks like and to see
 # the color codes.
 
-pie_palette <- function(palette) {
+view_palette <- function(palette) {
 
   palette %>%
     pie(rep(1, length(.)),
