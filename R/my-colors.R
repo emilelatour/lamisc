@@ -1,4 +1,20 @@
 
+
+#' plot_colors and pie_palette
+#'
+#' Various user defined palettes to use. And the function pie_palette() which
+#' takes a palette as an argument and returns a pie chart with labels; handy
+#' when you only want to pick specific colors from a palette and you don't know
+#' what they are yet.
+#'
+#' @param palette The palette that you want to visualize
+#'
+#' @export
+#'
+#' @examples
+#' library(lamisc)
+#' pie_palette(sb_deep)
+
 #### plot_colors --------------------------------
 
 # These are some custom palettes that I like to use. References and links are
@@ -45,7 +61,7 @@ qualitative_colors <- c("#e41a1c",
                         "#f781bf")
 
 
-### Paul Tol Knock Off ---------------
+## Paul Tol Knock Off ---------------
 
 # https://personal.sron.nl/~pault/
 
