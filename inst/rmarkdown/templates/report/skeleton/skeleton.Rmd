@@ -111,7 +111,7 @@ pacman::p_load(
   rlang,         # For use in tidyevaluation
   readxl,        # read in excel files
   writexl,       # write excel files, zero dependency
-  xlsx,          # read, write, format Excel files
+  # xlsx,          # read, write, format Excel files
   openxlsx,      # read, write and edit XLSX files
   janitor,       # for working with dirty data
   lubridate,     # for working with dates and times
@@ -123,6 +123,7 @@ pacman::p_load(
   formattable,   # Create formattable vectors and data frames
   extrafont,     # Tools for using fonts
   ggthemes,      # Extra Themes, Scales and Geoms for 'ggplot2'
+  ggsci,         # Scientific journal themed color palettes for 'ggplot2'
   scales,        # Scale Functions for Visualization
   survival,      # core survival analysis routines
   survminer,     # drawing survival curves
