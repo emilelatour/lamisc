@@ -1,19 +1,27 @@
 
 #' Fix messy dates
 #'
-#' @param x
-#' @param formats
-#' @param date_system
+#' It's come up a number of times, typically when reading in data from Excel,
+#'   where a column of data that are supposed to be dates are loaded as a
+#'   character column with a number of fomats. There's no one good solution to
+#'   this but by combining functions lubridate::parse_date_time() and
+#'   janitor::excel_numeric_to_date() I am able to fix this date issue when it
+#'   comes up.
+#'
+#' @param x A date
+#' @param formats Date formats passed to lubridate::parse_date_time()
+#' @param date_system Date system for janitor::excel_numeric_to_date(), either
+#'     "modern" or "mac pre-2011"
 #'
 #' @return
 #' @export
 #'
 #' @examples
 #' pacman::p_load(
-#' tidyverse,    # packages ggplot2, tibble, tidyr, readr, purrr, and dplyr
-#' janitor,      # for working with dirty data
-#' lubridate,    # for working with dates and times
-#' magrittr       # includes the %<>% assignment-pipe (%>% is loaded from dplyr)
+#'   tidyverse,   # packages ggplot2, tibble, tidyr, readr, purrr, and dplyr
+#'   janitor,     # for working with dirty data
+#'   lubridate,   # for working with dates and times
+#'   magrittr     # includes the %<>% assignment-pipe (%>% is loaded from dplyr)
 #' )
 #'
 #' bar <- tibble::tribble(
