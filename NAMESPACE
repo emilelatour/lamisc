@@ -3,6 +3,4 @@
 export("%>%")
 export(calc_date_diff)
 export(fix_messy_dates)
-export(my_palette)
-export(view_palette)
 importFrom(dplyr,"%>%")
