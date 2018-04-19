@@ -31,9 +31,6 @@
 #' @import dplyr
 #' @importFrom janitor excel_numeric_to_date
 #' @importFrom lubridate parse_date_time
-#' @importFrom base as.numeric
-#' @importFrom base as.Date
-#' @importFrom base suppressWarnings
 #'
 #'
 #' @examples
