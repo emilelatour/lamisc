@@ -1,5 +1,5 @@
 
-#' calc_tabyl
+#' Make a tabyl with totals and formatting
 #'
 #' This is a simple wrapper around the tabyl function from the janitor
 #' package. So rather than writing a bunch of lines over and over again, I
@@ -23,6 +23,8 @@
 #' calc_tabyl(df = iris, x = Species)
 #'
 calc_tabyl <- function(df, x) {
+
+  stopifnot(class(df) %in% c("tbl_df", "tbl", "data.frame"))
 
   x_enq <- rlang::enquo(x)
 
