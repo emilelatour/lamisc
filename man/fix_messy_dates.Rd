@@ -2,12 +2,12 @@
 % Please edit documentation in R/fix_messy_dates.R
 \name{fix_messy_dates}
 \alias{fix_messy_dates}
-\title{Fix messy dates}
+\title{Consistent formatting of a column of dates}
 \usage{
 fix_messy_dates(x, formats = c("m/d/y"), date_system = "modern")
 }
 \arguments{
-\item{x}{A date}
+\item{x}{A character or numeric vector of dates}
 
 \item{formats}{Date formats passed to lubridate::parse_date_time()}
 
@@ -22,12 +22,24 @@ this but by combining functions lubridate::parse_date_time() and
 janitor::excel_numeric_to_date() I am able to fix this date issue when it
 comes up.
 }
+\details{
+From janitor::excel_numeric_to_date:
+Converts numbers like 42370 into date values like 2016-01-01.
+Defaults to the modern Excel date encoding system. However, Excel for
+Mac 2008 and earlier Mac versions of Excel used a different date system.
+To determine what platform to specify: if the date 2016-01-01 is
+represented by the number 42370 in your spreadsheet, it's the modern
+system. If it's 40908, it's the old Mac system.
+
+Note that NA's can be coerced in the conversion. This is expected and the
+warning message has been suppressed purposely. For this reason, it is
+important to spot check the data after using this function.
+}
 \examples{
 pacman::p_load(
   tidyverse,   # packages ggplot2, tibble, tidyr, readr, purrr, and dplyr
   janitor,     # for working with dirty data
-  lubridate,   # for working with dates and times
-  magrittr     # includes the \%<>\% assignment-pipe (\%>\% is loaded from dplyr)
+  lubridate    # for working with dates and times
 )
 
 bar <- tibble::tribble(
@@ -48,11 +60,7 @@ bar <- tibble::tribble(
   "21213",   "Can't handle this one yet"
 )
 
+bar \%>\%
+  mutate(date2 = fix_messy_dates(date))
 
-
-bar \%<>\%
-  mutate(date2 = fix_messy_dates(date)
-  )
-
-bar
 }
