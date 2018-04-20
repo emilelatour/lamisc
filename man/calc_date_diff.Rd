@@ -2,20 +2,68 @@
 % Please edit documentation in R/calc_date_diff.R
 \name{calc_date_diff}
 \alias{calc_date_diff}
-\title{calc_date_diff}
+\title{Calculate difference between two dates}
 \usage{
-calc_date_diff(dob, enddate = Sys.Date(), units = "months",
-  precise = TRUE)
+calc_date_diff(start, end = Sys.Date(), units = "days", precise = TRUE)
 }
 \arguments{
-\item{precise}{}
+\item{start}{The starting date.}
+
+\item{end}{The ending date.}
+
+\item{units}{Units: "years", "months", "weeks", "days", "hours", "minutes", "seconds". Default is "days".}
+
+\item{precise}{TRUE (default) for fractional diff or FALSE for integer (not rounded) diff.}
 }
 \description{
-Adapted from eeptools::calc_age
+Calculates the difference between two dates, in whole or fractional, years,
+months, weeks, days, hours, minutes, or seconds. Really just a convenience
+wrapper for lubridate functions
+}
+\details{
+/url{http://data.library.virginia.edu/working-with-dates-and-time-in-r-using-the-lubridate-package/}
+was a big help in understanding lubridate package.
 }
 \examples{
-a <- as.Date(seq(as.POSIXct('1987-05-29 018:07:00'), len = 26, by = "21 day"))
-b <- as.Date(seq(as.POSIXct('2002-05-29 018:07:00'), len = 26, by = "21 day"))
-calc_date_diff(a, units = 'years', precise = FALSE)
+
+start <- c("2012-08-21", "1995-09-01", "1984-08-15", "1976-11-15", "2018-04-20")
+end <- c("2012-09-16", "2012-09-06", "2012-08-22", "2018-04-20", "1976-11-15")
+
+df <- tibble::tibble(start = start,
+                     end = end)
+
+calc_date_diff(start = start, end = end)
+calc_date_diff(start = start, end = end, units = "years")
+calc_date_diff(start = start, end = end, units = "months")
+calc_date_diff(start = start, end = end, units = "weeks")
+calc_date_diff(start = start, end = end, units = "days")
+calc_date_diff(start = start, end = end, units = "hours")
+calc_date_diff(start = start, end = end, units = "minutes")
+calc_date_diff(start = start, end = end, units = "seconds")
+
+df \%>\% dplyr::mutate(diff_yrs = calc_date_diff(start, end, units = "years"),
+              diff_mos = calc_date_diff(start, end, units = "months"),
+              diff_wks = calc_date_diff(start, end, units = "weeks"),
+              diff_dys = calc_date_diff(start, end, units = "days"),
+              diff_hrs = calc_date_diff(start, end, units = "hours"),
+              diff_mns = calc_date_diff(start, end, units = "minutes"),
+              diff_scs = calc_date_diff(start, end, units = "seconds")
+)
+
+df \%>\% dplyr::mutate(diff_yrs = calc_date_diff(start, end, units = "years",
+                                        precise = FALSE),
+              diff_mos = calc_date_diff(start, end, units = "months",
+                                        precise = FALSE),
+              diff_wks = calc_date_diff(start, end, units = "weeks",
+                                        precise = FALSE),
+              diff_dys = calc_date_diff(start, end, units = "days",
+                                        precise = FALSE),
+              diff_hrs = calc_date_diff(start, end, units = "hours",
+                                        precise = FALSE),
+              diff_mns = calc_date_diff(start, end, units = "minutes",
+                                        precise = FALSE),
+              diff_scs = calc_date_diff(start, end, units = "seconds",
+                                        precise = FALSE)
+)
 
 }

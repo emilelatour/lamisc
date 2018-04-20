@@ -1,145 +1,94 @@
 
 
-#' calc_date_diff
+#' Calculate difference between two dates
 #'
-#' Adapted from eeptools::calc_age
+#' Calculates the difference between two dates, in whole or fractional, years,
+#' months, weeks, days, hours, minutes, or seconds. Really just a convenience
+#' wrapper for lubridate functions
 #'
-#' @param dob
-#' @param enddate
-#' @param units
-#' @param precise
+#' /url{http://data.library.virginia.edu/working-with-dates-and-time-in-r-using-the-lubridate-package/}
+#' was a big help in understanding lubridate package.
+#'
+#' @param start The starting date.
+#' @param end The ending date.
+#' @param units Units: "years", "months", "weeks", "days", "hours", "minutes", "seconds". Default is "days".
+#' @param precise TRUE (default) for fractional diff or FALSE for integer (not rounded) diff.
 #'
 #' @return
 #' @export
 #'
-#' @examples
-#' a <- as.Date(seq(as.POSIXct('1987-05-29 018:07:00'), len = 26, by = "21 day"))
-#' b <- as.Date(seq(as.POSIXct('2002-05-29 018:07:00'), len = 26, by = "21 day"))
-#' calc_date_diff(a, units = 'years', precise = FALSE)
+#' @import dplyr
+#' @importFrom tibble tibble
+#' @importFrom lubridate dyears
+#' @importFrom lubridate dweeks
+#' @importFrom lubridate ddays
+#' @importFrom lubridate dhours
+#' @importFrom lubridate dminutes
+#' @importFrom lubridate as.duration
+#' @importFrom lubridate interval
 #'
-calc_date_diff <- function(dob,
-                     enddate = Sys.Date(),
-                     units = "months",
-                     precise = TRUE) {
+#' @examples
+#'
+#' start <- c("2012-08-21", "1995-09-01", "1984-08-15", "1976-11-15", "2018-04-20")
+#' end <- c("2012-09-16", "2012-09-06", "2012-08-22", "2018-04-20", "1976-11-15")
+#'
+#' df <- tibble::tibble(start = start,
+#'                      end = end)
+#'
+#' calc_date_diff(start = start, end = end)
+#' calc_date_diff(start = start, end = end, units = "years")
+#' calc_date_diff(start = start, end = end, units = "months")
+#' calc_date_diff(start = start, end = end, units = "weeks")
+#' calc_date_diff(start = start, end = end, units = "days")
+#' calc_date_diff(start = start, end = end, units = "hours")
+#' calc_date_diff(start = start, end = end, units = "minutes")
+#' calc_date_diff(start = start, end = end, units = "seconds")
+#'
+#' df %>% dplyr::mutate(diff_yrs = calc_date_diff(start, end, units = "years"),
+#'               diff_mos = calc_date_diff(start, end, units = "months"),
+#'               diff_wks = calc_date_diff(start, end, units = "weeks"),
+#'               diff_dys = calc_date_diff(start, end, units = "days"),
+#'               diff_hrs = calc_date_diff(start, end, units = "hours"),
+#'               diff_mns = calc_date_diff(start, end, units = "minutes"),
+#'               diff_scs = calc_date_diff(start, end, units = "seconds")
+#' )
+#'
+#' df %>% dplyr::mutate(diff_yrs = calc_date_diff(start, end, units = "years",
+#'                                         precise = FALSE),
+#'               diff_mos = calc_date_diff(start, end, units = "months",
+#'                                         precise = FALSE),
+#'               diff_wks = calc_date_diff(start, end, units = "weeks",
+#'                                         precise = FALSE),
+#'               diff_dys = calc_date_diff(start, end, units = "days",
+#'                                         precise = FALSE),
+#'               diff_hrs = calc_date_diff(start, end, units = "hours",
+#'                                         precise = FALSE),
+#'               diff_mns = calc_date_diff(start, end, units = "minutes",
+#'                                         precise = FALSE),
+#'               diff_scs = calc_date_diff(start, end, units = "seconds",
+#'                                         precise = FALSE)
+#' )
+#'
+calc_date_diff <- function(start,
+                           end = Sys.Date(),
+                           units = "days",
+                           precise = TRUE) {
 
-  if (!inherits(dob, "Date") | !inherits(enddate, "Date")) {
-    stop("Both dob and enddate must be Date class objects")
-  }
-  if (any(enddate < dob)) {
-    stop("End date must be a date after date of birth")
-  }
-  start <- as.POSIXlt(dob)
-  end <- as.POSIXlt(enddate)
-  if (precise) {
-    start_is_leap <- ifelse(start$year %% 400 == 0,
-                            TRUE,
-                            ifelse(start$year %% 100 == 0,
-                                   FALSE,
-                                   ifelse(start$year %% 4 == 0,
-                                          TRUE,
-                                          FALSE)))
-    end_is_leap <- ifelse(end$year %% 400 == 0,
-                          TRUE,
-                          ifelse(end$year %% 100 == 0,
-                                 FALSE,
-                                 ifelse(end$year %% 4 == 0,
-                                        TRUE,
-                                        FALSE)))
-  }
+  denom <- dplyr::case_when(
+    units == "years" ~ lubridate::dyears(1),
+    units == "months" ~ lubridate::dyears(1) / 12,
+    units == "weeks" ~ lubridate::dweeks(1),
+    units == "days" ~ lubridate::ddays(1),
+    units == "hours" ~ lubridate::dhours(1),
+    units == "minutes" ~ lubridate::dminutes(1),
+    units == "seconds" ~ 1
+  )
 
-  if (units == "days") {
-    result <- difftime(end, start, units = "days")
-  }
-  else if (units == "months") {
-    months <- sapply(mapply(seq,
-                            as.POSIXct(start),
-                            as.POSIXct(end),
-                            by = "months",
-                            SIMPLIFY = FALSE),
-                     length) - 1
-    if (precise) {
-      month_length_end <-
-        ifelse(end$mon == 1 & end_is_leap,
-               29,
-               ifelse(end$mon == 1,
-                      28,
-                      ifelse(end$mon %in% c(3, 5, 8, 10),
-                             30,
-                             31)))
-      month_length_prior <-
-        ifelse((end$mon - 1) == 1 & start_is_leap,
-               29,
-               ifelse((end$mon - 1) == 1,
-                      28,
-                      ifelse((end$mon - 1) %in% c(3, 5, 8, 10),
-                             30,
-                             31)))
-
-      month_frac <-
-        ifelse(end$mday > start$mday,
-               (end$mday - start$mday) / month_length_end,
-               ifelse(end$mday < start$mday,
-                      (month_length_prior - start$mday) / month_length_prior +
-                        end$mday / month_length_end,
-                      0)
-        )
-
-      result <- months + month_frac
-    }
-
-    else {
-      result <- months
-    }
-  }
-
-  else if (units == "years") {
-    years <- sapply(mapply(seq,
-                           as.POSIXct(start),
-                           as.POSIXct(end),
-                           by = "years",
-                           SIMPLIFY = FALSE),
-                    length) - 1
-
-    if (precise) {
-      start_length <- ifelse(start_is_leap,
-                             366,
-                             365)
-      end_length <- ifelse(end_is_leap,
-                           366,
-                           365)
-      start_day <- ifelse(start_is_leap & start$yday >= 60,
-                          start$yday - 1,
-                          start$yday)
-      end_day <- ifelse(end_is_leap & end$yday >= 60,
-                        end$yday - 1,
-                        end$yday)
-      year_frac <-
-        ifelse(start_day < end_day,
-               (end_day - start_day) / end_length,
-               ifelse(start_day > end_day,
-                      (start_length - start_day) / start_length +
-                        end_day / end_length,
-                      0))
-
-      result <- years + year_frac
-
-    } else {
-      result <- years
-    }
+  if (precise == TRUE) {
+    lubridate::as.duration(
+      lubridate::interval(start = start, end = end)) / denom
   } else {
-    stop("Unrecognized units. Please choose years, months, or days.")
+    lubridate::as.duration(
+      lubridate::interval(start = start, end = end)) %/% denom
   }
-  return(result)
 }
-
-
-## Example of use ----------------
-
-# a <- as.Date(seq(as.POSIXct('1987-05-29 018:07:00'), len = 26, by = "21 day"))
-# b <- as.Date(seq(as.POSIXct('2002-05-29 018:07:00'), len = 26, by = "21 day"))
-# age <- calc_age(a, units = 'years', precise = FALSE)
-# age
-# age <- calc_age(a, units = 'months')
-# age
-# age <- calc_age(a, as.Date('2005-09-01'))
-# age

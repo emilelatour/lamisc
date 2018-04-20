@@ -34,11 +34,6 @@
 #'
 #'
 #' @examples
-#' pacman::p_load(
-#'   tidyverse,   # packages ggplot2, tibble, tidyr, readr, purrr, and dplyr
-#'   janitor,     # for working with dirty data
-#'   lubridate    # for working with dates and times
-#' )
 #'
 #' bar <- tibble::tribble(
 #'   ~date,                     ~comment,
@@ -59,7 +54,7 @@
 #' )
 #'
 #' bar %>%
-#'   mutate(date2 = fix_messy_dates(date))
+#'   dplyr::mutate(date2 = fix_messy_dates(date))
 #'
 
 fix_messy_dates <- function(x,
