@@ -10,6 +10,8 @@ lhs \%>\% rhs
 Exported from the magrittr package.  To learn more, run \code{?magrittr::`\%>\%`}.
 }
 \examples{
+library(janitor)
+library(dplyr)
 mtcars \%>\%
   tabyl(carb, cyl) \%>\%
   adorn_totals()

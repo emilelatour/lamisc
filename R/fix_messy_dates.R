@@ -34,6 +34,7 @@
 #'
 #'
 #' @examples
+#' library(dplyr)
 #'
 #' bar <- tibble::tribble(
 #'   ~date,                     ~comment,
@@ -54,7 +55,7 @@
 #' )
 #'
 #' bar %>%
-#'   dplyr::mutate(date2 = fix_messy_dates(date))
+#'   mutate(date2 = fix_messy_dates(date))
 #'
 
 fix_messy_dates <- function(x,

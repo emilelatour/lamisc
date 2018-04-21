@@ -17,6 +17,8 @@
 #' @import dplyr
 #'
 #' @examples
+#' library(dplyr)
+#'
 #' iris %>%
 #'   calc_tabyl(Species)
 #'

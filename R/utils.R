@@ -12,8 +12,12 @@
 #' @keywords internal
 #' @export
 #' @importFrom dplyr %>%
+#' @importFrom janitor tabyl
+#' @importFrom janitor adorn_totals
 #' @usage lhs \%>\% rhs
 #' @examples
+#' library(janitor)
+#' library(dplyr)
 #' mtcars %>%
 #'   tabyl(carb, cyl) %>%
 #'   adorn_totals()

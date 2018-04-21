@@ -25,6 +25,7 @@ wrapper for lubridate functions
 was a big help in understanding lubridate package.
 }
 \examples{
+library(dplyr)
 
 start <- c("2012-08-21", "1995-09-01", "1984-08-15", "1976-11-15", "2018-04-20")
 end <- c("2012-09-16", "2012-09-06", "2012-08-22", "2018-04-20", "1976-11-15")

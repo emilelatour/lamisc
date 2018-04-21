@@ -36,6 +36,7 @@ warning message has been suppressed purposely. For this reason, it is
 important to spot check the data after using this function.
 }
 \examples{
+library(dplyr)
 
 bar <- tibble::tribble(
   ~date,                     ~comment,
@@ -56,6 +57,6 @@ bar <- tibble::tribble(
 )
 
 bar \%>\%
-  dplyr::mutate(date2 = fix_messy_dates(date))
+  mutate(date2 = fix_messy_dates(date))
 
 }
