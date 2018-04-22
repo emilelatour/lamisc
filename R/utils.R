@@ -1,24 +1,6 @@
 
-
-# Copied from tidyr/R/utils.R, to export the magrittr pipe
-# Copied from janitor/R/utils.R
-
-#' Pipe operator
-#'
-#' @description Exported from the magrittr package.  To learn more, run \code{?magrittr::`\%>\%`}.
-#'
-#' @name %>%
-#' @rdname pipe
-#' @keywords internal
+#' The following code comes from Hadley's utils.R where he imports the magrittr
+#' pipe. https://github.com/tidyverse/dplyr/blob/master/R/utils.r
+#' @importFrom magrittr %>%
 #' @export
-#' @importFrom dplyr %>%
-#' @importFrom janitor tabyl
-#' @importFrom janitor adorn_totals
-#' @usage lhs \%>\% rhs
-#' @examples
-#' library(janitor)
-#' library(dplyr)
-#' mtcars %>%
-#'   tabyl(carb, cyl) %>%
-#'   adorn_totals()
-NULL
+magrittr::`%>%`
