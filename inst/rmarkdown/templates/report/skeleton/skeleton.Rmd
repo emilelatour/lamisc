@@ -152,7 +152,7 @@ pacman::p_load(
 # extrafont::fonts()  # Vector of font family names
 # extrafont::fonttable()  # Show entire table
 # extrafont::font_import()  # imports fonts installed on the system
-extrafont::loadfonts(quiet = TRUE)
+extrafont::loadfonts(device = "win", quiet = TRUE)
 
 
 ```

@@ -1,1 +1,4 @@
-name: Basic report
+name: Template for analysis
+description: >
+  R Markdown template with preferences, packages and yaml headers set.
+create_dir: false
