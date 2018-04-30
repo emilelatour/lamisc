@@ -9,7 +9,7 @@
 #' preserving this here.
 #'
 #' @param cond A logical condition
-#' @param yes,no Values to use for `TRUE` and `FALSE` values of `cond`.
+#' @param true,false Values to use for `TRUE` and `FALSE` values of `cond`.
 #'   Attributes are taken from `true`.
 #'
 #' @return Where `cond` is `TRUE`, the matching value from
