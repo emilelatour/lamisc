@@ -9,7 +9,7 @@ safe_ifelse(cond, true, false)
 \arguments{
 \item{cond}{A logical condition}
 
-\item{yes, no}{Values to use for \code{TRUE} and \code{FALSE} values of \code{cond}.
+\item{true, false}{Values to use for \code{TRUE} and \code{FALSE} values of \code{cond}.
 Attributes are taken from \code{true}.}
 }
 \value{
