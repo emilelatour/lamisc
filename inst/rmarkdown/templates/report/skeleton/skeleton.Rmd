@@ -184,3 +184,12 @@ extrafont::loadfonts(device = "win", quiet = TRUE)
 
 
 # Discussion
+
+
+# Reproducibility info
+
+```{r}
+options(width = 120)
+devtools::session_info()
+```
+
