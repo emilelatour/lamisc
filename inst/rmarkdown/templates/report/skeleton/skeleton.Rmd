@@ -54,13 +54,11 @@ knitr::opts_chunk$set(
 #### Other options --------------------------------
 
 ## Scientific notation ---------------
-
 # Find out what it is set to
 # getOption("scipen")
 
 # Turn off scientific notation
 options(scipen = 999)
-
 
 ## define format ----------------
 # If you don't define format here, you'll need put `format = "html"` in 
@@ -68,7 +66,6 @@ options(scipen = 999)
 
 options(knitr.table.format = "html")  # use this option when knitting html
 # options(knitr.table.format = "latex")  # use this option when knitting pdf
-
 
 ## Options for printing and saving ----------------
 
@@ -79,28 +76,23 @@ save_plots <- TRUE
 write_files <- TRUE
 
 
-## Define the repository for packages ----------------
-
-options(repos = c(CRAN = "http://cran.rstudio.com"))
-
-
 #### Packages --------------------------------------
-
 # This is where we load in all the packages we plan to use
 
-# universally useful packages
-if (!require("pacman")) install.packages("pacman")
-if (!require("devtools")) install.packages("devtools")
+## Define the repository for packages ----------------
+options(repos = c(CRAN = "http://cran.rstudio.com"))
 
-# github packages
-if (!require("janitor")) devtools::install_github("sfirke/janitor")
+## universally useful packages ----------------
+if (!require("pacman")) {install.packages("pacman")}
+if (!require("devtools")) {install.packages("devtools")}
+
+## github packages ----------------
 if (packageVersion("janitor") < "0.4.0.9000") {
   devtools::install_github("sfirke/janitor")
 }
+if (!require("lamisc")) {devtools::install_github("emilelatour/lamisc")}
 
-if (!require("lamisc")) devtools::install_github("emilelatour/lamisc")
-  
-# Load the list of packages
+## Load the list of packages ----------------
 pacman::p_load(
   Hmisc,         # contains many functions useful for data analysis
   psych,         # a general purpose toolbox
@@ -146,9 +138,7 @@ pacman::p_load(
 
 #### Themes and colors -------------------------------
 
-
 #### Load fonts --------------------------------
-
 # extrafont::fonts()  # Vector of font family names
 # extrafont::fonttable()  # Show entire table
 # extrafont::font_import()  # imports fonts installed on the system
