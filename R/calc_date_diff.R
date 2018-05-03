@@ -14,7 +14,7 @@
 #' @param units Units: "years", "months", "weeks", "days", "hours", "minutes", "seconds". Default is "days".
 #' @param precise TRUE (default) for fractional diff or FALSE for integer (not rounded) diff.
 #'
-#' @return
+#' @return A numeric object or vector
 #' @export
 #'
 #' @import dplyr
@@ -74,6 +74,14 @@ calc_date_diff <- function(start,
                            end = Sys.Date(),
                            units = "days",
                            precise = TRUE) {
+
+  if (any(!inherits(start,
+                    c("POSIXt", "POSIXct", "POSIXlt", "Date", "character"))))
+    stop("date(s) not in POSIXt or Date or character format")
+
+  if (any(!inherits(end,
+                    c("POSIXt", "POSIXct", "POSIXlt", "Date", "character"))))
+    stop("date(s) not in POSIXt or Date or character format")
 
   denom <- dplyr::case_when(
     units == "years" ~ lubridate::dyears(1),

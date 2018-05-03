@@ -15,6 +15,9 @@ calc_date_diff(start, end = Sys.Date(), units = "days", precise = TRUE)
 
 \item{precise}{TRUE (default) for fractional diff or FALSE for integer (not rounded) diff.}
 }
+\value{
+A numeric object or vector
+}
 \description{
 Calculates the difference between two dates, in whole or fractional, years,
 months, weeks, days, hours, minutes, or seconds. Really just a convenience
