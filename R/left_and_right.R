@@ -1,7 +1,9 @@
 
 
+#' @title
 #' Return text to the left and the right of a string
 #'
+#' @description
 #' `left` takes a string and a character as arguments, then returns the
 #' characters to the left. `right` takes a string and a character as
 #' arguments, then returns the characters to the right.
