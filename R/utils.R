@@ -1,6 +1,16 @@
 
-#' The following code comes from Hadley's utils.R where he imports the magrittr
-#' pipe. https://github.com/tidyverse/dplyr/blob/master/R/utils.r
-#' @importFrom magrittr %>%
+#' Pipe operator
+#'
+#' See \code{magrittr::\link[magrittr]{\%>\%}} for details.
+#'
+#' @name %>%
+#' @rdname pipe
+#' @keywords internal
 #' @export
-magrittr::`%>%`
+#' @importFrom magrittr %>%
+#' @usage lhs \%>\% rhs
+NULL
+
+
+## quiets concerns of R CMD check re: the .'s that appear in pipelines
+if (getRversion() >= "2.15.1")  utils::globalVariables(c("."))
