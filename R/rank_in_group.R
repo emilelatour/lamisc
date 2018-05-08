@@ -1,10 +1,4 @@
 
-
-
-
-
-
-
 #' @title Create a rank variable by group in a data frame
 #'
 #' @description
@@ -26,6 +20,7 @@
 #'
 #' @import dplyr
 #' @import rlang
+#' @importFrom rlang .data
 #'
 #' @return A data frame with an added column `rank`
 #' @export
@@ -54,9 +49,9 @@
 rank_in_group <- function(df) {
 
   df %>%
-    mutate(constcol = 1) %>%
-    mutate(rank = cumsum(constcol)) %>%
-    dplyr::select(-constcol)
+    dplyr::mutate(constcol = 1) %>%
+    dplyr::mutate(rank = cumsum(.data$constcol)) %>%
+    dplyr::select(-.data$constcol)
 
 }
 
@@ -81,9 +76,9 @@ rank_in_group2 <- function(df, group_var, arrange_var) {
   df %>%
     dplyr::group_by(!! group_var) %>%
     dplyr::arrange(dplyr::desc(!! arrange_var)) %>%
-    mutate(constcol = 1) %>%
-    mutate(rank = cumsum(constcol)) %>%
-    dplyr::select(-constcol)
+    dplyr::mutate(constcol = 1) %>%
+    dplyr::mutate(rank = cumsum(.data$constcol)) %>%
+    dplyr::select(-.data$constcol)
 
 }
 

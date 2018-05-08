@@ -8,11 +8,14 @@ Encoding: UTF-8
 LazyData: true
 ByteCompile: true
 Imports: 
-    dplyr,
+    dplyr, 
+    devtools, 
     ggplot2, 
+    glue, 
     grDevices, 
     here, 
-    janitor (>= 0.4.0.9000),
+    janitor (>= 0.4.0.9000), 
+    jsonlite,
     knitr, 
     lubridate, 
     magrittr,
