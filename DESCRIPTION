@@ -10,6 +10,7 @@ ByteCompile: true
 Imports: 
     dplyr, 
     devtools, 
+    forcats, 
     ggplot2, 
     glue, 
     grDevices, 
