@@ -6,15 +6,22 @@
 \usage{
 x \%not_in\% table
 }
+\arguments{
+\item{x}{vector or NULL: the values to be matched. Long vectors are supported.}
+
+\item{table}{vector or NULL: the values to be matched against. Long vectors are not supported.}
+}
+\value{
+A logical
+}
 \description{
 Creating %not_in% with purrr::negate. Adapted from the cool, on going, Your
 daily dose of {purrr} from Colin Fay.
-\url{https://twitter.com/_ColinFay/status/987260548344631298/photo/1}
-}
-\details{
-importFrom base \code{\%in}
 }
 \examples{
 1 \%not_in\% 1:10
 11 \%not_in\% 1:10
+}
+\references{
+\url{https://twitter.com/_ColinFay/status/987260548344631298/photo/1}
 }
