@@ -20,10 +20,21 @@
 #' class(SexualFun)
 #' counts_to_cases(input_table = SexualFun,
 #'                 countcol = "Freq")
+#'
+#' phs <- matrix(c(189, 10845, 104, 10933), byrow = TRUE, ncol = 2)
+#' dimnames(phs) <- list(Group = c("Placebo", "Aspirin"), MI = c("Yes", "No"))
+#' phs
+#' class(phs)
+#' counts_to_cases(input_table = phs,
+#'                 countcol = "Freq")
+
 
 counts_to_cases <- function(input_table, countcol = "Freq") {
 
-  x <- as.data.frame(input_table)
+  if (!(inherits(input_table, "matrix") | inherits(input_table, "table")))
+    stop("Input must be a table or a matrix.")
+
+  x <- as.data.frame(as.table(input_table))
 
   # Get the row indices to pull from x
   idx <- rep.int(seq_len(nrow(x)), x[[countcol]])

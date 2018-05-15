@@ -25,4 +25,11 @@ library(vcd)
 class(SexualFun)
 counts_to_cases(input_table = SexualFun,
                 countcol = "Freq")
+
+phs <- matrix(c(189, 10845, 104, 10933), byrow = TRUE, ncol = 2)
+dimnames(phs) <- list(Group = c("Placebo", "Aspirin"), MI = c("Yes", "No"))
+phs
+class(phs)
+counts_to_cases(input_table = phs,
+                countcol = "Freq")
 }
