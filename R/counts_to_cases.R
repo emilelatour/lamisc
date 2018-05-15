@@ -11,6 +11,7 @@
 #'   (default = "Freq")
 #'
 #' @import vcd
+#' @import tibble
 #'
 #' @return A data frame
 #' @export
@@ -43,6 +44,22 @@ counts_to_cases <- function(input_table, countcol = "Freq") {
   x[[countcol]] <- NULL
 
   # Get the rows from x
-  x[idx, ]
+  tibble::as_tibble(x[idx, ])
 }
 
+
+#### Original function --------------------------------
+# From http://www.cookbook-r.com/Manipulating_data/Converting_between_data_frames_and_contingency_tables/#countstocases-function
+
+# Convert from data frame of counts to data frame of cases.
+# `countcol` is the name of the column containing the counts
+# countsToCases <- function(x, countcol = "Freq") {
+#   # Get the row indices to pull from x
+#   idx <- rep.int(seq_len(nrow(x)), x[[countcol]])
+#
+#   # Drop count column
+#   x[[countcol]] <- NULL
+#
+#   # Get the rows from x
+#   x[idx, ]
+# }
