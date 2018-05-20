@@ -1,10 +1,4 @@
 
-
-
-
-
-
-
 #' @title
 #' A function for formatting p-values
 #'
