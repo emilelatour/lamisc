@@ -23,6 +23,7 @@ Imports:
     purrr,
     readxl,
     rlang, 
+    stringr, 
     tableone,
     tibble,
     tidyr, 
