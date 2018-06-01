@@ -25,7 +25,7 @@
 #' @param date_system Date system for janitor::excel_numeric_to_date(), either
 #'     "modern" or "mac pre-2011"
 #'
-#' @return
+#' @return A date or vector of dates
 #' @export
 #'
 #' @import dplyr
