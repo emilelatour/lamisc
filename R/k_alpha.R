@@ -30,7 +30,7 @@
 #' nominal order, Krippendorff’s alpha is recommended.
 #'
 #' @references
-#' /url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4974794/}
+#' \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4974794/}
 #' Efron B. Six questions raised by the bootstrap. Exploring the limits of
 #' bootstrap. Editors LePage R, Billard L. Technical Report No. 139. Division of
 #' Biostatistics, Stanford University. Wiley & Sons, New York; 1992.
