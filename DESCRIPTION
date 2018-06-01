@@ -8,6 +8,7 @@ Encoding: UTF-8
 LazyData: true
 ByteCompile: true
 Imports: 
+    broom, 
     dplyr, 
     devtools, 
     forcats, 
@@ -21,6 +22,7 @@ Imports:
     knitr, 
     lubridate, 
     magrittr,
+    psych, 
     purrr,
     raters, 
     readxl,
