@@ -15,6 +15,7 @@ Imports:
     glue, 
     grDevices, 
     here, 
+    irr, 
     janitor (>= 0.4.0.9000), 
     jsonlite,
     knitr, 
