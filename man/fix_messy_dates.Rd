@@ -14,6 +14,9 @@ fix_messy_dates(x, formats = c("m/d/y"), date_system = "modern")
 \item{date_system}{Date system for janitor::excel_numeric_to_date(), either
 "modern" or "mac pre-2011"}
 }
+\value{
+A date or vector of dates
+}
 \description{
 It's come up a number of times, typically when reading in data from Excel,
 where a column of data that are supposed to be dates are loaded as a

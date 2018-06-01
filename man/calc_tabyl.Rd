@@ -11,6 +11,10 @@ calc_tabyl(df, x)
 
 \item{x}{A single variable that you want to see the formatted tabyl for.}
 }
+\value{
+Returns a data.frame with frequencies and percentages of the
+tabulated variable(s).
+}
 \description{
 This is a simple wrapper around the tabyl function from the janitor
 package. So rather than writing a bunch of lines over and over again, I
