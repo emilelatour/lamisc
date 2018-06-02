@@ -37,6 +37,7 @@
 #'   1L, 1L, 0L
 #' )
 #'
+#' table(df$a, df$b)
 #' make_table(df = df, x_var = a, y_var = b)
 
 make_table <- function(df,
