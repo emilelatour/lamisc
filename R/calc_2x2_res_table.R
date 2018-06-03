@@ -46,10 +46,10 @@
 #'   1L, 1L, 0L
 #' )
 #'
-#' bar <- lamisc::make_table(df = df,
-#'                           x_var = a,
+#' bar <- lamisc::make_table(data = df,
+#'                           x = a,
 #'                           x_lvls = c("1", "0"),
-#'                           y_var = b,
+#'                           y = b,
 #'                           y_lvls = c("1", "0"))
 #'
 #' calc_2x2_res_table(table = bar, has_gold_std = FALSE)

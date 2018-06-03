@@ -4,15 +4,15 @@
 \alias{make_table}
 \title{More consistent version of base::table()}
 \usage{
-make_table(df, x_var, y_var, x_lvls = NULL, y_lvls = NULL, labs = c(NA,
-  NA), useNA = "ifany")
+make_table(data, x, y, x_lvls = NULL, y_lvls = NULL, labs = c(NA, NA),
+  useNA = "ifany")
 }
 \arguments{
-\item{df}{A data frame or tibble}
+\item{data}{A data frame or tibble}
 
-\item{x_var}{X variable, the one along the horizontal (top) of the table}
+\item{x}{X variable, the one along the horizontal (top) of the table}
 
-\item{y_var}{Y variable, the one along the vertical (side) of the table}
+\item{y}{Y variable, the one along the vertical (side) of the table}
 
 \item{x_lvls}{(optional) levels for the X variable}
 
@@ -46,5 +46,6 @@ df <- tibble::tribble(
 )
 
 table(df$a, df$b)
-make_table(df = df, x_var = a, y_var = b)
+make_table(data = df, x = a, y = b)
+make_table(data = df, x = a, y = b, labs = c("Cats", "Dogs"))
 }

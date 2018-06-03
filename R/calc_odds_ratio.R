@@ -61,9 +61,9 @@ calc_odds_ratio <- function(df,
                             pad_zeros = FALSE,
                             conf_level = 0.95) {
 
-  tab <- lamisc::make_table(df = df,
-                            x_var = !! rlang::enquo(x),
-                            y_var = !! rlang::enquo(y),
+  tab <- lamisc::make_table(data = df,
+                            x = !! rlang::enquo(x),
+                            y = !! rlang::enquo(y),
                             x_lvls = NULL,
                             y_lvls = NULL,
                             labs = c(NA, NA),
