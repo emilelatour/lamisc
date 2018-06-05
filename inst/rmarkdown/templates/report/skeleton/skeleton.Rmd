@@ -80,7 +80,7 @@ write_files <- TRUE
 # This is where we load in all the packages we plan to use
 
 ## Define the repository for packages ----------------
-options(repos = c(CRAN = "http://cran.rstudio.com"))
+options(repos = c(CRAN = "https://cran.rstudio.com"))
 
 ## universally useful packages ----------------
 if (!require("pacman")) {install.packages("pacman")}
