@@ -8,8 +8,8 @@
 #' cells very well IMHO.
 #'
 #' @param data A data frame or tibble
-#' @param x X variable, the one along the horizontal (top) of the table
-#' @param y Y variable, the one along the vertical (side) of the table
+#' @param x "X" variable; counts appear in the rows of the table
+#' @param y "Y" variable; counts appear in the columns of the table
 #' @param x_lvls (optional) levels for the X variable
 #' @param y_lvls (optional) levels for the Y variable
 #' @param labs (optional) labels for the X and Y variables
@@ -57,12 +57,12 @@ make_table <- function(data,
   y_name <- rlang::quo_name(y_enq)
 
 
-  if (is.na(labs[2])) {
-    labs[2] = x_name
+  if (is.na(labs[1])) {
+    labs[1] = x_name
   }
 
-  if (is.na(labs[1])) {
-    labs[1] = y_name
+  if (is.na(labs[2])) {
+    labs[2] = y_name
   }
 
 
@@ -90,7 +90,7 @@ make_table <- function(data,
   # correspond to never ("no"), only if the count is positive ("ifany") and even
   # for zero counts ("always")
 
-  table(data[[y_name]], data[[x_name]],
+  table(data[[x_name]], data[[y_name]],
         dnn = labs,
         useNA = useNA)
 
@@ -120,3 +120,4 @@ make_fct_w_equal_lvls <- function(a, b) {
     factor(a, levels = levels(b))
   }
 }
+

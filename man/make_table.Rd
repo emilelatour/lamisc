@@ -10,9 +10,9 @@ make_table(data, x, y, x_lvls = NULL, y_lvls = NULL, labs = c(NA, NA),
 \arguments{
 \item{data}{A data frame or tibble}
 
-\item{x}{X variable, the one along the horizontal (top) of the table}
+\item{x}{"X" variable; counts appear in the rows of the table}
 
-\item{y}{Y variable, the one along the vertical (side) of the table}
+\item{y}{"Y" variable; counts appear in the columns of the table}
 
 \item{x_lvls}{(optional) levels for the X variable}
 
