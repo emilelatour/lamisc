@@ -10,11 +10,11 @@ calc_odds_ratio(df, x, y, pad_zeros = FALSE, conf_level = 0.95)
 \arguments{
 \item{df}{A data frame or tibble}
 
-\item{x}{The outcome variable of interest; the disease; the horizontal
-variable at the top of a 2x2 table.}
+\item{x}{The factor variable of interest; the exposure; counts are
+represented horizontally in a 2x2 table.}
 
-\item{y}{The factor variable of interest; the exposure; the vertical
-variable along the side of a 2x2 table.}
+\item{y}{The outcome variable of interest; the disease; counts are
+represented vertically in a 2x2 table.}
 
 \item{pad_zeros}{If \code{TRUE} add 0.5 to any zero cells in order to make the
 calculations work. Kind of an old epidemiologists trick. More sophisticated
@@ -30,8 +30,8 @@ Given a data frame and two columns, the function will calculate and odds
 ratio and the asymptotic (Wald) confidence interval. Note the variables
 should have two levels so that a 2x2 table could be formed.
 
-Interpretation: The odds of \code{x} among those with \code{y} is OR time the
-odds of \code{x} among those without \code{y}.
+Interpretation: The odds of \code{y} among those with \code{x} is OR time the
+odds of \code{y} among those without \code{x}.
 
 \code{DescTools::OddsRatio()} might be better for general use. Or the great
 package \code{vcd} also has a function.
@@ -55,6 +55,6 @@ simple_df <- tibble::tibble(
                     prob = c(0.60, 0.40))
 )
 janitor::tabyl(dat = simple_df, exposure, disease)
-calc_odds_ratio(df = simple_df, x = disease, y = exposure)
+calc_odds_ratio(df = simple_df, x = exposure, y = disease)
 
 }

@@ -19,6 +19,7 @@ Imports:
     irr, 
     janitor (>= 0.4.0.9000), 
     jsonlite,
+    kableExtra, 
     knitr, 
     lubridate, 
     magrittr,

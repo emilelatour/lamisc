@@ -1,4 +1,3 @@
-
 #' @title
 #' A simple function to calculate an odds ratio and the asymptotic confidence
 #' interval.
@@ -8,17 +7,17 @@
 #' ratio and the asymptotic (Wald) confidence interval. Note the variables
 #' should have two levels so that a 2x2 table could be formed.
 #'
-#' Interpretation: The odds of `x` among those with `y` is OR time the
-#' odds of `x` among those without `y`.
+#' Interpretation: The odds of `y` among those with `x` is OR time the
+#' odds of `y` among those without `x`.
 #'
 #' `DescTools::OddsRatio()` might be better for general use. Or the great
 #' package `vcd` also has a function.
 #'
 #' @param df A data frame or tibble
-#' @param x The outcome variable of interest; the disease; the horizontal
-#'   variable at the top of a 2x2 table.
-#' @param y The factor variable of interest; the exposure; the vertical
-#'   variable along the side of a 2x2 table.
+#' @param x The factor variable of interest; the exposure; counts are
+#'   represented horizontally in a 2x2 table.
+#' @param y The outcome variable of interest; the disease; counts are
+#'   represented vertically in a 2x2 table.
 #' @param pad_zeros If `TRUE` add 0.5 to any zero cells in order to make the
 #'   calculations work. Kind of an old epidemiologists trick. More sophisticated
 #'   statistical methods exists to address this.
@@ -26,7 +25,6 @@
 #'
 #' @import rlang
 #' @importFrom stats qnorm
-#'
 #'
 #' @return A tibble
 #' @export
@@ -50,11 +48,8 @@
 #'                     prob = c(0.60, 0.40))
 #' )
 #' janitor::tabyl(dat = simple_df, exposure, disease)
-#' calc_odds_ratio(df = simple_df, x = disease, y = exposure)
+#' calc_odds_ratio(df = simple_df, x = exposure, y = disease)
 #'
-
-
-
 calc_odds_ratio <- function(df,
                             x,
                             y,
