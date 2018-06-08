@@ -1,7 +1,3 @@
-
-
-#### Proc freq for R --------------------------------
-
 #' @title
 #' A "PROC FREQ" for R
 #'
