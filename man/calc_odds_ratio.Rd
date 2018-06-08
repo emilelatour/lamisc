@@ -5,10 +5,10 @@
 \title{A simple function to calculate an odds ratio and the asymptotic confidence
 interval.}
 \usage{
-calc_odds_ratio(df, x, y, pad_zeros = FALSE, conf_level = 0.95)
+calc_odds_ratio(data, x, y, pad_zeros = FALSE, conf_level = 0.95)
 }
 \arguments{
-\item{df}{A data frame or tibble}
+\item{data}{A data frame or tibble}
 
 \item{x}{The factor variable of interest; the exposure; counts are
 represented horizontally in a 2x2 table.}
@@ -42,7 +42,7 @@ dimnames(phs) <- list(Group = c("Placebo", "Aspirin"), MI = c("Yes", "No"))
 phs # a matrix
 # convert it to a data frame
 phs_df <- lamisc::counts_to_cases(phs)
-calc_odds_ratio(df = phs_df, x = Group, y = MI)
+calc_odds_ratio(data = phs_df, x = Group, y = MI)
 
 simple_df <- tibble::tibble(
   disease = sample(c("Present", "Absent"),
@@ -55,6 +55,6 @@ simple_df <- tibble::tibble(
                     prob = c(0.60, 0.40))
 )
 janitor::tabyl(dat = simple_df, exposure, disease)
-calc_odds_ratio(df = simple_df, x = exposure, y = disease)
+calc_odds_ratio(data = simple_df, x = exposure, y = disease)
 
 }

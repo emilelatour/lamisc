@@ -13,7 +13,7 @@
 #' `DescTools::OddsRatio()` might be better for general use. Or the great
 #' package `vcd` also has a function.
 #'
-#' @param df A data frame or tibble
+#' @param data A data frame or tibble
 #' @param x The factor variable of interest; the exposure; counts are
 #'   represented horizontally in a 2x2 table.
 #' @param y The outcome variable of interest; the disease; counts are
@@ -35,7 +35,7 @@
 #' phs # a matrix
 #' # convert it to a data frame
 #' phs_df <- lamisc::counts_to_cases(phs)
-#' calc_odds_ratio(df = phs_df, x = Group, y = MI)
+#' calc_odds_ratio(data = phs_df, x = Group, y = MI)
 #'
 #' simple_df <- tibble::tibble(
 #'   disease = sample(c("Present", "Absent"),
@@ -48,15 +48,15 @@
 #'                     prob = c(0.60, 0.40))
 #' )
 #' janitor::tabyl(dat = simple_df, exposure, disease)
-#' calc_odds_ratio(df = simple_df, x = exposure, y = disease)
+#' calc_odds_ratio(data = simple_df, x = exposure, y = disease)
 #'
-calc_odds_ratio <- function(df,
+calc_odds_ratio <- function(data,
                             x,
                             y,
                             pad_zeros = FALSE,
                             conf_level = 0.95) {
 
-  tab <- lamisc::make_table(data = df,
+  tab <- lamisc::make_table(data = data,
                             x = !! rlang::enquo(x),
                             y = !! rlang::enquo(y),
                             x_lvls = NULL,
