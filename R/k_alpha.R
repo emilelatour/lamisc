@@ -1,15 +1,3 @@
-# input:
-# ratings_t = data set
-# alpha_q = two-sided type one error, default = 0.05
-# nboot = number of Bootstrap samples, default=1000
-# scaling = measurement scale ("nominal", "ordinal", "interval", "ratio"), default="nominal"
-
-# output:
-# observed agreement for the complete cases and for all cases with at least two ratings (obs.agr.k, obs.agr.alpha)
-# point estimators: est.k, est.alpha
-# confidence intervals: ci.asympt_k, ci.boot,k, ci.boot.alpha
-
-
 #' @title
 #' Calculate Fleiss' kappa and Krippendorff's alpha
 #'
@@ -235,12 +223,10 @@ k_alpha <- function(ratings_t,
     }
     agr_k = sum(apply(ratings_c, 1, v)) / N_c
 
-    # TODO
     # check, if there are at least two individuals without missing values
     if (N_c < 2) {
-      print(
-        "There are less than two subjects withour missing values. Therefore, Fleiss' K cannot be                               calculated."
-      )
+      print(paste0("There are less than two subjects without missing ",
+                   "values. Therefore, Fleiss' K cannot be calculated."))
     }
 
     if (N_c >= 2) {
@@ -373,3 +359,5 @@ k_alpha <- function(ratings_t,
   }
 
 }
+
+
