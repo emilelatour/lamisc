@@ -18,7 +18,9 @@ Makes installing missing packages a little less painful.
 Function by Ernest Omane-Kodie.
 }
 \examples{
+\dontrun{
 install_missing_pkg("remedy")
+}
 }
 \references{
 \url{https://www.eokodie.com/blog/installing-missing-packages-from-bioconductor-cran-and-github/}
