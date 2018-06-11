@@ -27,6 +27,7 @@ Imports:
     psych, 
     purrr,
     raters, 
+    readr, 
     readxl,
     rlang, 
     stringr, 
