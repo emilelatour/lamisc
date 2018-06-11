@@ -15,7 +15,7 @@ read_then_csv2(path)
 \item{path}{String; filepath to the the excel file}
 }
 \value{
-NULL. CSV files are written to the same location as the excel file
+\code{NULL}. CSV files are written to current working directory.
 }
 \description{
 Read in all the sheets from an excel file at once and simultaneously cache to

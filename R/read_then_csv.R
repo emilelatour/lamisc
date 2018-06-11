@@ -20,7 +20,7 @@
 #' @param sheet String; Name of an excel sheet
 #' @param path String; filepath to the the excel file
 #'
-#' @return NULL. CSV files are written to the same location as the excel file
+#' @return `NULL`. CSV files are written to current working directory.
 #'
 #' @rdname read_then_csv
 #' @export
