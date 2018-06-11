@@ -33,25 +33,7 @@ path \%>\%
   rlang::set_names() \%>\%
   purrr::map(read_then_csv, path = path)
 
-path <- readxl::readxl_example("datasets.xlsx")
-read_then_csv2
-library(dplyr)
-library(readxl)
-library(rlang)
-library(purrr)
-
-path <- readxl::readxl_example("datasets.xlsx")
-path \%>\%
-  readxl::excel_sheets() \%>\%
-  rlang::set_names() \%>\%
-  purrr::map(read_then_csv, path = path)
-library(dplyr)
-library(readxl)
-library(rlang)
-library(purrr)
-
-path <- readxl::readxl_example("datasets.xlsx")
-read_then_csv2
+read_then_csv2(path)
 }
 \references{
 \url{https://readxl.tidyverse.org/articles/articles/readxl-workflows.html#csv-caching-and-iterating-over-sheets}

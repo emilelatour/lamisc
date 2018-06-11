@@ -21,22 +21,7 @@
 #' @param path String; filepath to the the excel file
 #'
 #' @return NULL. CSV files are written to the same location as the excel file
-#' @export
 #'
-#' @examples
-#' library(dplyr)
-#' library(readxl)
-#' library(rlang)
-#' library(purrr)
-#'
-#' path <- readxl::readxl_example("datasets.xlsx")
-#' path %>%
-#'   readxl::excel_sheets() %>%
-#'   rlang::set_names() %>%
-#'   purrr::map(read_then_csv, path = path)
-#'
-#' path <- readxl::readxl_example("datasets.xlsx")
-#' read_then_csv2
 #' @rdname read_then_csv
 #' @export
 #'
@@ -51,6 +36,8 @@
 #'   readxl::excel_sheets() %>%
 #'   rlang::set_names() %>%
 #'   purrr::map(read_then_csv, path = path)
+#'
+#' read_then_csv2(path)
 read_then_csv <- function(sheet, path) {
 
   pathbase <- path %>%
@@ -65,22 +52,12 @@ read_then_csv <- function(sheet, path) {
 
 #' @rdname read_then_csv
 #' @export
-#'
-#' @examples
-#' library(dplyr)
-#' library(readxl)
-#' library(rlang)
-#' library(purrr)
-#'
-#' path <- readxl::readxl_example("datasets.xlsx")
-#' read_then_csv2
 read_then_csv2 <- function(path) {
 
   path %>%
     readxl::excel_sheets() %>%
     rlang::set_names() %>%
     purrr::map(.x = .,
-               .f = ~ lamisc::read_then_csv(sheet = .x, , path = path))
+               .f = ~ lamisc::read_then_csv(sheet = .x, path = path))
 
 }
-
