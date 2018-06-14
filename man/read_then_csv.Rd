@@ -3,7 +3,7 @@
 \name{read_then_csv}
 \alias{read_then_csv}
 \alias{read_then_csv2}
-\title{CSV caching and iterating over sheers}
+\title{CSV caching and iterating over sheets}
 \usage{
 read_then_csv(sheet, path)
 

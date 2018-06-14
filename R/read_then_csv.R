@@ -1,7 +1,7 @@
 #' @name read_then_csv
 #'
 #' @title
-#' CSV caching and iterating over sheers
+#' CSV caching and iterating over sheets
 #'
 #' @description
 #' Read in all the sheets from an excel file at once and simultaneously cache to
