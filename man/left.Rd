@@ -26,17 +26,31 @@ Wrappers around some regular expressions. \code{Left} and \code{right} operate
 similar to combining \code{left()}/\code{right()} and \code{search()} in excel. So maybe
 there's a bit of nostalgia for me in using these functions. But I also
 think that the naming makes it clearer what is going on.
-
-A couple of reference:
-\itemize{
-\item \url{https://stackoverflow.com/questions/45070117/r-check-if-special-character-in-string}
-\item \url{https://stackoverflow.com/questions/36928870/r-check-if-string-contains-special-characters}
-}
 }
 \examples{
-a <- c("asdasd.sss","segssddfge.sss","se.sss")
+a <- c("left.right","left.right","left.right")
 left(a, ".")
 right(a, ".")
 
+library(dplyr)
+library(tibble)
 
+test_df <- tibble::tibble(
+  label = c("resection_margin=Mohs, > 1 cm",
+            "resection_margin=Mohs, > 1 cm",
+            "resection_margin=Mohs, <= 1 cm",
+            "  resection_margin=Mohs, > 1 cm"))
+test_df \%>\%
+  mutate(left = left(label, "="),
+         right = right(label, "="))
+
+right(test_df$label, "=")
+left(test_df$label, "=")
+stringr::str_trim(left(test_df$label, "="), side = "both")
+
+}
+\references{
+\url{https://stackoverflow.com/questions/45070117/r-check-if-special-character-in-string}
+
+\url{https://stackoverflow.com/questions/36928870/r-check-if-string-contains-special-characters}
 }
