@@ -17,7 +17,7 @@ The output of your code, but without printing to console.
 }
 \description{
 This uses \code{sink()} to silence unwanted output from R code. So far it seems to
-be more successful than \code{invincible()}. I basically followed the Stack
+be more successful than \code{invisible()}. I basically followed the Stack
 Overflow discussion in the references to create this one.
 }
 \examples{

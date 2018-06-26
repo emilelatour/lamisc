@@ -3,7 +3,7 @@
 #'
 #' @description
 #' This uses `sink()` to silence unwanted output from R code. So far it seems to
-#' be more successful than `invincible()`. I basically followed the Stack
+#' be more successful than `invisible()`. I basically followed the Stack
 #' Overflow discussion in the references to create this one.
 #'
 #' @references
