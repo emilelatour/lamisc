@@ -73,8 +73,8 @@ calc_odds_ratio <- function(data,
   CI <- exp(log(theta) + c(-1, 1) * qnorm(0.5 * (1 + conf_level)) * ASE)
 
   tibble::tibble(estimate = theta,
-                 ASE = ASE,
-                 conf_low = CI[[1]],
-                 conf_high = CI[[2]],
+                 asym_se = ASE,
+                 lower_ci = CI[[1]],
+                 upper_ci = CI[[2]],
                  conf_level = conf_level)
 }
