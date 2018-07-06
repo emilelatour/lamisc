@@ -11,9 +11,11 @@ calc_date_diff(start, end = Sys.Date(), units = "days", precise = TRUE)
 
 \item{end}{The ending date.}
 
-\item{units}{Units: "years", "months", "weeks", "days", "hours", "minutes", "seconds". Default is "days".}
+\item{units}{Units: "years", "months", "weeks", "days", "hours", "minutes",
+"seconds". Default is "days".}
 
-\item{precise}{TRUE (default) for fractional diff or FALSE for integer (not rounded) diff.}
+\item{precise}{TRUE (default) for fractional diff or FALSE for integer (not
+rounded) diff.}
 }
 \value{
 A numeric object or vector
@@ -22,10 +24,6 @@ A numeric object or vector
 Calculates the difference between two dates, in whole or fractional, years,
 months, weeks, days, hours, minutes, or seconds. Really just a convenience
 wrapper for lubridate functions
-}
-\details{
-/url{http://data.library.virginia.edu/working-with-dates-and-time-in-r-using-the-lubridate-package/}
-was a big help in understanding lubridate package.
 }
 \examples{
 library(dplyr)
@@ -55,19 +53,28 @@ df \%>\% dplyr::mutate(diff_yrs = calc_date_diff(start, end, units = "years"),
 )
 
 df \%>\% dplyr::mutate(diff_yrs = calc_date_diff(start, end, units = "years",
-                                        precise = FALSE),
-              diff_mos = calc_date_diff(start, end, units = "months",
-                                        precise = FALSE),
-              diff_wks = calc_date_diff(start, end, units = "weeks",
-                                        precise = FALSE),
-              diff_dys = calc_date_diff(start, end, units = "days",
-                                        precise = FALSE),
-              diff_hrs = calc_date_diff(start, end, units = "hours",
-                                        precise = FALSE),
-              diff_mns = calc_date_diff(start, end, units = "minutes",
-                                        precise = FALSE),
-              diff_scs = calc_date_diff(start, end, units = "seconds",
-                                        precise = FALSE)
+                                               precise = FALSE),
+                     diff_mos = calc_date_diff(start, end, units = "months",
+                                               precise = FALSE),
+                     diff_wks = calc_date_diff(start, end, units = "weeks",
+                                               precise = FALSE),
+                     diff_dys = calc_date_diff(start, end, units = "days",
+                                               precise = FALSE),
+                     diff_hrs = calc_date_diff(start, end, units = "hours",
+                                               precise = FALSE),
+                     diff_mns = calc_date_diff(start, end, units = "minutes",
+                                               precise = FALSE),
+                     diff_scs = calc_date_diff(start, end, units = "seconds",
+                                               precise = FALSE)
 )
 
+}
+\references{
+/url{http://data.library.virginia.edu/working-with-dates-and-time-in-r-using-the-lubridate-package/}
+
+/url{https://rdrr.io/cran/janitor/man/excel_numeric_to_date.html}
+
+/url{https://rdrr.io/cran/openxlsx/man/convertToDateTime.html}
+
+/url{https://www.rdocumentation.org/packages/lubridate/versions/1.7.4/topics/parse_date_time}
 }
