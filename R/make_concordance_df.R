@@ -11,10 +11,11 @@
 #' ratee and rating.
 #'
 #' @param df A data frame or tibble.
-#' @param id A column/ariable (any type) that uniquely identifies the unit being rated
-#'   (i.e. patient id, ssn, name, etc.).
+#' @param id A column/ariable (any type) that uniquely identifies the unit being
+#'   rated (i.e. patient id, ssn, name, etc.).
 #' @param ... The columns of ratings by the raters, character or factor.
-#' @param keep_id Logical; if /code{TRUE} then it will keep the /code{id} column else it will be dropped.
+#' @param keep_id Logical; if /code{TRUE} then it will keep the /code{id} column
+#'   else it will be dropped.
 #'
 #' @import dplyr
 #' @import tidyr
