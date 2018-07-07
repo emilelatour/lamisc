@@ -51,8 +51,9 @@ library(tibble)
 #' @import rlang
 #' @importFrom rlang .data
 #'
-#' @param x Vvector to modify
-#' @param lookup A data frame or tibble. Must contain columns `var`, `old_value`, and `new_value`.
+#' @param x Vector to modify
+#' @param lookup A data frame or tibble. Must contain columns `var`,
+#'   `old_value`, and `new_value`.
 #'
 #' @return A modified version of `x` that replaces the `old_values` with the
 #'   `new_values`. Class is "character"; unfortunatley the original class is not
