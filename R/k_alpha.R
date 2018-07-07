@@ -45,10 +45,10 @@
 #' \item{obs_agr}{Observed agreement for the complete cases and for all cases
 #' with at least two ratings}
 #' \item{estimate}{Point estimates: Fleiss' kappa and Krippendorff's alpha}
-#' \item{ci_asym_lower}{Lower asymptotic confidence interval}
-#' \item{ci_asym_upper}{Upper asymptotic confidence interval}
-#' \item{ci_boot_lower}{Lower bootstrap confidence interval}
-#' \item{ci_boot_upper}{Upper bootstrap confidence interval}
+#' \item{lower_asym_ci}{Lower asymptotic confidence interval}
+#' \item{upper_asym_ci}{Upper asymptotic confidence interval}
+#' \item{lower_boot_ci}{Lower bootstrap confidence interval}
+#' \item{upper_boot_ci}{Upper bootstrap confidence interval}
 #' @export
 #'
 #' @examples
@@ -328,10 +328,10 @@ k_alpha <- function(ratings_t,
       k_categories = c(k_c, k_kr),
       obs_agr = c(agr_k, agr_alpha),
       estimate = c(k_est, alpha_est),
-      ci_asym_lower = c(CI_asymp_k[[1]], NA),
-      ci_asym_upper = c(CI_asymp_k[[2]], NA),
-      ci_boot_lower = c(CI_boot_k[[1]], CI_boot_alpha[[1]]),
-      ci_boot_upper = c(CI_boot_k[[2]], CI_boot_alpha[[2]])
+      lower_asym_ci = c(CI_asymp_k[[1]], NA),
+      upper_asym_ci = c(CI_asymp_k[[2]], NA),
+      lower_boot_ci = c(CI_boot_k[[1]], CI_boot_alpha[[1]]),
+      upper_boot_ci = c(CI_boot_k[[2]], CI_boot_alpha[[2]])
       ))
   }
 
@@ -351,10 +351,10 @@ k_alpha <- function(ratings_t,
       k_categories = c(NA, k_kr),
       obs_agr = c(NA, agr_alpha),
       estimate = c(NA, alpha_est),
-      ci_asym_lower = c(NA, NA),
-      ci_asym_upper = c(NA, NA),
-      ci_boot_lower = c(NA, CI_boot_alpha[[1]]),
-      ci_boot_upper = c(NA, CI_boot_alpha[[2]])
+      lower_asym_ci = c(NA, NA),
+      upper_asym_ci = c(NA, NA),
+      lower_boot_ci = c(NA, CI_boot_alpha[[1]]),
+      upper_boot_ci = c(NA, CI_boot_alpha[[2]])
     )
   }
 
