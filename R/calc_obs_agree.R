@@ -53,8 +53,8 @@ calc_obs_agree <- function(data, ..., alpha = 0.05, tolerance = 0) {
     N = pct_agree$subjects,
     po = pct_agree$value / 100,
     se_po = sqrt(.data$po * (1 - .data$po) / .data$N),
-    conf_low = .data$po + c(-1) * qnorm(1 - alpha / 2) * .data$se_po,
-    conf_high = .data$po + c(1) * qnorm(1 - alpha / 2) * .data$se_po) %>%
+    lower_ci = .data$po + c(-1) * qnorm(1 - alpha / 2) * .data$se_po,
+    upper_ci = .data$po + c(1) * qnorm(1 - alpha / 2) * .data$se_po) %>%
     dplyr::mutate_at(.vars = vars(.data$po:.data$conf_high),
                      .funs = funs(lamisc::roundr(., d = 3)))
 }
