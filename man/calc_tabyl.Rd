@@ -4,10 +4,10 @@
 \alias{calc_tabyl}
 \title{Make a tabyl with totals and formatting}
 \usage{
-calc_tabyl(df, x)
+calc_tabyl(data, x)
 }
 \arguments{
-\item{df}{A data frame or tibble.}
+\item{data}{A data frame or tibble.}
 
 \item{x}{A single variable that you want to see the formatted tabyl for.}
 }
@@ -25,6 +25,6 @@ argument takes a data frame or a tibble, this function is pipeable.
 iris \%>\%
   calc_tabyl(Species)
 
-calc_tabyl(df = iris, x = Species)
+calc_tabyl(data = iris, x = Species)
 
 }

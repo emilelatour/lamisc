@@ -6,7 +6,7 @@
 #' made this shortened function to make my life easier. Since the first
 #' argument takes a data frame or a tibble, this function is pipeable.
 #'
-#' @param df A data frame or tibble.
+#' @param data A data frame or tibble.
 #' @param x A single variable that you want to see the formatted tabyl for.
 #'
 #' @return Returns a data.frame with frequencies and percentages of the
