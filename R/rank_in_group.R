@@ -14,7 +14,7 @@
 #' variable as arguments and returns a data frame with a column, `rank` added.
 #' Similar to `rank_in_group` but works on it's own outside a pipe.
 #'
-#' @param df A data frame
+#' @param data A data frame
 #' @param group_var A variable to group by
 #' @param arrange_var A variable to arrange (descending) by
 #'
@@ -46,9 +46,9 @@
 #'   dplyr::filter(rank <= 3)
 #'
 
-rank_in_group <- function(df) {
+rank_in_group <- function(data) {
 
-  df %>%
+  data %>%
     dplyr::mutate(constcol = 1) %>%
     dplyr::mutate(rank = cumsum(.data$constcol)) %>%
     dplyr::select(-.data$constcol)
@@ -60,7 +60,7 @@ rank_in_group <- function(df) {
 #' @examples
 #' library(dplyr)
 #'
-#' res2 <- rank_in_group2(df = iris,
+#' res2 <- rank_in_group2(data = iris,
 #'                        group_var = Species,
 #'                        arrange_var = Sepal.Length)
 #'
@@ -68,12 +68,12 @@ rank_in_group <- function(df) {
 #' res2 %>%
 #'   dplyr::filter(rank <= 3)
 
-rank_in_group2 <- function(df, group_var, arrange_var) {
+rank_in_group2 <- function(data, group_var, arrange_var) {
 
   group_var <- rlang::enquo(group_var)
   arrange_var <- rlang::enquo(arrange_var)
 
-  df %>%
+  data %>%
     dplyr::group_by(!! group_var) %>%
     dplyr::arrange(dplyr::desc(!! arrange_var)) %>%
     dplyr::mutate(constcol = 1) %>%
