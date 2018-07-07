@@ -66,9 +66,16 @@ fix_messy_dates <- function(x,
     dplyr::coalesce(
       base::as.Date(lubridate::parse_date_time(x, formats)),
       janitor::excel_numeric_to_date(base::as.numeric(x),
-                                     date_system = date_system)
-    )
-  )
+                                     date_system = date_system)))
+
+  # An alternate way
+  # base::suppressWarnings(
+  #   dplyr::case_when(
+  #     is.na(as.numeric(x)) ~
+  #       base::as.Date(lubridate::parse_date_time(x, formats)),
+  #     TRUE ~ janitor::excel_numeric_to_date(base::as.numeric(x),
+  #                                           date_system = date_system)))
+
 
 }
 
