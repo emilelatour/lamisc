@@ -21,15 +21,18 @@
 #' iris %>%
 #'   calc_tabyl(Species)
 #'
-#' calc_tabyl(df = iris, x = Species)
+#' calc_tabyl(data = iris, x = Species)
 #'
-calc_tabyl <- function(df, x) {
+calc_tabyl <- function(data, x) {
 
-  stopifnot(class(df) %in% c("tbl_df", "tbl", "data.frame"))
+  # stopifnot(class(df) %in% c("tbl_df", "tbl", "data.frame"))
+  if (is.list(data) && !"data.frame" %in% class(data)) {
+    stop("tabyl() is meant to be called on vectors and data.frames; convert non-data.frame lists to one of these types")
+  }
 
   x_enq <- rlang::enquo(x)
 
-  df %>%
+  data %>%
     janitor::tabyl(!! x_enq) %>%
     janitor::adorn_totals(where = "row") %>%
     janitor::adorn_pct_formatting()
