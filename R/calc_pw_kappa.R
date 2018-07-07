@@ -200,16 +200,16 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
                                              y = .y)$value / 100)) %>%
     tidyr::unnest(data = ., .data$n, .data$po) %>%
     mutate(se_po = sqrt(.data$po * (1 - .data$po) / .data$n),
-           conf_low = .data$po + c(-1) * qnorm(1 - .05 / 2) * .data$se_po,
-           conf_high = .data$po + c(1) * qnorm(1 - .05 / 2) * .data$se_po) %>%
-    mutate_at(.vars = vars(.data$po:.data$conf_high),
+           lower_ci = .data$po + c(-1) * qnorm(1 - .05 / 2) * .data$se_po,
+           upper_ci = .data$po + c(1) * qnorm(1 - .05 / 2) * .data$se_po) %>%
+    mutate_at(.vars = vars(.data$po:.data$upper_ci),
               .funs = funs(lamisc::roundr(., d = 3))) %>%
     mutate(combo =
              paste0(lamisc::roundr(.data$po, d = 2, as_text = TRUE),
                     " (",
-                    lamisc::roundr(.data$conf_low, d = 2, as_text = TRUE),
+                    lamisc::roundr(.data$lower_ci, d = 2, as_text = TRUE),
                     " to ",
-                    lamisc::roundr(.data$conf_high, d = 2, as_text = TRUE),
+                    lamisc::roundr(.data$upper_ci, d = 2, as_text = TRUE),
                     ")"))
 
   ## Make table of observed agreement ---------------
