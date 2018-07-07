@@ -5,12 +5,12 @@
 \alias{rank_in_group2}
 \title{Create a rank variable by group in a data frame}
 \usage{
-rank_in_group(df)
+rank_in_group(data)
 
-rank_in_group2(df, group_var, arrange_var)
+rank_in_group2(data, group_var, arrange_var)
 }
 \arguments{
-\item{df}{A data frame}
+\item{data}{A data frame}
 
 \item{group_var}{A variable to group by}
 
@@ -54,7 +54,7 @@ by_species \%>\%
 
 library(dplyr)
 
-res2 <- rank_in_group2(df = iris,
+res2 <- rank_in_group2(data = iris,
                        group_var = Species,
                        arrange_var = Sepal.Length)
 

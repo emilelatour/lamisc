@@ -28,10 +28,10 @@ alpha: number of subjects with two or more ratings.}
 \item{obs_agr}{Observed agreement for the complete cases and for all cases
 with at least two ratings}
 \item{estimate}{Point estimates: Fleiss' kappa and Krippendorff's alpha}
-\item{ci_asym_lower}{Lower asymptotic confidence interval}
-\item{ci_asym_upper}{Upper asymptotic confidence interval}
-\item{ci_boot_lower}{Lower bootstrap confidence interval}
-\item{ci_boot_upper}{Upper bootstrap confidence interval}
+\item{lower_asym_ci}{Lower asymptotic confidence interval}
+\item{upper_asym_ci}{Upper asymptotic confidence interval}
+\item{lower_boot_ci}{Lower bootstrap confidence interval}
+\item{upper_boot_ci}{Upper bootstrap confidence interval}
 }
 \description{
 This function was adapted from the paper \emph{Measuring inter-rater reliability

@@ -17,7 +17,7 @@ A vector or value; character or numeric
 }
 \description{
 Simple wrapper for some regex to extract only the numbers from a character
-strin. Source: \url{http://stla.github.io/stlapblog/posts/Numextract.html}.
+string. Source: \url{http://stla.github.io/stlapblog/posts/Numextract.html}.
 There are some other pretty cool functions after the link too.
 }
 \examples{

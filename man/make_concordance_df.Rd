@@ -9,12 +9,13 @@ make_concordance_df(df, id, ..., keep_id = TRUE)
 \arguments{
 \item{df}{A data frame or tibble.}
 
-\item{id}{A column/ariable (any type) that uniquely identifies the unit being rated
-(i.e. patient id, ssn, name, etc.).}
+\item{id}{A column/ariable (any type) that uniquely identifies the unit being
+rated (i.e. patient id, ssn, name, etc.).}
 
 \item{...}{The columns of ratings by the raters, character or factor.}
 
-\item{keep_id}{Logical; if /code{TRUE} then it will keep the /code{id} column else it will be dropped.}
+\item{keep_id}{Logical; if /code{TRUE} then it will keep the /code{id} column
+else it will be dropped.}
 }
 \value{
 A tibble

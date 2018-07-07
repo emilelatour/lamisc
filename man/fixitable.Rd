@@ -7,9 +7,10 @@
 fixitable(x, lookup)
 }
 \arguments{
-\item{x}{Vvector to modify}
+\item{x}{Vector to modify}
 
-\item{lookup}{A data frame or tibble. Must contain columns \code{var}, \code{old_value}, and \code{new_value}.}
+\item{lookup}{A data frame or tibble. Must contain columns \code{var},
+\code{old_value}, and \code{new_value}.}
 }
 \value{
 A modified version of \code{x} that replaces the \code{old_values} with the
