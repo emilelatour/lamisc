@@ -30,6 +30,7 @@ Imports:
     readr, 
     readxl,
     rlang, 
+    Rmpfr, 
     stringr, 
     tableone,
     tibble,
