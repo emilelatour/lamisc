@@ -6,7 +6,7 @@
 #' seeming and wanted to save it for later.
 #'
 #' @references
-#' /url{https://github.com/tomasu909/Tidy-Tuesday-Submissions/blob/master/tidytuesday2.Rmd}
+#' \url{https://github.com/tomasu909/Tidy-Tuesday-Submissions/blob/master/tidytuesday2.Rmd}
 #'
 #' @examples \dontrun{
 #' # Load some packages
