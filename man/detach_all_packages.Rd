@@ -29,5 +29,5 @@ detach_all_packages()
 
 }
 \references{
-/url{https://github.com/tomasu909/Tidy-Tuesday-Submissions/blob/master/tidytuesday2.Rmd}
+\url{https://github.com/tomasu909/Tidy-Tuesday-Submissions/blob/master/tidytuesday2.Rmd}
 }
