@@ -8,6 +8,8 @@
 #' @references
 #' \url{https://github.com/tomasu909/Tidy-Tuesday-Submissions/blob/master/tidytuesday2.Rmd}
 #'
+#' @export
+#'
 #' @examples \dontrun{
 #' # Load some packages
 #' library(dplyr)
