@@ -53,6 +53,10 @@ knitr::opts_chunk$set(
 
 #### Other options --------------------------------
 
+## Width for code chunks ---------------- 
+
+options(width = 120)
+
 ## Scientific notation ---------------
 # Find out what it is set to
 # getOption("scipen")
@@ -179,7 +183,6 @@ extrafont::loadfonts(device = "win", quiet = TRUE)
 # Reproducibility info
 
 ```{r}
-options(width = 120)
 devtools::session_info()
 ```
 
