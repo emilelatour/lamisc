@@ -4,8 +4,7 @@
 \alias{calc_date_diff}
 \title{Calculate difference between two dates}
 \usage{
-calc_date_diff(start, end = Sys.Date(), units = "days",
-  precise = TRUE)
+calc_date_diff(start, end = Sys.Date(), units = "days", precise = TRUE)
 }
 \arguments{
 \item{start}{The starting date.}

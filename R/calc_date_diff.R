@@ -23,6 +23,9 @@
 #' @param precise TRUE (default) for fractional diff or FALSE for integer (not
 #'   rounded) diff.
 #'
+#' @usage
+#' calc_date_diff(start, end = Sys.Date(), units = "days", precise = TRUE)
+#'
 #' @return A numeric object or vector
 #' @export
 #'
