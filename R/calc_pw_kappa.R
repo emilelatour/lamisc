@@ -140,7 +140,12 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
                     lamisc::roundr(.data$conf_low, d = 2, as_text = TRUE),
                     " to ",
                     lamisc::roundr(.data$conf_high, d = 2, as_text = TRUE),
-                    ")")) # %>%
+                    ")"))  %>%
+    dplyr::rename(
+      # new = old
+      "lower_ci" = "conf_low",
+      "upper_ci" = "conf_high"
+    ) # %>%
   # dplyr::select(x, y, combo) %>%
   # tidyr::spread(key = y, value = combo)
 
