@@ -17,6 +17,9 @@
 #'   allowed values correspond to never ("no"), only if the count is positive
 #'   ("ifany") and even for zero counts ("always")
 #'
+#' @usage
+#' make_table(data, x, y, x_lvls = NULL, y_lvls = NULL, labs = c(NA, NA), useNA = "ifany")
+#'
 #' @import dplyr
 #' @import rlang
 #' @import tibble

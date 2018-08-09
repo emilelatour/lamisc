@@ -4,8 +4,7 @@
 \alias{make_table}
 \title{More consistent version of base::table()}
 \usage{
-make_table(data, x, y, x_lvls = NULL, y_lvls = NULL, labs = c(NA,
-  NA), useNA = "ifany")
+make_table(data, x, y, x_lvls = NULL, y_lvls = NULL, labs = c(NA, NA), useNA = "ifany")
 }
 \arguments{
 \item{data}{A data frame or tibble}
