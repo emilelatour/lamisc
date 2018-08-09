@@ -1,4 +1,3 @@
-# example using similar idea to duplicated.data.frame
 #' @title
 #' Count the number of duplicate rows in a data frame
 #'
