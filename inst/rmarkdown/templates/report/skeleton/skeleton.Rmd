@@ -107,12 +107,13 @@ pacman::p_load(
   rlang,         # For use in tidyevaluation
   readxl,        # read in excel files
   writexl,       # write excel files, zero dependency
-  # xlsx,          # read, write, format Excel files
+  xlsx,          # read, write, format Excel files
   openxlsx,      # read, write and edit XLSX files
   janitor,       # for working with dirty data
   lubridate,     # for working with dates and times
   stringr,       # handy string operations
   tableone,      # Create Table 1 to Describe Baseline Characteristics
+  labelled,      # Work with labelled data
   DT,            # render R objects as HTML tables
   knitr,         # A General-Purpose Package for Dynamic Report Generation in R
   kableExtra,    # Enahced table functions
@@ -128,6 +129,8 @@ pacman::p_load(
   visdat,        # Preliminary data visualisation
   naniar,        # structures, summaries, and visualisations for missing data
   here,          # Constructs paths to your project's files
+  glue,          # Glue strings to data in R
+  fs,            # Cross-platform interface to file system operations
   varhandle,     # Functions for robust variable handling
   rel,           # reliability coefficients
   irr,           # reliability and agreement coefficients
