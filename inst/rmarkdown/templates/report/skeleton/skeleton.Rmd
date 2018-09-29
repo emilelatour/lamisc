@@ -34,20 +34,23 @@ text-align: justify}
 #### Global chunk options -----------------------------
 
 knitr::opts_chunk$set(
-  eval       = TRUE,    # whether to run code in code chunk
-  include    = TRUE,    # whether to include the chunk output
-  echo       = TRUE,    # Whether to show code chunk in final output
-  error      = TRUE,    # whether to display error messages
-  message    = FALSE,   # whether to preserve messages
-  warning    = FALSE,   # whether to preserve warnings
-  comment    = NA,      # a character string to append at start
-                        # of each line of results in final document
-  tidy       = FALSE,   # whether to tidy code chunks for display
-  dpi        = 96, 
-  fig.width  = 6,       # consistent width for figures
-  fig.asp    = 0.618,   # the golden ratio, can be adjusted in individual chunks
-  out.width  = "70%",   # controls the output size
-  fig.align  = "center" # give plot room to breathe
+  eval       = TRUE,  # whether to run code in code chunk
+  include    = TRUE,  # whether to include the chunk output
+  echo       = TRUE,  # Whether to show code chunk in final output
+  # echo       = FALSE, 
+  error      = TRUE,  # whether to display error messages
+  message    = FALSE,  # whether to preserve messages
+  warning    = FALSE,  # whether to preserve warnings
+  comment    = NA,  # a character string to append at start of each line of 
+                    # results in final document
+  tidy       = FALSE,  # whether to tidy code chunks for display
+  dpi        = 96,  # dots per inch in graphics when applicable
+  fig.width  = 6,  # consistent width for figures
+  fig.asp    = 0.618,  # the golden ratio, can be adjusted in individual chunks
+  out.width  = "70%",  # controls the output size
+  fig.align  = "center",  # give plot room to breathe
+  # fig.path   = "figures/somedir/"  # file path tp store plots
+  NULL
 )
 
 
@@ -107,7 +110,7 @@ pacman::p_load(
   rlang,         # For use in tidyevaluation
   readxl,        # read in excel files
   writexl,       # write excel files, zero dependency
-  # xlsx,          # read, write, format Excel files
+  xlsx,          # read, write, format Excel files
   openxlsx,      # read, write and edit XLSX files
   janitor,       # for working with dirty data
   lubridate,     # for working with dates and times
