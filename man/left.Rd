@@ -5,14 +5,17 @@
 \alias{right}
 \title{Return text to the left and the right of a string}
 \usage{
-left(string, char)
+left(string, char, pattern = "/|:|\\\\?|<|>|\\\\|\\\\\\\\|\\\\*\\\\.()")
 
-right(string, char)
+right(string, char, pattern = "/|:|\\\\?|<|>|\\\\|\\\\\\\\|\\\\*\\\\.()")
 }
 \arguments{
 \item{string}{The string}
 
 \item{char}{A character used to delimit the string}
+
+\item{pattern}{Special characters that need to be escaped. Default is
+"/|:|\?|<|>|\|\\|\*\.()"}
 }
 \value{
 A string

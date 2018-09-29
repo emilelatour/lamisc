@@ -18,6 +18,8 @@
 #'
 #' @param string The string
 #' @param char A character used to delimit the string
+#' @param pattern Special characters that need to be escaped. Default is
+#'   "/|:|\\?|<|>|\\|\\\\|\\*\\.()"
 #'
 #' @importFrom stringr str_sub
 #' @importFrom stringr str_locate
@@ -47,9 +49,9 @@
 #' stringr::str_trim(left(test_df$label, "="), side = "both")
 #'
 
-left <- function(string, char) {
+left <- function(string, char, pattern = "/|:|\\?|<|>|\\|\\\\|\\*\\.()") {
 
-  special <- pattern <- "/|:|\\?|<|>|\\|\\\\|\\*\\."
+  special <- pattern
 
   if (grepl(char, special)) {
     esc <- "\\"
@@ -71,9 +73,9 @@ left <- function(string, char) {
 
 #' @rdname left
 #' @export
-right <- function(string, char) {
+right <- function(string, char, pattern = "/|:|\\?|<|>|\\|\\\\|\\*\\.()") {
 
-  special <- pattern <- "/|:|\\?|<|>|\\|\\\\|\\*\\."
+  special <- pattern
 
   if (grepl(char, special)) {
     esc <- "\\"
