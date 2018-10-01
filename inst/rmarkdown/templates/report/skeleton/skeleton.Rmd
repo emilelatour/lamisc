@@ -36,8 +36,7 @@ text-align: justify}
 knitr::opts_chunk$set(
   eval       = TRUE,  # whether to run code in code chunk
   include    = TRUE,  # whether to include the chunk output
-  echo       = TRUE,  # Whether to show code chunk in final output
-  # echo       = FALSE, 
+  echo       = FALSE,  # Whether to show code chunk in final output
   error      = TRUE,  # whether to display error messages
   message    = FALSE,  # whether to preserve messages
   warning    = FALSE,  # whether to preserve warnings
@@ -50,6 +49,7 @@ knitr::opts_chunk$set(
   out.width  = "70%",  # controls the output size
   fig.align  = "center",  # give plot room to breathe
   # fig.path   = "figures/somedir/"  # file path tp store plots
+  R.options  = list(width = 70), 
   NULL
 )
 
