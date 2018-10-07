@@ -70,11 +70,11 @@ df \%>\% dplyr::mutate(diff_yrs = calc_date_diff(start, end, units = "years",
 
 }
 \references{
-/url{http://data.library.virginia.edu/working-with-dates-and-time-in-r-using-the-lubridate-package/}
+\url{http://data.library.virginia.edu/working-with-dates-and-time-in-r-using-the-lubridate-package/}
 
-/url{https://rdrr.io/cran/janitor/man/excel_numeric_to_date.html}
+\url{https://rdrr.io/cran/janitor/man/excel_numeric_to_date.html}
 
-/url{https://rdrr.io/cran/openxlsx/man/convertToDateTime.html}
+\url{https://rdrr.io/cran/openxlsx/man/convertToDateTime.html}
 
-/url{https://www.rdocumentation.org/packages/lubridate/versions/1.7.4/topics/parse_date_time}
+\url{https://www.rdocumentation.org/packages/lubridate/versions/1.7.4/topics/parse_date_time}
 }
