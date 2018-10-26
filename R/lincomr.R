@@ -85,7 +85,7 @@ lincomr <- function(k, fit, alpha = 0.05) {
   #### Return a data frame --------------------------------
 
   data.frame("coef" = est,
-             "se" = se,
+             "std_err" = se,
              "z_stat" = z_score,
              "p_value" = lamisc::pvalr(p_value),
              "lower_ci" = lower_ci,
@@ -99,3 +99,4 @@ lincomr <- function(k, fit, alpha = 0.05) {
               .funs = funs(lamisc::roundr(., d = 2)))
 
 }
+
