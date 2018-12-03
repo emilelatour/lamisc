@@ -38,7 +38,7 @@ Imports:
     tidyr, 
     vcd
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Suggests: 
     rmarkdown
 VignetteBuilder: knitr
