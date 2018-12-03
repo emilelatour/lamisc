@@ -18,6 +18,10 @@
 #' proper(sample)
 #' proper(sample, just_first_word = FALSE)
 #'
+#' another_sample <- c("this is a TITLE", "2-way street", "76BudGet")
+#' proper(another_sample)
+#' proper(another_sample, just_first_word = FALSE)
+#'
 proper <- function(x, just_first_word = TRUE) {
 
   if (just_first_word) {
@@ -31,4 +35,6 @@ proper <- function(x, just_first_word = TRUE) {
   }
 
 }
+
+
 
