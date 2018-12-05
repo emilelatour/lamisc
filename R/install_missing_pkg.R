@@ -18,8 +18,8 @@
 #' @importFrom jsonlite fromJSON
 #' @importFrom tools CRAN_package_db
 #' @importFrom utils install.packages
-#' @importFrom BiocInstaller all_group
-#' @importFrom BiocInstaller biocLite
+#' @importFrom BiocManager available
+#' @importFrom BiocManager install
 #'
 #' @return Invisible `NULL`.
 #' @export
@@ -32,8 +32,8 @@ install_missing_pkg <- function(package) {
   url <- glue::glue("http://rpkg-api.gepuro.net/rpkg?q={package}")
   cran_pkgs <- tools::CRAN_package_db()$Package
   gh_pkgs <- jsonlite::fromJSON(url)
-  source("http://bioconductor.org/biocLite.R")
-  bioc_pkgs = BiocInstaller::all_group()
+  # source("http://bioconductor.org/biocLite.R")
+  bioc_pkgs = BiocManager::available()
 
   if (is.null(nrow(gh_pkgs)) & !(package %in% union(cran_pkgs, bioc_pkgs))) {
     stop(glue::glue("{package} is not available on CRAN, ",
@@ -47,7 +47,7 @@ install_missing_pkg <- function(package) {
     install.packages(package)
     # install from Bioconductor
   } else if (package %in% bioc_pkgs) {
-    BiocInstaller::biocLite(package, suppressUpdates = TRUE)
+    BiocManager::install(package, suppressUpdates = TRUE)
   }
   # install from Github
   else {
