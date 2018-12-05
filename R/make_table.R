@@ -13,12 +13,22 @@
 #' @param x_lvls (optional) levels for the X variable
 #' @param y_lvls (optional) levels for the Y variable
 #' @param labs (optional) labels for the X and Y variables
+#' @param type Character; To use the values of the variables that exist in the
+#'   data use "unique" (default). To use the values attributed to the variables
+#'   as a factor then choose "levels" which may not actually exist in the data
+#'   as actual values.
+#' @param sorted Logical; If `FALSE` (default) then the values for the table
+#'   appear just as they are in the data or as they are defined as a factor. If
+#'   `TRUE`, then the factor order is overrided and the variables are sorted.
 #' @param useNA useNA controls if the table includes counts of NA values: the
 #'   allowed values correspond to never ("no"), only if the count is positive
 #'   ("ifany") and even for zero counts ("always")
 #'
 #' @usage
-#' make_table(data, x, y, x_lvls = NULL, y_lvls = NULL, labs = c(NA, NA), useNA = "ifany")
+#' make_table(data, x, y,
+#'            x_lvls = NULL, y_lvls = NULL,
+#'            labs = c(NA, NA),
+#'            type = "unique", sorted = FALSE, useNA = "ifany")
 #'
 #' @import dplyr
 #' @import rlang
@@ -41,14 +51,50 @@
 #' )
 #'
 #' table(df$a, df$b)
+#'
 #' make_table(data = df, x = a, y = b)
+#'
 #' make_table(data = df, x = a, y = b, labs = c("Cats", "Dogs"))
+#'
+#' make_table(data = df,
+#'            x = a,
+#'            y = b,
+#'            x_lvls = c(1, 0),
+#'            y_lvls = c(1, 0),
+#'            type = "levels")
+#'
+#' make_table(data = df,
+#'            x = a,
+#'            y = b,
+#'            x_lvls = c(0, 1),
+#'            y_lvls = c(0, 1),
+#'            type = "levels")
+#'
+#'
+#' make_table(data = df,
+#'            x = a,
+#'            y = b,
+#'            x_lvls = c(1, 0),
+#'            y_lvls = c(1, 0),
+#'            type = "unique",
+#'            sorted = TRUE)
+#'
+#'
+#' make_table(data = df,
+#'            x = a,
+#'            y = b,
+#'            x_lvls = c(1),
+#'            y_lvls = c(1),
+#'            type = "unique",
+#'            sorted = TRUE)
 make_table <- function(data,
                        x,
                        y,
                        x_lvls = NULL,
                        y_lvls = NULL,
                        labs = c(NA, NA),
+                       type = "unique",
+                       sorted = FALSE,
                        useNA = "ifany") {
 
   # Note that y will show on the vertical side and x will show on the
@@ -76,15 +122,23 @@ make_table <- function(data,
            !! y_name := apply_fct_lvls_if_any(var = !! y_enq, lvl = y_lvls))
 
 
-  ## Use levels of factor with more levels ----------------
-  # if one variable has more factor levels than the other, then use that one's
-  # factor levels for both variables. This will help to ensure that the table
-  # will have equal dimensions later.
+  ## Ensure the same factor levels ----------------
+  # If the variables selected for the table do not have the same values then the
+  # table will not be square. The following section will take the union of
+  # values (either using the unique function or the levels function).
 
-  # Calc the larger number of factor levels and assign them to both variables.
+  same_levels <- get_factor_values(data = data,
+                                   x = x_enq,
+                                   y = y_enq,
+                                   type = type)
+
+  if (sorted == TRUE) {
+    same_levels <- sort(same_levels)
+  }
+
   data <- data %>%
-    mutate(!! x_name := make_fct_w_equal_lvls(a = !! x_enq, b = !! y_enq),
-           !! y_name := make_fct_w_equal_lvls(a = !! y_enq, b = !! x_enq))
+    mutate(!! x_name := factor(!! x_enq, levels = same_levels),
+           !! y_name := factor(!! y_enq, levels = same_levels))
 
 
   ## Calculate the table ----------------
@@ -112,15 +166,24 @@ apply_fct_lvls_if_any <- function(var, lvl) {
   }
 }
 
-## make_fct_w_equal_lvls ---------------
-# if one variable has more factor levels than the other, then use that one's
-# factor levels for both variables. This will help to ensure that the table
-# will have equal dimensions later.
-make_fct_w_equal_lvls <- function(a, b) {
-  if (length(levels(a)) >= length(levels(b))) {
-    factor(a, levels = levels(a))
-  } else {
-    factor(a, levels = levels(b))
+# Get unique values or levels ----------------
+# This will ensure that all values of the categorical variables are present in
+# the table. Choosing "unique" will use only the value that are actually present
+# in the data set; choosing "levels" will use the factor values attributed to
+# the variables whether or not they are present in the data.
+
+get_factor_values <- function(data, x, y, type = "unique") {
+
+  if (type == "unique") {
+
+    union(unique(dplyr::pull(.data = data, var = !! x)),
+          unique(dplyr::pull(.data = data, var = !! y)))
+
+  } else if (type == "levels") {
+
+    union(levels(dplyr::pull(.data = data, var = !! x)),
+          levels(dplyr::pull(.data = data, var = !! y)))
+
   }
 }
 

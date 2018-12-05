@@ -4,7 +4,10 @@
 \alias{make_table}
 \title{More consistent version of base::table()}
 \usage{
-make_table(data, x, y, x_lvls = NULL, y_lvls = NULL, labs = c(NA, NA), useNA = "ifany")
+make_table(data, x, y,
+           x_lvls = NULL, y_lvls = NULL,
+           labs = c(NA, NA),
+           type = "unique", sorted = FALSE, useNA = "ifany")
 }
 \arguments{
 \item{data}{A data frame or tibble}
@@ -18,6 +21,15 @@ make_table(data, x, y, x_lvls = NULL, y_lvls = NULL, labs = c(NA, NA), useNA = "
 \item{y_lvls}{(optional) levels for the Y variable}
 
 \item{labs}{(optional) labels for the X and Y variables}
+
+\item{type}{Character; To use the values of the variables that exist in the
+data use "unique" (default). To use the values attributed to the variables
+as a factor then choose "levels" which may not actually exist in the data
+as actual values.}
+
+\item{sorted}{Logical; If \code{FALSE} (default) then the values for the table
+appear just as they are in the data or as they are defined as a factor. If
+\code{TRUE}, then the factor order is overrided and the variables are sorted.}
 
 \item{useNA}{useNA controls if the table includes counts of NA values: the
 allowed values correspond to never ("no"), only if the count is positive
@@ -45,6 +57,40 @@ df <- tibble::tribble(
 )
 
 table(df$a, df$b)
+
 make_table(data = df, x = a, y = b)
+
 make_table(data = df, x = a, y = b, labs = c("Cats", "Dogs"))
+
+make_table(data = df,
+           x = a,
+           y = b,
+           x_lvls = c(1, 0),
+           y_lvls = c(1, 0),
+           type = "levels")
+
+make_table(data = df,
+           x = a,
+           y = b,
+           x_lvls = c(0, 1),
+           y_lvls = c(0, 1),
+           type = "levels")
+
+
+make_table(data = df,
+           x = a,
+           y = b,
+           x_lvls = c(1, 0),
+           y_lvls = c(1, 0),
+           type = "unique",
+           sorted = TRUE)
+
+
+make_table(data = df,
+           x = a,
+           y = b,
+           x_lvls = c(1),
+           y_lvls = c(1),
+           type = "unique",
+           sorted = TRUE)
 }
