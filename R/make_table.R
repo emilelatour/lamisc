@@ -145,9 +145,13 @@ make_table <- function(data,
     same_levels <- sort(same_levels)
   }
 
+  # data <- data %>%
+  #   mutate(!! x_name := factor(!! x_enq, levels = same_levels),
+  #          !! y_name := factor(!! y_enq, levels = same_levels))
+
   data <- data %>%
-    mutate(!! x_name := factor(!! x_enq, levels = same_levels),
-           !! y_name := factor(!! y_enq, levels = same_levels))
+    mutate(x_name := factor(!! x_enq, levels = same_levels),
+           y_name := factor(!! y_enq, levels = same_levels))
 
 
   ## Calculate the table ----------------
