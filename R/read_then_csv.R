@@ -25,7 +25,7 @@
 #' @rdname read_then_csv
 #' @export
 #'
-#' @examples
+#' @examples \dontrun{
 #' library(dplyr)
 #' library(readxl)
 #' library(rlang)
@@ -38,6 +38,7 @@
 #'   purrr::map(read_then_csv, path = path)
 #'
 #' read_then_csv2(path)
+#' }
 read_then_csv <- function(sheet, path) {
 
   pathbase <- path %>%

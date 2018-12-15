@@ -22,6 +22,7 @@ Read in all the sheets from an excel file at once and simultaneously cache to
 CSV
 }
 \examples{
+\dontrun{
 library(dplyr)
 library(readxl)
 library(rlang)
@@ -34,6 +35,7 @@ path \%>\%
   purrr::map(read_then_csv, path = path)
 
 read_then_csv2(path)
+}
 }
 \references{
 \url{https://readxl.tidyverse.org/articles/articles/readxl-workflows.html#csv-caching-and-iterating-over-sheets}
