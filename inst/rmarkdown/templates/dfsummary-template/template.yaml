@@ -1,0 +1,4 @@
+name: dfsummary template
+description: >
+  R Markdown template for use with summarytools::dfsummary().
+create_dir: false

@@ -1,0 +1,106 @@
+---
+title: Title of project
+subtitle: Data frame summary using summarytools package
+author: "Emile Latour"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    css: 
+    - !expr system.file("includes/stylesheets/summarytools.css", package = "summarytools")
+    keep_md: no
+    number_sections: yes
+    theme: yeti
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+  
+---
+
+```{r setup, include=FALSE}
+
+#### Global chunk options -----------------------------
+
+knitr::opts_chunk$set(
+  echo       = TRUE,  # Whether to show code chunk in final output
+  results    = "asis", 
+  NULL
+)
+
+#### Other options --------------------------------
+
+## Width for code chunks ---------------- 
+
+options(width = 120)
+
+## Scientific notation ---------------
+# Find out what it is set to
+# getOption("scipen")
+
+# Turn off scientific notation
+options(scipen = 999)
+
+## define format ----------------
+# If you don't define format here, you'll need put `format = "html"` in 
+# every kable function.
+
+options(knitr.table.format = "html")  # use this option when knitting html
+# options(knitr.table.format = "latex")  # use this option when knitting pdf
+
+
+#### Packages --------------------------------------
+# This is where we load in all the packages we plan to use
+
+## Define the repository for packages ----------------
+options(repos = c(CRAN = "https://cran.rstudio.com"))
+
+## universally useful packages ----------------
+if (!require("pacman")) {install.packages("pacman")}
+if (!require("devtools")) {install.packages("devtools")}
+
+## Load the list of packages ----------------
+
+pacman::p_load(
+  tidyverse,     # packages ggplot2, dplyr, tidyr, readr, purrr, tibble, 
+                 # stringr, and forcats
+  broom,         # functions tidy(), glance(), augment()
+  fs,            # Cross-platform interface to file system operations
+  glue,          # Glue strings to data in R
+  here,          # Constructs paths to your project's files
+  janitor,       # for working with dirty data 
+  mice,          # Multiple imputation using Fully Conditional Specification
+  naniar,        # structures, summaries, and visualisations for missing data 
+  readxl,        # read in excel files
+  summarytools   # neatly and quickly summarize data
+)
+
+
+#### Other packages -----------------------------
+
+#### Some resources ---------------------------
+
+#### Themes and colors -------------------------------
+
+#### Load fonts --------------------------------
+# extrafont::fonts()  # Vector of font family names
+# extrafont::fonttable()  # Show entire table
+# extrafont::font_import()  # imports fonts installed on the system
+extrafont::loadfonts(device = "win", quiet = TRUE)
+
+```
+
+# Load the data
+
+```{r load-the-data}
+data <- readr::read_rds(
+  path = here::here("data", "02-clean-data.rds")
+)
+
+```
+
+# Data frame summary
+
+```{r data-frame-summmary}
+
+print(dfSummary(data, graph.magnif = 0.75), method = 'render')
+
+```
