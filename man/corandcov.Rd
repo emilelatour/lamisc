@@ -21,6 +21,7 @@ matrix.
 User-written function to output the covariance parameters
 }
 \examples{
+\dontrun{
 library(dplyr)
 library(readr)
 library(nlme)
@@ -38,6 +39,7 @@ unstruct <- gls(opp ~ time * ccog,
                 method = "REML")
 
 corandcov(unstruct)
+}
 }
 \references{
 \url{https://stats.idre.ucla.edu/r/examples/alda/r-applied-longitudinal-data-analysis-ch-7/}

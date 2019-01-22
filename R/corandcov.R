@@ -22,7 +22,7 @@
 #'   matrix.
 #' @export
 #'
-#' @examples
+#' @examples \dontrun{
 #' library(dplyr)
 #' library(readr)
 #' library(nlme)
@@ -40,6 +40,7 @@
 #'                 method = "REML")
 #'
 #' corandcov(unstruct)
+#' }
 
 corandcov <- function(glsob, cov = TRUE, ...) {
 
