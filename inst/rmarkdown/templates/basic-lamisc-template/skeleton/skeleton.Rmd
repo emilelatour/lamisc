@@ -84,7 +84,7 @@ write_files <- TRUE
 
 
 #### Packages --------------------------------------
-# This is where we load in all the packages we plan to use
+# Load the packages to be used.
 
 ## Define the repository for packages ----------------
 options(repos = c(CRAN = "https://cran.rstudio.com"))
@@ -94,9 +94,6 @@ if (!require("pacman")) {install.packages("pacman")}
 if (!require("devtools")) {install.packages("devtools")}
 
 ## github packages ----------------
-if (packageVersion("janitor") < "0.4.0.9000") {
-  devtools::install_github("sfirke/janitor")
-}
 if (!require("lamisc")) {devtools::install_github("emilelatour/lamisc")}
 
 ## Load the list of packages ----------------
@@ -137,7 +134,8 @@ pacman::p_load(
   varhandle,     # Functions for robust variable handling
   rel,           # reliability coefficients
   irr,           # reliability and agreement coefficients
-  vcd            # visualizing categorical data
+  vcd,           # visualizing categorical data
+  install = FALSE
 
   )
 
@@ -164,7 +162,7 @@ extrafont::loadfonts(device = "win", quiet = TRUE)
 
 # Load data 
 
-```{r load_data}
+```{r load_data, include=FALSE}
 
 ```
 
