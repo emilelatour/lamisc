@@ -24,6 +24,7 @@ Imports:
     lubridate, 
     magrittr, 
     nlme, 
+    openxlsx, 
     psych, 
     purrr,
     raters, 
