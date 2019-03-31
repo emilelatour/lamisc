@@ -9,8 +9,9 @@ LazyData: true
 ByteCompile: true
 Imports: 
     broom,
-    dplyr,
+    DescTools, 
     devtools,
+    dplyr,
     forcats,
     ggplot2,
     glue,
@@ -33,6 +34,7 @@ Imports:
     rlang (>= 0.1.2),
     Rmpfr,
     stringr,
+    survival,
     tableone,
     tibble,
     tidyr,

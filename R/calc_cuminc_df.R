@@ -47,7 +47,7 @@
 #' @export
 #'
 #' @examples
-#' library(tidyverse)
+#' library(dplyr)
 #' library(survival)
 #'
 #' #### Data for example --------------------------------
@@ -75,7 +75,6 @@
 #'                x, smoke)
 
 
-
 calc_cuminc_df <- function(data, time, event, ...,
                            type = "right", extend = FALSE) {
 
@@ -87,11 +86,11 @@ calc_cuminc_df <- function(data, time, event, ...,
     group_by(!!! group_vars) %>%
     tidyr::nest() %>%
     mutate(res = purrr::map(.x = data,
-                            .f = ~ calc_surv(data = .x,
-                                             time = !! time,
-                                             event = !! event,
-                                             type = type,
-                                             extend = extend))) %>%
+                            .f = ~ .calc_surv(data = .x,
+                                              time = !! time,
+                                              event = !! event,
+                                              type = type,
+                                              extend = extend))) %>%
     tidyr::unnest(res)
 
 

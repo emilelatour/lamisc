@@ -38,7 +38,7 @@
                      event = !! rlang::get_expr(event_enq),
                      type = type)
                 ~ 1)),
-    data = .data)
+    data = data)
 
   summary(fit, times = c(0, unique(fit$time)), extend = extend) %>%
     .[c("n", "time", "n.risk", "n.event", "surv", "lower", "upper")] %>%
@@ -47,6 +47,5 @@
     janitor::clean_names()
 
 }
-
 
 
