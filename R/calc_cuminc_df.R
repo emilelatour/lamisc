@@ -47,32 +47,32 @@
 #' @export
 #'
 #' @examples
-library(tidyverse)
-library(survival)
-
-#### Data for example --------------------------------
-# View the preloaded data
-dplyr::glimpse(aml)
-
-## Create a variable for smoke ----------------
-df <- aml %>%
-  mutate(smoke = sample(c("Yes", "No"), size = 23, replace = TRUE)) %>%
-  tibble::as_tibble()
-df
-
-#### Example #1 --------------------------------
-
-calc_cuminc_df(data = df,
-               time = time,
-               event = status,
-               smoke)
-
-#### Example #2 --------------------------------
-
-calc_cuminc_df(data = df,
-               time = time,
-               event = status,
-               x, smoke)
+#' library(tidyverse)
+#' library(survival)
+#'
+#' #### Data for example --------------------------------
+#' # View the preloaded data
+#' dplyr::glimpse(aml)
+#'
+#' ## Create a variable for smoke ----------------
+#' df <- aml %>%
+#'   mutate(smoke = sample(c("Yes", "No"), size = 23, replace = TRUE)) %>%
+#'   tibble::as_tibble()
+#' df
+#'
+#' #### Example #1 --------------------------------
+#'
+#' calc_cuminc_df(data = df,
+#'                time = time,
+#'                event = status,
+#'                smoke)
+#'
+#' #### Example #2 --------------------------------
+#'
+#' calc_cuminc_df(data = df,
+#'                time = time,
+#'                event = status,
+#'                x, smoke)
 
 
 
