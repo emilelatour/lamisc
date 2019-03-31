@@ -54,8 +54,8 @@ options(knitr.table.format = "html")  # use this option when knitting html
 options(repos = c(CRAN = "https://cran.rstudio.com"))
 
 ## universally useful packages ----------------
-if (!require("pacman")) {install.packages("pacman")}
-if (!require("devtools")) {install.packages("devtools")}
+# if (!require("pacman")) {install.packages("pacman")}
+# if (!require("devtools")) {install.packages("devtools")}
 
 ## Load the list of packages ----------------
 
@@ -115,3 +115,14 @@ data <- readr::read_rds(
 print(dfSummary(data, graph.magnif = 0.75), method = 'render')
 
 ```
+
+# Explore missingness
+
+```{r}
+# https://cran.r-project.org/web/packages/naniar/vignettes/getting-started-w-naniar.html
+data %>% 
+  naniar::vis_miss(., 
+                   cluster = TRUE, 
+                   sort_miss = FALSE)
+```
+
