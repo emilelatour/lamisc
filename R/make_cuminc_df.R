@@ -62,20 +62,20 @@
 #'
 #' #### Example #1 --------------------------------
 #'
-#' calc_cuminc_df(data = df,
+#' make_cuminc_df(data = df,
 #'                time = time,
 #'                event = status,
 #'                smoke)
 #'
 #' #### Example #2 --------------------------------
 #'
-#' calc_cuminc_df(data = df,
+#' make_cuminc_df(data = df,
 #'                time = time,
 #'                event = status,
 #'                x, smoke)
 
 
-calc_cuminc_df <- function(data, time, event, ...,
+make_cuminc_df <- function(data, time, event, ...,
                            type = "right", extend = FALSE) {
 
   time <- rlang::enquo(time)
