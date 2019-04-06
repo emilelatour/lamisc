@@ -1,6 +1,6 @@
 #' lamisc: Miscellaneous helper functions
 #'
-# The objective of the is package is to be a landing spot for the miscellaneous
+# The objective of the package is to be a landing spot for the miscellaneous
 # functions that I end up writing and want to preserve in one location.
 #'
 #' @examples
@@ -18,7 +18,7 @@ NULL
 if (getRversion() >= "2.15.1") {
   utils::globalVariables(
     c(
-      "surv", "res"
+      ".", "surv", "res"
     )
   )
 }
