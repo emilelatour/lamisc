@@ -90,11 +90,11 @@ write_files <- TRUE
 options(repos = c(CRAN = "https://cran.rstudio.com"))
 
 ## universally useful packages ----------------
-if (!require("pacman")) {install.packages("pacman")}
-if (!require("devtools")) {install.packages("devtools")}
+# if (!require("pacman")) {install.packages("pacman")}
+# if (!require("devtools")) {install.packages("devtools")}
 
 ## github packages ----------------
-if (!require("lamisc")) {devtools::install_github("emilelatour/lamisc")}
+# if (!require("lamisc")) {devtools::install_github("emilelatour/lamisc")}
 
 ## Load the list of packages ----------------
 pacman::p_load(
@@ -114,6 +114,7 @@ pacman::p_load(
   stringr,       # handy string operations
   tableone,      # Create Table 1 to Describe Baseline Characteristics
   labelled,      # Work with labelled data
+  mice,          # Multivariate Imputation by Chained Equations
   DT,            # render R objects as HTML tables
   knitr,         # A General-Purpose Package for Dynamic Report Generation in R
   kableExtra,    # Enahced table functions
@@ -121,6 +122,7 @@ pacman::p_load(
   extrafont,     # Tools for using fonts
   ggthemes,      # Extra Themes, Scales and Geoms for 'ggplot2'
   ggsci,         # Scientific journal themed color palettes for 'ggplot2'
+  gt,            # information-rich, publication-quality tables from R
   scales,        # Scale Functions for Visualization
   survival,      # core survival analysis routines
   survminer,     # drawing survival curves
