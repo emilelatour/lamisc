@@ -107,7 +107,7 @@ pacman::p_load(
   rlang,         # For use in tidyevaluation
   readxl,        # read in excel files
   writexl,       # write excel files, zero dependency
-  xlsx,          # read, write, format Excel files
+  # xlsx,          # read, write, format Excel files
   openxlsx,      # read, write and edit XLSX files
   janitor,       # for working with dirty data
   lubridate,     # for working with dates and times
@@ -152,7 +152,7 @@ pacman::p_load(
 # extrafont::fonts()  # Vector of font family names
 # extrafont::fonttable()  # Show entire table
 # extrafont::font_import()  # imports fonts installed on the system
-extrafont::loadfonts(device = "pdf", quiet = TRUE)
+extrafont::loadfonts(device = "postscript", quiet = TRUE)
 
 
 ```
