@@ -41,6 +41,8 @@ Imports:
     vcd
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
+URL: https://github.com/emilelatour/lamisc
+BugReports: https://github.com/emilelatour/lamisc/issues
 Suggests: 
     rmarkdown,
     roxygen2
