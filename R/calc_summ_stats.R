@@ -16,6 +16,8 @@
 #' @param ... Variables to summarise
 #'
 #' @return A tbl
+#'
+#' @rdname calc_summ_stats
 #' @export
 #'
 #' @examples
@@ -37,7 +39,7 @@
 #'
 #' # Derive variables within function then summarise
 #' starwars %>%
-#'   calc_summ_stats(
+#'   calc_summ_stats_t(
 #'     heightm = height / 100,
 #'     bmi = mass / heightm^2
 #'   )
@@ -45,7 +47,7 @@
 #' # Grouped by gender
 #' starwars %>%
 #'   group_by(gender) %>%
-#'   calc_summ_stats(
+#'   calc_summ_stats_t(
 #'     heightm = height / 100,
 #'     bmi = mass / heightm^2
 #'   )
@@ -59,29 +61,45 @@
 
 calc_summ_stats <- function(.data, ...) {
   .data %>%
+    # dplyr::transmute(...) %>%
+    tidyr::gather(key = "variable",
+                  value = "value",
+                  ...,
+                  -dplyr::one_of(dplyr::group_vars(.))) %>%
+    group_by(.data$variable, add = TRUE) %>%
+    summarise_at(vars(.data$value),
+                 summary_functions) %>%
+    mutate(range = .data$p100 - .data$p0,
+           CV = 100 * .data$sd / .data$mean)
+}
+
+#' @rdname calc_summ_stats
+#' @export
+calc_summ_stats_t <- function(.data, ...) {
+  .data %>%
     dplyr::transmute(...) %>%
     tidyr::gather(key = "variable",
                   value = "value",
                   -dplyr::one_of(dplyr::group_vars(.))) %>%
     group_by(.data$variable, add = TRUE) %>%
-    summarise_at(vars(.data$value), summary_functions) %>%
-    dplyr::rename(n = .data$`dplyr::n`) %>%
-    mutate(range = .data$p100 - .data$p0)
+    summarise_at(vars(.data$value),
+                 summary_functions) %>%
+    mutate(range = .data$p100 - .data$p0,
+           CV = 100 * .data$sd / .data$mean)
 }
-
 
 
 #### Function to calc summary stas --------------------------------
 
 summary_functions <- list(
-  n ~ dplyr::n(),
-  complete = function(x) sum(!is.na(x)),
-  missing = function(x) sum(is.na(x)),
-  mean = function(x) mean(x, na.rm = TRUE),
-  sd = function(x) sd(x, na.rm = TRUE),
-  p0 = function(x) min(x, na.rm = TRUE),
-  p25 = function(x) quantile(x, probs = 0.25, na.rm = TRUE),
-  p50 = function(x) quantile(x, probs = 0.50, na.rm = TRUE),
-  p75 = function(x) quantile(x, probs = 0.75, na.rm = TRUE),
-  p100 = function(x) max(x, na.rm = TRUE)
+  n = ~ length(.),
+  complete = ~ sum(!is.na(.)),
+  missing =  ~ sum(is.na(.)),
+  mean =     ~ mean(., na.rm = TRUE),
+  sd =       ~ sd(., na.rm = TRUE),
+  p0 =       ~ min(., na.rm = TRUE),
+  p25 =      ~ quantile(., probs = 0.25, na.rm = TRUE),
+  p50 =      ~ quantile(., probs = 0.50, na.rm = TRUE),
+  p75 =      ~ quantile(., probs = 0.75, na.rm = TRUE),
+  p100 =     ~ max(., na.rm = TRUE)
 )

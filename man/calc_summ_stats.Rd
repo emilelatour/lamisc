@@ -2,10 +2,13 @@
 % Please edit documentation in R/calc_summ_stats.R
 \name{calc_summ_stats}
 \alias{calc_summ_stats}
+\alias{calc_summ_stats_t}
 \title{Title
 Calculate summary / descriptive statistics}
 \usage{
 calc_summ_stats(.data, ...)
+
+calc_summ_stats_t(.data, ...)
 }
 \arguments{
 \item{.data}{A tbl}
@@ -40,7 +43,7 @@ starwars \%>\%
 
 # Derive variables within function then summarise
 starwars \%>\%
-  calc_summ_stats(
+  calc_summ_stats_t(
     heightm = height / 100,
     bmi = mass / heightm^2
   )
@@ -48,7 +51,7 @@ starwars \%>\%
 # Grouped by gender
 starwars \%>\%
   group_by(gender) \%>\%
-  calc_summ_stats(
+  calc_summ_stats_t(
     heightm = height / 100,
     bmi = mass / heightm^2
   )
