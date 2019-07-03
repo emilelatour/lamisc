@@ -13,6 +13,7 @@ Imports:
     devtools,
     dplyr,
     forcats,
+    fs,
     ggplot2,
     glue,
     grDevices,
