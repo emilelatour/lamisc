@@ -4,27 +4,51 @@
 \alias{calc_tabyl}
 \title{Make a tabyl with totals and formatting}
 \usage{
-calc_tabyl(data, x)
+calc_tabyl(data, ..., show_na = TRUE, show_missing_levels = TRUE)
 }
 \arguments{
 \item{data}{A data frame or tibble.}
 
-\item{x}{A single variable that you want to see the formatted tabyl for.}
+\item{...}{the column arguments to \code{janitor::tabyl}: \code{var1} the column name
+of the first variable, \code{var2} (optional) the column name of the second
+variable (the rows in a 2-way tabulation), \code{var3} (optional) the column
+name of the third variable (the list in a 3-way tabulation).}
+
+\item{show_na}{should counts of \code{NA} values be displayed?  In a one-way
+tabyl, the presence of \code{NA} values triggers an additional column
+showing valid percentages(calculated excluding \code{NA} values).}
+
+\item{show_missing_levels}{should counts of missing levels of factors be
+displayed?  These will be rows and/or columns of zeroes.  Useful for
+keeping consistent output dimensions even when certain factor levels may
+not be present in the data.}
 }
 \value{
 Returns a data.frame with frequencies and percentages of the
-tabulated variable(s).
+tabulated variable(s).  A 3-way tabulation returns a list of data.frames.
 }
 \description{
-This is a simple wrapper around the tabyl function from the janitor
+This is a simple wrapper around the \code{tabyl} function from the janitor
 package. So rather than writing a bunch of lines over and over again, I
 made this shortened function to make my life easier. Since the first
 argument takes a data frame or a tibble, this function is pipeable.
 }
 \examples{
-iris \%>\%
-  calc_tabyl(Species)
 
-calc_tabyl(data = iris, x = Species)
+calc_tabyl(mtcars, cyl)
+calc_tabyl(mtcars, cyl, gear)
+calc_tabyl(mtcars, cyl, gear, am)
 
+# or using the \%>\% pipe
+mtcars \%>\%
+  calc_tabyl(cyl, gear)
+
+# illustrating show_na functionality:
+my_cars <- rbind(mtcars, rep(NA, 11))
+my_cars \%>\% calc_tabyl(cyl)
+my_cars \%>\% calc_tabyl(cyl, show_na = FALSE)
+
+# Calling on a single vector not in a data.frame:
+val <- c("hi", "med", "med", "lo")
+calc_tabyl(val)
 }
