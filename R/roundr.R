@@ -26,7 +26,6 @@
 #' Rounding to a negative number of digits means rounding to a power of ten.
 #'
 #' @return An object of similar structure to `x`
-#' @export
 #'
 #' @examples
 #' numbers <- c(0.0018, 0.1234, 12.6978, -86.75309, 264.4445, -99.9999)
@@ -44,8 +43,22 @@
 #' roundr(numbers, d = -2, as_text = FALSE)
 #' roundr(numbers, d = -2, as_text = TRUE, trim = TRUE)
 #' roundr(numbers, d = -2, as_text = TRUE, trim = FALSE)
+#'
+#' @name roundr-deprecated
+#' @usage roundr(x, d, as_text, trim)
+#' @seealso \code{\link{lamisc-deprecated}}
+#' @keywords internal
+NULL
 
+#' @rdname lamisc-deprecated
+#' @section \code{roundr}:
+#' For \code{roundr}, use \code{\link{fmt_num}}.
+#'
+#' @export
 roundr <- function(x, d = 3, as_text = FALSE, trim = FALSE) {
+
+  .Deprecated(msg = "'roundr' is deprecated. Please use 'fmt_num' instead. Mind the changes in function arguments.")
+
   if (as_text == FALSE) {
     as.numeric(format(round(x, d), nsmall = max(0, d), scientific = FALSE))
   } else {

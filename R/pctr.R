@@ -17,13 +17,26 @@
 #'   escaped.
 #'
 #' @return An object of similar structure to `x`
-#' @export
 #'
 #' @examples
 #' pctr(x = runif(10), d = 1)
 #' pctr(x = runif(10), d = 1, latex = TRUE)
 #' pctr(x = runif(10), d = 1, as_text = FALSE)
+#'
+#' @name pctr-deprecated
+#' @usage pctr(x, d, as_text, latex)
+#' @seealso \code{\link{lamisc-deprecated}}
+#' @keywords internal
+NULL
+
+#' @rdname lamisc-deprecated
+#' @section \code{pctr}:
+#' For \code{pctr}, use \code{\link{fmt_pct}}.
+#'
+#' @export
 pctr <- function(x, d = 0, as_text = TRUE, latex = FALSE) {
+
+  .Deprecated(msg = "'pctr' is deprecated. Please use 'fmt_pct' instead. Mind the changes in function arguments.")
 
   #### Percent character  --------------------------------
   if (latex) {

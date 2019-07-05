@@ -15,8 +15,6 @@
 #'
 #' @return A character value or vector of formatted p-values
 #'
-#' @export
-#'
 #' @examples
 #' library(dplyr)
 #'
@@ -33,7 +31,20 @@
 #'          p_2_formatted = pvalr(p_2)
 #'   )
 #'
+#' @name pvalr-deprecated
+#' @usage pvalr(pvals, sig_limit, d, html)
+#' @seealso \code{\link{lamisc-deprecated}}
+#' @keywords internal
+NULL
+
+#' @rdname lamisc-deprecated
+#' @section \code{pvalr}:
+#' For \code{pvalr}, use \code{\link{fmt_pvl}}.
+#'
+#' @export
 pvalr <- function(pvals, sig_limit = 0.001, d = 3L, html = FALSE) {
+
+  .Deprecated(msg = "'pvalr' is deprecated. Please use 'fmt_pvl' instead. Mind the changes in function arguments.")
 
   stopifnot(
     sig_limit > 0,
