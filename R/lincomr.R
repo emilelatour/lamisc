@@ -16,6 +16,7 @@
 #' @importFrom stats qnorm
 #' @importFrom stats vcov
 #' @importFrom rlang .data
+#' @importFrom tibble tibble
 #'
 #' @param k A vector of 1's and 0's to indicate the linear combination
 #' @param fit A model fit object
@@ -84,19 +85,21 @@ lincomr <- function(k, fit, alpha = 0.05) {
 
   #### Return a data frame --------------------------------
 
-  data.frame("coef" = est,
-             "std_err" = se,
-             "z_stat" = z_score,
-             "p_value" = lamisc::pvalr(p_value),
-             "lower_ci" = lower_ci,
-             "upper_ci" = upper_ci) %>%
+  tibble::tibble("coef" = est[[1]],
+             "std_err" = se[[1]],
+             "z_stat" = z_score[[1]],
+             "p_value" = lamisc::fmt_pvl(p_value),
+             "lower_ci" = lower_ci[[1]],
+             "upper_ci" = upper_ci[[1]]) %>%
     mutate_at(.tbl = .,
               .vars = vars(.data$coef,
                            .data$std_err,
                            .data$z_stat,
                            .data$lower_ci,
                            .data$upper_ci),
-              .funs = funs(lamisc::roundr(., d = 2)))
+              .funs = list(~ lamisc::fmt_num(x = .,
+                                             accuracy = 0.01,
+                                             as_numeric = FALSE)))
 
 }
 
