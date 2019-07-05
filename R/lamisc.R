@@ -22,3 +22,6 @@ if (getRversion() >= "2.15.1") {
     )
   )
 }
+
+
+"%||%" <- function(x, y) if (is.null(x)) y else x # nocov
