@@ -24,4 +24,15 @@ if (getRversion() >= "2.15.1") {
 }
 
 
+#### %||% --------------------------------
+
+# From Jim Hester
+
 "%||%" <- function(x, y) if (is.null(x)) y else x # nocov
+
+#### force_all --------------------------------
+
+# from scales package
+
+# Evaluates all arguments (see #81)
+force_all <- function(...) list(...)
