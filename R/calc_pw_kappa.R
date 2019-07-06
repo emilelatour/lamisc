@@ -135,11 +135,17 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
     tidyr::unnest(data = ., .data$kap) %>%
     # dplyr::filter(type == type) %>%
     mutate(combo =
-             paste0(lamisc::roundr(.data$estimate, d = 2, as_text = TRUE),
+             paste0(lamisc::fmt_num(.data$estimate,
+                                    accuracy = 0.01,
+                                    trim = FALSE),
                     " (",
-                    lamisc::roundr(.data$conf_low, d = 2, as_text = TRUE),
+                    lamisc::fmt_num(.data$conf_low,
+                                    accuracy = 0.01,
+                                    trim = FALSE),
                     " to ",
-                    lamisc::roundr(.data$conf_high, d = 2, as_text = TRUE),
+                    lamisc::fmt_num(.data$conf_high,
+                                    accuracy = 0.01,
+                                    trim = FALSE),
                     ")"))  %>%
     dplyr::rename(
       # new = old
@@ -208,13 +214,22 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
            lower_ci = .data$po + c(-1) * qnorm(1 - .05 / 2) * .data$se_po,
            upper_ci = .data$po + c(1) * qnorm(1 - .05 / 2) * .data$se_po) %>%
     mutate_at(.vars = vars(.data$po:.data$upper_ci),
-              .funs = funs(lamisc::roundr(., d = 3))) %>%
+              .funs = list(~ lamisc::fmt_num(.,
+                                             accuracy = 0.001,
+                                             trim = FALSE,
+                                             as_numeric = TRUE))) %>%
     mutate(combo =
-             paste0(lamisc::roundr(.data$po, d = 2, as_text = TRUE),
+             paste0(lamisc::fmt_num(.data$po,
+                                    accuracy = 0.01,
+                                    trim = FALSE),
                     " (",
-                    lamisc::roundr(.data$lower_ci, d = 2, as_text = TRUE),
+                    lamisc::fmt_num(.data$lower_ci,
+                                    accuracy = 0.01,
+                                    trim = FALSE),
                     " to ",
-                    lamisc::roundr(.data$upper_ci, d = 2, as_text = TRUE),
+                    lamisc::fmt_num(.data$upper_ci,
+                                    accuracy = 0.01,
+                                    trim = FALSE),
                     ")"))
 
   ## Make table of observed agreement ---------------

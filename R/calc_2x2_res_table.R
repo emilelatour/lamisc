@@ -78,9 +78,9 @@ calc_2x2_res_table <- function(table, has_gold_std = FALSE) {
                      neg_agree = calc_prop_agree(table, agree = "negative")
       ) %>%
       dplyr::mutate_at(.vars = vars(.data$p1:.data$d),
-                       .funs = funs(lamisc::roundr(., d = 1))) %>%
+                       .funs = list(~ lamisc::fmt_num(., accuracy = 0.1))) %>%
       dplyr::mutate_at(.vars = vars(.data$pabak:.data$neg_agree),
-                       .funs = funs(lamisc::roundr(., d = 3)))
+                       .funs = list(~ lamisc::fmt_num(., accuracy = 0.001)))
 
   } else if (has_gold_std == TRUE) {
 
@@ -97,9 +97,9 @@ calc_2x2_res_table <- function(table, has_gold_std = FALSE) {
                      spec = calc_sens_spec(table, choose_stat = "specificity")
       ) %>%
       dplyr::mutate_at(.vars = vars(.data$p1:.data$d),
-                       .funs = funs(lamisc::roundr(., d = 1))) %>%
+                       .funs = list(~ lamisc::fmt_num(., accuracy = 0.1))) %>%
       dplyr::mutate_at(.vars = vars(.data$pabak:.data$spec),
-                       .funs = funs(lamisc::roundr(., d = 3)))
+                       .funs = list(~ lamisc::fmt_num(., accuracy = 0.001)))
 
   }
 

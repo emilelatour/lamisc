@@ -51,10 +51,14 @@ calc_obs_agree <- function(data, ..., alpha = 0.05, tolerance = 0) {
 
   tibble::tibble(
     N = pct_agree$subjects,
-    po = pct_agree$value / 100,
+    po = lamisc::fmt_num(pct_agree$value / 100,
+                         accuracy = 0.01,
+                         as_numeric = TRUE),
     se_po = sqrt(.data$po * (1 - .data$po) / .data$N),
     lower_ci = .data$po + c(-1) * qnorm(1 - alpha / 2) * .data$se_po,
     upper_ci = .data$po + c(1) * qnorm(1 - alpha / 2) * .data$se_po) %>%
     dplyr::mutate_at(.vars = vars(.data$po:.data$upper_ci),
-                     .funs = funs(lamisc::roundr(., d = 3)))
+                     .funs = list(~ lamisc::fmt_num(.,
+                                                    accuracy = 0.001,
+                                                    as_numeric = TRUE)))
 }
