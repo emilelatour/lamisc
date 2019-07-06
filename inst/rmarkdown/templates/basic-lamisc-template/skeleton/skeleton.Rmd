@@ -144,6 +144,11 @@ pacman::p_load(
 
 #### Other packages -----------------------------
 
+library(lamisc)   # devtools::install_github("emilelatour/lamisc)
+library(laviz)    # devtools::install_github("emilelatour/laviz)
+library(latable)  # devtools::install_github("emilelatour/latable)
+
+
 #### Some resources ---------------------------
 
 #### Themes and colors -------------------------------
@@ -152,7 +157,7 @@ pacman::p_load(
 # extrafont::fonts()  # Vector of font family names
 # extrafont::fonttable()  # Show entire table
 # extrafont::font_import()  # imports fonts installed on the system
-extrafont::loadfonts(device = "postscript", quiet = TRUE)
+extrafont::loadfonts(device = "pdf", quiet = TRUE)
 
 
 ```
