@@ -4,7 +4,7 @@
 \alias{calc_date_diff}
 \title{Calculate difference between two dates}
 \usage{
-calc_date_diff(start, end = Sys.Date(), units = "days", precise = TRUE)
+calc_date_diff(start, end = Sys.Date(), units = "days", precise = TRUE, length = "implied")
 }
 \arguments{
 \item{start}{The starting date.}
@@ -16,6 +16,12 @@ calc_date_diff(start, end = Sys.Date(), units = "days", precise = TRUE)
 
 \item{precise}{TRUE (default) for fractional diff or FALSE for integer (not
 rounded) diff.}
+
+\item{length}{Options: "physical" or "implied". Per the lubridate cheat
+sheet, divide an interval by a \strong{duration} to determine its \strong{physical}
+length; divide by a \strong{period} to determine its \strong{implied} length in clock
+time. The default is "implied" and this is what you would want to use most
+of the time when calculating age, time to event, etc.}
 }
 \value{
 A numeric object or vector
@@ -24,6 +30,14 @@ A numeric object or vector
 Calculates the difference between two dates, in whole or fractional, years,
 months, weeks, days, hours, minutes, or seconds. Really just a convenience
 wrapper for lubridate functions
+
+Divide an interval by a period to determine its implied length in clock
+time. Periods track changes in clock times, which ignore time line
+irregularities.
+
+Divide and interval by a duration to determine its physical length.
+Durations track the passage of physical time, which deviates from clock time
+when irregularities occur.
 }
 \examples{
 library(dplyr)
