@@ -86,6 +86,20 @@ df \%>\% dplyr::mutate(diff_yrs = calc_date_diff(start, end, units = "years",
                                                precise = FALSE)
 )
 
+# Example of difference between intervals and durations
+library(lubridate)
+int <- interval(ymd("1900-01-01"), ymd("1999-12-31"))
+time_length(int, "year")
+time_length(as.duration(int), "year")
+
+calc_date_diff(start = lubridate::ymd("1900-01-01"),
+               end = lubridate::ymd("1999-12-31"),
+               "years")
+
+calc_date_diff(start = lubridate::ymd("1900-01-01"),
+               end = lubridate::ymd("1999-12-31"),
+               units = "years",
+               length = "precise")
 }
 \references{
 \url{http://data.library.virginia.edu/working-with-dates-and-time-in-r-using-the-lubridate-package/}
