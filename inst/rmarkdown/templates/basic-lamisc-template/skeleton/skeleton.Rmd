@@ -144,9 +144,9 @@ pacman::p_load(
 
 #### Other packages -----------------------------
 
-library(lamisc)   # devtools::install_github("emilelatour/lamisc)
-library(laviz)    # devtools::install_github("emilelatour/laviz)
-library(latable)  # devtools::install_github("emilelatour/latable)
+library(lamisc)   # devtools::install_github("emilelatour/lamisc")
+library(laviz)    # devtools::install_github("emilelatour/laviz")
+library(latable)  # devtools::install_github("emilelatour/latable")
 
 
 #### Some resources ---------------------------
