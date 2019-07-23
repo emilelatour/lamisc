@@ -60,17 +60,20 @@
 #'
 
 calc_summ_stats <- function(.data, ...) {
+
   .data %>%
     # dplyr::transmute(...) %>%
     tidyr::gather(key = "variable",
                   value = "value",
                   ...,
-                  -dplyr::one_of(dplyr::group_vars(.))) %>%
+                  -dplyr::one_of(dplyr::group_vars(.)),
+                  factor_key = TRUE) %>%
     group_by(.data$variable, add = TRUE) %>%
     summarise_at(vars(.data$value),
                  summary_functions) %>%
     mutate(range = .data$p100 - .data$p0,
-           CV = 100 * .data$sd / .data$mean)
+           CV = 100 * .data$sd / .data$mean) %>%
+    dplyr::mutate(variable = as.character(.data$variable))
 }
 
 #' @rdname calc_summ_stats
@@ -80,12 +83,14 @@ calc_summ_stats_t <- function(.data, ...) {
     dplyr::transmute(...) %>%
     tidyr::gather(key = "variable",
                   value = "value",
-                  -dplyr::one_of(dplyr::group_vars(.))) %>%
+                  -dplyr::one_of(dplyr::group_vars(.)),
+                  factor_key = TRUE) %>%
     group_by(.data$variable, add = TRUE) %>%
     summarise_at(vars(.data$value),
                  summary_functions) %>%
     mutate(range = .data$p100 - .data$p0,
-           CV = 100 * .data$sd / .data$mean)
+           CV = 100 * .data$sd / .data$mean) %>%
+    dplyr::mutate(variable = as.character(.data$variable))
 }
 
 
