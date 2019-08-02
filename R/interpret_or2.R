@@ -1,24 +1,29 @@
 
 #' @title
-#' Help with interpreting odds ratios
+#' Help with interpreting odds ratios (using 2x2 table values)
 #'
 #' @description
 #' I always get tripped up interpreting odds ratios. Especially when trying to
 #' make sense of results from logistic regression. This function seems to help
-#' me out. Given two columns of a data frame (or tibble), it will give you a
-#' list with a 2x2 table, a sample interpretation, and the odds ratio with Wald
-#' confidence interval. This can then be compared to logisitc regression results
-#' and make sure that thing are making sense.
+#' me out.
+#'
+#' Unlike `lamsic::interpret_or`, this function take the cells (`a`, `b`, `c`,
+#' and `d`) of a 2x2 contingency table as inputs directly rather than columns of
+#' a data frame.
+#'
+#' The function returns a list with a 2x2 table, a sample interpretation, and
+#' the odds ratio with Wald confidence interval. This can then be compared to
+#' logisitc regression results and make sure that thing are making sense.
 #'
 #' Much of this is owed to the \href{https://exploringdatablog.blogspot.com/2011/05/computing-odds-ratios-in-r.html}{ExploringDataBlog}
 #'
-#' @param data A tibble or data frame.
-#' @param x The "X" variable of interest. Appears along the vertical (left) side
-#'   of the 2x2 table. This would be the predictor in a logistic regression.
-#'   Typically considered the "Exposure" in Epidemiology.
-#' @param y The "Y" variable. Appears along the horizontal (top) side of the 2x2
-#'   table. THis would be the outcome in a logistic regression. In Epidemiology,
-#'   this would be the case/control status or the disease status.
+#' @param a Count of the upper left quadrant of 2x2 contingency table
+#' @param b Count of upper right
+#' @param c Count of lower left
+#' @param d Count of lower right
+#' @param dim_names A list; labels or the rows and columns of the 2x2
+#'   contingency table. Default is `dim_names = list(exposure_status =
+#'   c("Exposed", "Unexposed"), outcome_status = c("Postive", "Negative"))`
 #' @param alpha Default = 0.05. The significance level for the two-sided Wald
 #'   confidence interval.
 #'
@@ -49,6 +54,7 @@
 #' library(forcats)
 #' library(readr)
 #' library(broom)
+#' library(janitor)
 #'
 #' #### Example 1 --------------------------------
 #' mydata <- readr::read_csv("https://stats.idre.ucla.edu/stat/data/binary.csv")
@@ -66,21 +72,19 @@
 #'     family = binomial(link = "logit")) %>%
 #'   broom::tidy(., exponentiate = TRUE)
 #'
-#' interpret_or(data = mydata,
-#'              x = rank,
-#'              y = admit)
-#' # We see here that the odds ratio is flipped and the interpretation is not
-#' # consistent with the reference group in the logistic regression results above.
-#' # So let's fix it.
+#' # Get a 2x2 table
+#' janitor::tabyl(dat = mydata,
+#'                rank,
+#'                admit)
 #'
-#' mydata %>%
-#'   mutate(rank = forcats::fct_rev(rank)) %>%
-#'   interpret_or(data = .,
-#'                x = rank,
-#'                y = admit)
-#'
-#' # Now things match!! Remember this is just supposed to help understand and
-#' # interpret the results. Stay mindful of the reference groups!
+#' # Note that I flip the values to match the refernce level in the logistic
+#' # regression
+#' interpret_or2(a = 40,
+#'               b = 148,
+#'               c = 87,
+#'               d = 125,
+#'               dim_names = list(rank = c("2", "1"),
+#'                                admit = c("Yes", "No")))
 #'
 #' #### Example 2 --------------------------------
 #'
@@ -96,10 +100,19 @@
 #'   mutate_all(.tbl = .,
 #'              .funs = list(~ factor(.)))
 #'
+#' # Get a 2x2 table
+#' janitor::tabyl(dat = dis_df,
+#'                Exposure,
+#'                Outcome) %>%
+#'   janitor::adorn_title(placement = "combined")
 #'
-#' interpret_or(data = dis_df,
-#'              x = Exposure,
-#'              y = Outcome)
+#'
+#' interpret_or2(a = 11,
+#'               b = 28,
+#'               c = 15,
+#'               d = 46,
+#'               dim_names = list(Exposure = c("Exposed", "Unexposed"),
+#'                                Outcome = c("Diseased", "Non-diseased")))
 #'
 #'
 #' #### Example 3 --------------------------------
@@ -118,30 +131,33 @@
 #'     family = binomial(link = "logit")) %>%
 #'   broom::tidy(., exponentiate = TRUE)
 #'
-#'
-#' sample_df %>%
-#'   mutate(female = forcats::fct_rev(female),
-#'          hon = factor(hon,
-#'                       levels = c(1, 0))) %>%
-#'   interpret_or(data = .,
-#'                x = female,
-#'                y = hon)
+#' interpret_or2(a = 32,
+#'               b = 77,
+#'               c = 17,
+#'               d = 74,
+#'               dim_names = list(Sex = c("Female", "Male"),
+#'                                Honors = c("Yes", "No")))
 
 
-interpret_or <- function(data, x, y, alpha = 0.05) {
+interpret_or2 <- function(a, b, c, d,
+                         dim_names = list(exposure_status = c("Exposed", "Unexposed"),
+                                          outcome_status = c("Postive", "Negative")),
+                         alpha = 0.05) {
 
-  xtab <- data %>%
-    dplyr::select({{ x }}, {{ y }}) %>%
-    table(.)
+  input_table <- matrix(c(a, b, c, d), byrow = TRUE, ncol = 2)
+  dimnames(input_table) <- dim_names
 
+  df <- lamisc::counts_to_cases(input_table = input_table)
+
+  xtab <- table(df[[1]], df[[2]])
   n00 <- xtab[1, 1]
   n01 <- xtab[1, 2]
   n10 <- xtab[2, 1]
   n11 <- xtab[2, 2]
 
   out_list <- vector("list", 3)
-  out_list[[1]] <- xtab
-  out_list[[2]] <- glue::glue("The odds of [ {names(dimnames(xtab)[2])} = {dimnames(xtab)[[2]][1]} ] among those with [ {names(dimnames(xtab)[1])} = {dimnames(xtab)[[1]][1]} ] is x times the odds of those with [ {names(dimnames(xtab)[1])} = {dimnames(xtab)[[1]][2]} ]")
+  out_list[[1]] <- input_table
+  out_list[[2]] <- glue::glue("The odds of [ {names(df)[[2]]} = {dimnames(xtab)[[2]][1]} ] among those with [ {names(df)[[1]]} = {dimnames(xtab)[[1]][1]} ] is x times the odds of those with  [ {names(df)[[1]]} = {dimnames(xtab)[[1]][2]} ]")
   out_list[[3]] <- calc_or_wald(n00, n01, n10, n11, alpha)
   names(out_list) <- c("table", "interpretaion", "results")
   out_list
@@ -151,9 +167,6 @@ interpret_or <- function(data, x, y, alpha = 0.05) {
 
 
 #### calc_or_wald --------------------------------
-
-# A helper function
-# https://exploringdatablog.blogspot.com/2011/05/computing-odds-ratios-in-r.html
 
 calc_or_wald <- function(n00, n01, n10, n11, alpha = 0.05) {
   #
