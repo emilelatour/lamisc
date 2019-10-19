@@ -8,6 +8,7 @@ output:
     css: 
     - !expr system.file("includes/stylesheets/summarytools.css", package = "summarytools")
     keep_md: no
+    code_folding: hide
     number_sections: yes
     theme: yeti
     toc: yes
@@ -57,12 +58,24 @@ options(repos = c(CRAN = "https://cran.rstudio.com"))
 # if (!require("pacman")) {install.packages("pacman")}
 # if (!require("devtools")) {install.packages("devtools")}
 
+
+## Package version ---------------- 
+
+# As of 2019-10-18, I've found the GitHub version to be more reliable and
+# recommend installing from there.
+
+# https://github.com/dcomtois/summarytools
+
+# install_github("dcomtois/summarytools")
+
+
 ## Load the list of packages ----------------
 
 pacman::p_load(
   tidyverse,     # packages ggplot2, dplyr, tidyr, readr, purrr, tibble, 
                  # stringr, and forcats
   broom,         # functions tidy(), glance(), augment()
+  flextable,     # easily create tables for reporting and publications
   fs,            # Cross-platform interface to file system operations
   glue,          # Glue strings to data in R
   here,          # Constructs paths to your project's files
@@ -93,6 +106,7 @@ summarytools::st_options(bootstrap.css     = FALSE,       # Already part of the 
                          plain.ascii       = FALSE,       # One of the essential settings
                          style             = "rmarkdown", # Idem.
                          dfSummary.silent  = TRUE,        # Suppresses messages about temporary files
+                         dfSummary.varnumbers = FALSE, # This keeps results narrow enough
                          footnote          = NA)          # Keeping the results minimalistic
 
 # summarytools::st_css()
@@ -102,9 +116,7 @@ summarytools::st_options(bootstrap.css     = FALSE,       # Already part of the 
 # Load the data
 
 ```{r load-the-data}
-data <- readr::read_rds(
-  path = here::here("data", "02-clean-data.rds")
-)
+data <- data("airquality", package = "naniar")
 
 ```
 
@@ -112,17 +124,112 @@ data <- readr::read_rds(
 
 ```{r data-frame-summmary}
 
-print(dfSummary(data, graph.magnif = 0.75), method = 'render')
+print(summarytools::dfSummary(data, 
+                              style = "grid", 
+                              graph.magnif = 0.75, 
+                              valid.col = FALSE), method = 'render')
 
 ```
 
 # Explore missingness
 
+## Percent of cases with missing or complete values
+
+```{r}
+
+data %>% 
+  summarise(
+    n_rows = dim(.)[[1]], 
+    n_missing = naniar::n_case_miss(.), 
+    # prop_missing = naniar::prop_miss_case(.), 
+    prop_missing = n_missing / n_rows, 
+    n_complete = naniar::n_case_complete(.), 
+    # prop_complete = naniar::prop_complete_case(.)
+    prop_complete = n_complete / n_rows
+  ) %>% 
+  flextable::flextable() %>% 
+  flextable::fontsize(x = ., 
+                      part = "body", 
+                      size = 12) %>% 
+  flextable::fontsize(x = ., 
+                      part = "header", 
+                      size = 14)
+  
+
+```
+
+## Missingness plot
+
+Missingness plot with variables that have any missing at all selected.
+
 ```{r}
 # https://cran.r-project.org/web/packages/naniar/vignettes/getting-started-w-naniar.html
 data %>% 
+  dplyr::select_if(.tbl = ., 
+                   .predicate = naniar::any_na) %>% 
   naniar::vis_miss(., 
                    cluster = TRUE, 
                    sort_miss = FALSE)
+```
+
+## Number / percent missing for each variable
+
+Summary of the number of columns with any missing values. 
+
+```{r}
+data %>% 
+  purrr::map_df(.x = ., 
+                .f = ~ sum(is.na(.))) %>% 
+  tidyr::gather(., 
+                key = "vars", 
+                value = "n_miss") %>% 
+  summarise(n_var = length(n_miss), 
+            n_missing = sum(n_miss > 0), 
+            prop_missing = n_missing / n_var, 
+            n_complete = sum(n_miss == 0), 
+            prop_complete = n_complete / n_var, 
+            ) %>% 
+  flextable::flextable() %>% 
+  flextable::fontsize(x = ., 
+                      part = "body", 
+                      size = 12) %>% 
+  flextable::fontsize(x = ., 
+                      part = "header", 
+                      size = 14)
+
+```
+
+<br>
+<br>
+
+Summary for each variable of the number or missings and the percent missings of the variables. By default, it orders by the most missings in each variable
+
+```{r}
+data %>% 
+  naniar::miss_var_summary() %>% 
+  # dplyr::slice(1:20) %>% 
+  flextable::flextable() %>% 
+  flextable::fontsize(x = ., 
+                      part = "body", 
+                      size = 12) %>% 
+  flextable::fontsize(x = ., 
+                      part = "header", 
+                      size = 14)
+```
+
+## Missing cases
+
+The number of cases with 0, 1, 2, up to n, missing values and the proportion of the number of cases those cases make up. 
+
+```{r}
+data %>% 
+  naniar::miss_case_table() %>% 
+  flextable::flextable() %>% 
+  flextable::fontsize(x = ., 
+                      part = "body", 
+                      size = 12) %>% 
+  flextable::fontsize(x = ., 
+                      part = "header", 
+                      size = 14)
 ```
 
