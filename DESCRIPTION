@@ -10,6 +10,7 @@ ByteCompile: true
 Imports: 
     broom,
     car,
+    corrplot, 
     DescTools, 
     devtools,
     dplyr,
