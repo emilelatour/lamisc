@@ -9,6 +9,7 @@ LazyData: true
 ByteCompile: true
 Imports: 
     broom,
+    car,
     DescTools, 
     devtools,
     dplyr,
@@ -18,6 +19,7 @@ Imports:
     glue,
     grDevices,
     here,
+    Hmisc,
     irr,
     janitor (>= 0.4.0.9000),
     jsonlite,
