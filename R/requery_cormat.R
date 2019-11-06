@@ -48,8 +48,7 @@ rquery_cormat <- function(x,
                           graph = TRUE,
                           graphType = c("correlogram", "heatmap"),
                           col = NULL,
-                          ...)
-{
+                          ...) {
 
 
   # Define color
