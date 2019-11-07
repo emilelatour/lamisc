@@ -25,6 +25,8 @@
 #' suddenly have more complete cases. Then you can run your model. If you still
 #' get a "contrasts error", use `debug_contr_error2` to see what has happened.
 #'
+#' Credit for this function goes to \href{https://stackoverflow.com/questions/44200195/how-to-debug-contrasts-can-be-applied-only-to-factors-with-2-or-more-levels-er}{this amazing stack overflow post}
+#'
 #' @param dat The full data set
 #'
 #' @importFrom tibble as_tibble

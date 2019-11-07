@@ -34,6 +34,8 @@ valid for building a model matrix. Check the following examples.
 Once you add \code{NA} as a level in a factor / character, your dataset might
 suddenly have more complete cases. Then you can run your model. If you still
 get a "contrasts error", use \code{debug_contr_error2} to see what has happened.
+
+Credit for this function goes to \href{https://stackoverflow.com/questions/44200195/how-to-debug-contrasts-can-be-applied-only-to-factors-with-2-or-more-levels-er}{this amazing stack overflow post}
 }
 \examples{
 dat <- data.frame(y = 1:5,
