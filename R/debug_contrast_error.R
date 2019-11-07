@@ -195,6 +195,8 @@ debug_contrast_error <- function(dat, subset_vec = NULL) {
 #'
 #' @param form model formula
 #'
+#' @importFrom tibble as_tibble
+#'
 #' @return
 #' `debug_contrast_error2` returns a list with
 #' \itemize{
