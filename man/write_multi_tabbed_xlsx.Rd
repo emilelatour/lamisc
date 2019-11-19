@@ -4,8 +4,7 @@
 \alias{write_multi_tabbed_xlsx}
 \title{Easily Make Multi-tabbed .xlsx Files with openxlsx}
 \usage{
-write_multi_tabbed_xlsx(tab_names, list_of_dfs, file_path,
-  over_write = TRUE)
+write_multi_tabbed_xlsx(tab_names, list_of_dfs, file_path, over_write = TRUE)
 }
 \arguments{
 \item{tab_names}{Character vector of names for the tabs in the Excel

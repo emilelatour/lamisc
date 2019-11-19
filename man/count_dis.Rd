@@ -13,7 +13,7 @@ count_dis(.data, ..., .keep_all = FALSE)
 are multiple rows for a given combination of inputs, only the first row
 will be preserved. If omitted, will use all variables.}
 
-\item{.keep_all}{If \code{TRUE``, keep all variables in }.data\code{. If a combination of }...`` is not distinct, this keeps the first row of values.}
+\item{.keep_all}{If \verb{TRUE``, keep all variables in }.data\verb{. If a combination of }...`` is not distinct, this keeps the first row of values.}
 }
 \value{
 A numeric value

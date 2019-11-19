@@ -5,13 +5,30 @@
 \alias{fmt_pct}
 \title{Number formatters}
 \usage{
-fmt_num(x, accuracy = 1, scale = 1, prefix = "", suffix = "",
-  big.mark = "", decimal.mark = ".", trim = TRUE,
-  as_numeric = FALSE, ...)
+fmt_num(
+  x,
+  accuracy = 1,
+  scale = 1,
+  prefix = "",
+  suffix = "",
+  big.mark = "",
+  decimal.mark = ".",
+  trim = TRUE,
+  as_numeric = FALSE,
+  ...
+)
 
-fmt_pct(x, accuracy = NULL, scale = 100, prefix = "",
-  suffix = "\%", big.mark = "", decimal.mark = ".", trim = TRUE,
-  ...)
+fmt_pct(
+  x,
+  accuracy = NULL,
+  scale = 100,
+  prefix = "",
+  suffix = "\%",
+  big.mark = "",
+  decimal.mark = ".",
+  trim = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A numeric vector to format.}
@@ -37,7 +54,7 @@ width (see \code{\link[base:format]{base::format()}}).}
 \item{...}{Other arguments passed on to \code{\link[base:format]{base::format()}}.}
 }
 \value{
-\code{*_format()} returns a function with single parameter
+\verb{*_format()} returns a function with single parameter
 \code{x}, a numeric vector, that returns a character vector.
 }
 \description{

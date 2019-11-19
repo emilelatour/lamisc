@@ -20,15 +20,15 @@ be retained: just add \code{NA} as a factor level. To achieve this, you need to 
 through variables in your data frame:
 \itemize{
 \item if a variable \code{x} is already a factor and \code{anyNA(x)} is \code{TRUE}, do \code{x <- addNA(x)}.
-The "and" is important. If \code{x} has no \code{NA}, \code{addNA(x)} will add an unused \code{<NA>}
+The "and" is important. If \code{x} has no \code{NA}, \code{addNA(x)} will add an unused \verb{<NA>}
 level.
 \item if a variable \code{x} is a character, do \code{x <- factor(x, exclude = NULL)} to
-coerce it to a factor. \code{exclude = NULL} will retain \code{<NA>} as a level.
+coerce it to a factor. \code{exclude = NULL} will retain \verb{<NA>} as a level.
 \item if \code{x} is "logical", "numeric", "raw" or "complex", nothing should be
 changed. \code{NA} is just \code{NA}.
 }
 
-\code{<NA>} factor level will not be dropped by \code{droplevels} or \code{na.omit}, and it is
+\verb{<NA>} factor level will not be dropped by \code{droplevels} or \code{na.omit}, and it is
 valid for building a model matrix. Check the following examples.
 
 Once you add \code{NA} as a level in a factor / character, your dataset might

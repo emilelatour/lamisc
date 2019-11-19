@@ -15,7 +15,7 @@ right(string, char, pattern = "/|:|\\\\?|<|>|\\\\|\\\\\\\\|\\\\*\\\\.()")
 \item{char}{A character used to delimit the string}
 
 \item{pattern}{Special characters that need to be escaped. Default is
-"/|:|\?|<|>|\|\\|\*\.()"}
+"/|:|\\?|<|>|\\|\\\\|\\*\\.()"}
 }
 \value{
 A string

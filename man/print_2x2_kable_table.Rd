@@ -4,8 +4,14 @@
 \alias{print_2x2_kable_table}
 \title{Print a 2x2 table with kable}
 \usage{
-print_2x2_kable_table(data, x, y, x_name = NULL, y_name = NULL,
-  format = "html")
+print_2x2_kable_table(
+  data,
+  x,
+  y,
+  x_name = NULL,
+  y_name = NULL,
+  format = "html"
+)
 }
 \arguments{
 \item{data}{A data frame or tibble}

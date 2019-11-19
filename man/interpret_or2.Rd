@@ -4,8 +4,15 @@
 \alias{interpret_or2}
 \title{Help with interpreting odds ratios (using 2x2 table values)}
 \usage{
-interpret_or2(a, b, c, d, dim_names = list(exposure_status = c("Exposed",
-  "Unexposed"), outcome_status = c("Postive", "Negative")), alpha = 0.05)
+interpret_or2(
+  a,
+  b,
+  c,
+  d,
+  dim_names = list(exposure_status = c("Exposed", "Unexposed"), outcome_status =
+    c("Postive", "Negative")),
+  alpha = 0.05
+)
 }
 \arguments{
 \item{a}{Count of the upper left quadrant of 2x2 contingency table}

@@ -4,9 +4,14 @@
 \alias{rquery_cormat}
 \title{Correlation matrix}
 \usage{
-rquery_cormat(x, type = c("lower", "upper", "full", "flatten"),
-  graph = TRUE, graphType = c("correlogram", "heatmap"), col = NULL,
-  ...)
+rquery_cormat(
+  x,
+  type = c("lower", "upper", "full", "flatten"),
+  graph = TRUE,
+  graphType = c("correlogram", "heatmap"),
+  col = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{matrix of data values}

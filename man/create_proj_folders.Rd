@@ -4,8 +4,11 @@
 \alias{create_proj_folders}
 \title{Create folder with structure for analysis}
 \usage{
-create_proj_folders(main_dir = getwd(), sub_dir = NULL,
-  folder_names = c("data", "code", "docs", "admin", "deliverables"))
+create_proj_folders(
+  main_dir = getwd(),
+  sub_dir = NULL,
+  folder_names = c("data", "code", "docs", "admin", "deliverables")
+)
 }
 \arguments{
 \item{main_dir}{File path to the main directory where you want to create

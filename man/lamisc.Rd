@@ -3,7 +3,6 @@
 \docType{package}
 \name{lamisc}
 \alias{lamisc}
-\alias{lamisc-package}
 \title{lamisc: Miscellaneous helper functions}
 \description{
 lamisc: Miscellaneous helper functions

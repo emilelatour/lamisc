@@ -15,7 +15,7 @@ x \%not_in\% table
 A logical
 }
 \description{
-Creating %not_in% with purrr::negate. Adapted from the cool, on going, Your
+Creating \%not_in\% with purrr::negate. Adapted from the cool, on going, Your
 daily dose of {purrr} from Colin Fay.
 }
 \examples{
