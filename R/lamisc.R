@@ -18,7 +18,8 @@ NULL
 if (getRversion() >= "2.15.1") {
   utils::globalVariables(
     c(
-      ".", "surv", "res"
+      ".", "surv", "res", "events", "group", "median", "n_start", "name",
+      "value", "x0_95lcl", "x0_95ucl"
     )
   )
 }
