@@ -4,7 +4,7 @@
 #' @description
 #' Given a proportion (0 < p < 1), the function converts it to a percent (0 <
 #' pct < 100) as either a numeric (when `as_text = FALSE`) or as a string with a
-#' \% sign (`as_text = TRUE`). I owe this one to my buddy Kyle Hart.
+#' percent sign (`as_text = TRUE`). I owe this one to my buddy Kyle Hart.
 #' `scales::percent()` has always been my preferred way to format percents but
 #' this function has a little more flexibility and the number of decimal places
 #' can be specified.
@@ -12,8 +12,8 @@
 #' @param x A numeric vector.
 #' @param d integer indicating the number of decimal places (round).
 #' @param as_text logical; if FALSE, a numeric value is returned; if TRUE, then
-#'   a character is returned with a \% symbol
-#' @param latex logical; default is `FALSE`. If `TRUE`, then the \% symbol is
+#'   a character is returned with a percent symbol
+#' @param latex logical; default is `FALSE`. If `TRUE`, then the percent symbol is
 #'   escaped.
 #'
 #' @return An object of similar structure to `x`

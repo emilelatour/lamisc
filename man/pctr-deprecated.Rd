@@ -12,9 +12,9 @@ pctr(x, d, as_text, latex)
 \item{d}{integer indicating the number of decimal places (round).}
 
 \item{as_text}{logical; if FALSE, a numeric value is returned; if TRUE, then
-a character is returned with a \% symbol}
+a character is returned with a percent symbol}
 
-\item{latex}{logical; default is \code{FALSE}. If \code{TRUE}, then the \% symbol is
+\item{latex}{logical; default is \code{FALSE}. If \code{TRUE}, then the percent symbol is
 escaped.}
 }
 \value{
@@ -23,7 +23,7 @@ An object of similar structure to \code{x}
 \description{
 Given a proportion (0 < p < 1), the function converts it to a percent (0 <
 pct < 100) as either a numeric (when \code{as_text = FALSE}) or as a string with a
-\% sign (\code{as_text = TRUE}). I owe this one to my buddy Kyle Hart.
+percent sign (\code{as_text = TRUE}). I owe this one to my buddy Kyle Hart.
 \code{scales::percent()} has always been my preferred way to format percents but
 this function has a little more flexibility and the number of decimal places
 can be specified.
