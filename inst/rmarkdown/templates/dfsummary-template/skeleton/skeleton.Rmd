@@ -82,6 +82,7 @@ pacman::p_load(
   janitor,       # for working with dirty data 
   mice,          # Multiple imputation using Fully Conditional Specification
   naniar,        # structures, summaries, and visualisations for missing data 
+  officer,       # Used by flextable
   readxl,        # read in excel files
   summarytools,  # neatly and quickly summarize data
   install = FALSE
@@ -98,7 +99,7 @@ pacman::p_load(
 # extrafont::fonts()  # Vector of font family names
 # extrafont::fonttable()  # Show entire table
 # extrafont::font_import()  # imports fonts installed on the system
-extrafont::loadfonts(device = "postscript", quiet = TRUE)
+extrafont::loadfonts(device = "pdf", quiet = TRUE)
 
 #### Summarytools options -------------------------------- 
 

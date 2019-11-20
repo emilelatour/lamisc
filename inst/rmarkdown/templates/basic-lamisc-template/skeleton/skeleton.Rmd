@@ -117,7 +117,9 @@ pacman::p_load(
   mice,          # Multivariate Imputation by Chained Equations
   DT,            # render R objects as HTML tables
   knitr,         # A General-Purpose Package for Dynamic Report Generation in R
-  kableExtra,    # Enahced table functions
+  kableExtra,    # Enahced table functions 
+  flextable,     # easily create tables for reporting and publications
+  officer,       # Used by flextable
   formattable,   # Create formattable vectors and data frames
   extrafont,     # Tools for using fonts
   ggthemes,      # Extra Themes, Scales and Geoms for 'ggplot2'
@@ -140,7 +142,6 @@ pacman::p_load(
   install = FALSE
 
   )
-
 
 #### Other packages -----------------------------
 
