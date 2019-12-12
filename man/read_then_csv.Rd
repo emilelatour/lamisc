@@ -29,9 +29,9 @@ library(rlang)
 library(purrr)
 
 path <- readxl::readxl_example("datasets.xlsx")
-path %>%
-  readxl::excel_sheets() %>%
-  rlang::set_names() %>%
+path \%>\%
+  readxl::excel_sheets() \%>\%
+  rlang::set_names() \%>\%
   purrr::map(read_then_csv, path = path)
 
 read_then_csv2(path)
