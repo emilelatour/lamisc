@@ -26,6 +26,7 @@ Imports:
     jsonlite,
     kableExtra,
     knitr,
+    labelled, 
     lubridate,
     magrittr,
     nlme,
