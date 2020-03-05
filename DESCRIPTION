@@ -38,6 +38,7 @@ Imports:
     readxl,
     rlang (>= 0.1.2),
     Rmpfr,
+    scales, 
     stringr,
     survival,
     tableone,
