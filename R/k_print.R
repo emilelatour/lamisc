@@ -95,7 +95,7 @@ k_print <- function(x,
 
   if (length(widths) > 0) {
 
-    for (i in cols) {
+    for (i in 1:length(cols)) {
       k_tab <- kableExtra::column_spec(kable_input = k_tab,
                                        column = cols[i],
                                        width = widths[i])
@@ -104,3 +104,4 @@ k_print <- function(x,
   return(k_tab)
 
 }
+

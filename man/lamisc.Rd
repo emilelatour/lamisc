@@ -5,7 +5,8 @@
 \alias{lamisc}
 \title{lamisc: Miscellaneous helper functions}
 \description{
-lamisc: Miscellaneous helper functions
+The objective of the package is to be a landing spot for the miscellaneous
+functions that I end up writing and want to preserve in one location.
 }
 \examples{
 # Example usage:

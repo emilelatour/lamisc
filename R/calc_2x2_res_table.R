@@ -14,9 +14,10 @@
 #'   standard and calculated the proportions of positive and negative agreement
 #'   instead.
 #'
-#' @import dplyr
+#' @importFrom dplyr vars
+#' @importFrom dplyr mutate_at
 #' @import rlang
-#' @import tibble
+#' @importFrom tibble tibble
 #' @importFrom psych cohen.kappa
 #' @importFrom rlang .data
 #'
@@ -77,9 +78,9 @@ calc_2x2_res_table <- function(table, has_gold_std = FALSE) {
                      pos_agree = calc_prop_agree(table, agree = "positive"),
                      neg_agree = calc_prop_agree(table, agree = "negative")
       ) %>%
-      dplyr::mutate_at(.vars = vars(.data$p1:.data$d),
+      dplyr::mutate_at(.vars = dplyr::vars(.data$p1:.data$d),
                        .funs = list(~ lamisc::fmt_num(., accuracy = 0.1))) %>%
-      dplyr::mutate_at(.vars = vars(.data$pabak:.data$neg_agree),
+      dplyr::mutate_at(.vars = dplyr::vars(.data$pabak:.data$neg_agree),
                        .funs = list(~ lamisc::fmt_num(., accuracy = 0.001)))
 
   } else if (has_gold_std == TRUE) {
@@ -96,9 +97,9 @@ calc_2x2_res_table <- function(table, has_gold_std = FALSE) {
                      sens = calc_sens_spec(table, choose_stat = "sensitivity"),
                      spec = calc_sens_spec(table, choose_stat = "specificity")
       ) %>%
-      dplyr::mutate_at(.vars = vars(.data$p1:.data$d),
+      dplyr::mutate_at(.vars = dplyr::vars(.data$p1:.data$d),
                        .funs = list(~ lamisc::fmt_num(., accuracy = 0.1))) %>%
-      dplyr::mutate_at(.vars = vars(.data$pabak:.data$spec),
+      dplyr::mutate_at(.vars = dplyr::vars(.data$pabak:.data$spec),
                        .funs = list(~ lamisc::fmt_num(., accuracy = 0.001)))
 
   }
