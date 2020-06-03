@@ -46,7 +46,7 @@ library(readr)
 library(broom)
 
 #### Example 1 --------------------------------
-mydata <- readr::read_csv("https://stats.idre.ucla.edu/stat/data/binary.csv")
+mydata <- admissions
 mydata <- mydata \%>\%
   mutate(rank = factor(rank),
          rank = forcats::fct_collapse(rank,
@@ -99,7 +99,7 @@ interpret_or(data = dis_df,
 
 #### Example 3 --------------------------------
 
-sample_df <- readr::read_csv("https://stats.idre.ucla.edu/wp-content/uploads/2016/02/sample.csv")
+sample_df <- hsb_sample
 sample_df <- sample_df \%>\%
   mutate(female = factor(female,
                          levels = c(0, 1),
