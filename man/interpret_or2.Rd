@@ -36,6 +36,8 @@ A list with the following:
 \item{interpretation}{Sample interpretation of the odds ratio of the
 outcome and the exposure levels}
 \item{results}{Odds ratio and Wald confidence interval}
+\item{fishers}{Results of Fisher's test}
+\item{chisq}{Results of Chi-square test}
 }
 }
 \description{

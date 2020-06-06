@@ -34,8 +34,10 @@
 #'
 #'
 #' @import rlang
+#' @importFrom broom tidy
 #' @importFrom dplyr select
 #' @importFrom glue glue
+#' @importFrom janitor clean_names
 #' @importFrom tibble tibble
 #'
 #' @return
@@ -45,6 +47,8 @@
 #'   \item{interpretation}{Sample interpretation of the odds ratio of the
 #'   outcome and the exposure levels}
 #'   \item{results}{Odds ratio and Wald confidence interval}
+#'   \item{fishers}{Results of Fisher's test}
+#'   \item{chisq}{Results of Chi-square test}
 #' }
 #'
 #' @export
@@ -155,11 +159,21 @@ interpret_or2 <- function(a, b, c, d,
   n10 <- xtab[2, 1]
   n11 <- xtab[2, 2]
 
-  out_list <- vector("list", 3)
+  fisher_res <- fisher.test(xtab) %>%
+    broom::tidy() %>%
+    janitor::clean_names()
+
+  chisq_res <- chisq.test(xtab) %>%
+    broom::tidy() %>%
+    janitor::clean_names()
+
+  out_list <- vector("list", 5)
   out_list[[1]] <- input_table
   out_list[[2]] <- glue::glue("The odds of [ {names(df)[[2]]} = {dimnames(xtab)[[2]][1]} ] among those with [ {names(df)[[1]]} = {dimnames(xtab)[[1]][1]} ] is x times the odds of those with  [ {names(df)[[1]]} = {dimnames(xtab)[[1]][2]} ]")
   out_list[[3]] <- calc_or_wald(n00, n01, n10, n11, alpha)
-  names(out_list) <- c("table", "interpretaion", "results")
+  out_list[[4]] <- fisher_res
+  out_list[[5]] <- chisq_res
+  names(out_list) <- c("table", "interpretaion", "results", "fishers", "chisq")
   out_list
 
 }
