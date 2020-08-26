@@ -1,0 +1,115 @@
+---
+title: |
+  | Basic Template
+  | Title on multiple lines
+author: "Emile Latour"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    code_folding: hide
+    # highlight: pygments
+    keep_md: no
+    number_sections: yes
+    smart: yes
+    theme: yeti
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+  pdf_document:
+    keep_tex: no
+    toc: yes
+  word_document:
+    toc: yes
+subtitle: Subtitle
+---
+
+  
+```{r setup, include=FALSE}
+
+#### Global chunk options -----------------------------
+
+knitr::opts_chunk$set(
+  eval       = TRUE,  # whether to run code in code chunk
+  include    = TRUE,  # whether to include the chunk output
+  echo       = FALSE,  # Whether to show code chunk in final output
+  error      = TRUE,  # whether to display error messages
+  message    = FALSE,  # whether to preserve messages
+  warning    = FALSE,  # whether to preserve warnings
+  comment    = NA,  # a character string to append at start of each line of 
+                    # results in final document
+  tidy       = FALSE,  # whether to tidy code chunks for display
+  dpi        = 96,  # dots per inch in graphics when applicable
+  fig.width  = 8,  # consistent width for figures
+  fig.asp    = 0.618,  # the golden ratio, can be adjusted in individual chunks
+  out.width  = "90%",  # controls the output size
+  fig.align  = "center",  # give plot room to breathe
+  # fig.path   = "figures/somedir/"  # file path to store plots
+  R.options  = list(width = 70), 
+  NULL
+)
+
+
+#### Other options --------------------------------
+
+## Scientific notation ---------------
+# Turn off scientific notation
+options(scipen = 999)
+
+## define format ----------------
+# If you don't define format here, you'll need put `format = "html"` in 
+# every kable function.
+
+options(knitr.table.format = "html")  # use this option when knitting html
+# options(knitr.table.format = "latex")  # use this option when knitting pdf
+
+
+#### Packages --------------------------------------
+# Load the packages to be used.
+
+## Define the repository for packages ----------------
+options(repos = c(CRAN = "https://cran.rstudio.com"))
+
+## universally useful packages ----------------
+# if (!require("pacman")) {install.packages("pacman")}
+# if (!require("devtools")) {install.packages("devtools")}
+
+pacman::p_load(
+  tidyverse,     # packages ggplot2, dplyr, tidyr, readr, purrr, tibble, 
+                 # stringr, and forcats
+  broom,         # functions tidy(), glance(), augment()
+  fs,            # Cross-platform interface to file system operations
+  glue,          # Glue strings to data in R
+  here,          # Constructs paths to your project's files
+  janitor,       # for working with dirty data 
+  lubridate,     # Functions to work with date-times and time-spans 
+  mice,          # Multiple imputation using Fully Conditional Specification
+  naniar,        # structures, summaries, and visualisations for missing data 
+  readxl,        # read in excel files
+  scales,        # Scale functions for visualization
+  install = FALSE
+)
+
+#### Other packages ----------------------------- 
+
+library(lamisc)       # devtools::install_github("emilelatour/lamisc") 
+library(latable)      # devtools::install_github("emilelatour/latable")
+library(laviz)        # devtools::install_github("emilelatour/laviz") 
+library(purposeful)   # devtools::install_github("emilelatour/purposeful")
+library(redcaptools)  # devtools::install_github("emilelatour/redcaptools")
+
+
+```
+
+
+```{r load_data, include=FALSE}
+
+```
+
+
+
+# Reproducibility info
+
+```{r}
+devtools::session_info()
+```
+
