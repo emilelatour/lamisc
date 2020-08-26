@@ -44,11 +44,11 @@ knitr::opts_chunk$set(
                     # results in final document
   tidy       = FALSE,  # whether to tidy code chunks for display
   dpi        = 96,  # dots per inch in graphics when applicable
-  fig.width  = 6,  # consistent width for figures
+  fig.width  = 8,  # consistent width for figures
   fig.asp    = 0.618,  # the golden ratio, can be adjusted in individual chunks
-  out.width  = "70%",  # controls the output size
+  out.width  = "90%",  # controls the output size
   fig.align  = "center",  # give plot room to breathe
-  # fig.path   = "figures/somedir/"  # file path tp store plots
+  # fig.path   = "figures/somedir/"  # file path to store plots
   R.options  = list(width = 70), 
   NULL
 )
@@ -145,9 +145,11 @@ pacman::p_load(
 
 #### Other packages -----------------------------
 
-library(lamisc)   # devtools::install_github("emilelatour/lamisc")
-library(laviz)    # devtools::install_github("emilelatour/laviz")
-library(latable)  # devtools::install_github("emilelatour/latable")
+library(lamisc)       # devtools::install_github("emilelatour/lamisc") 
+library(latable)      # devtools::install_github("emilelatour/latable")
+library(laviz)        # devtools::install_github("emilelatour/laviz") 
+library(purposeful)   # devtools::install_github("emilelatour/purposeful")
+library(redcaptools)  # devtools::install_github("emilelatour/redcaptools")
 
 
 #### Some resources ---------------------------
