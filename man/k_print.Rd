@@ -6,7 +6,7 @@
 \usage{
 k_print(
   x,
-  format = "html",
+  format,
   col_names = NA,
   bootstrap_options = c("striped"),
   escape = TRUE,

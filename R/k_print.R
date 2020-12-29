@@ -46,6 +46,8 @@
 #' @param widths A character string telling HTML & LaTeX how wide the column
 #'   needs to be, e.g. "10cm", "3in" or "30em".
 #'
+#' @importFrom knitr opts_knit
+#' @importFrom knitr is_latex_output
 #' @importFrom knitr kable
 #' @importFrom kableExtra kable_styling
 #' @importFrom kableExtra column_spec
@@ -64,7 +66,7 @@
 #'         }
 
 k_print <- function(x,
-                    format = "html",
+                    format,
                     col_names = NA,
                     bootstrap_options = c("striped"),
                     escape = TRUE,
@@ -74,6 +76,8 @@ k_print <- function(x,
                     caption = NULL,
                     cols = NULL,
                     widths = NULL) {
+
+  format = kable_format(format)
 
   k_tab <- knitr::kable(x,
                         format = format,
@@ -105,3 +109,44 @@ k_print <- function(x,
 
 }
 
+
+
+#### Taken from knitr package --------------------------------
+
+# https://github.com/yihui/knitr/blob/cf213e48eb47b84bb82950d134c564a1e537586d/R/table.R
+
+# determine the table format
+kable_format = function(format = NULL) {
+  if (missing(format) || is.null(format)) format = getOption('knitr.table.format')
+  if (is.null(format)) format = if (is.null(pandoc_to())) switch(
+    out_format() %n% 'markdown',
+    latex = 'latex', listings = 'latex', sweave = 'latex',
+    html = 'html', markdown = 'pipe', rst = 'rst',
+    stop('table format not implemented yet!')
+  ) else if (isTRUE(knitr::opts_knit$get('kable.force.latex')) && knitr::is_latex_output()) {
+    # force LaTeX table because Pandoc's longtable may not work well with floats
+    # http://tex.stackexchange.com/q/276699/9128
+    'latex'
+  } else 'pipe'
+  if (is.function(format)) format = format()
+  # backward compatibility with knitr <= v1.28
+  switch(format, pandoc = 'simple', markdown = 'pipe', format)
+}
+
+
+# https://github.com/yihui/knitr/blob/0e717be80cd29c99ffb65bd0b36de7269e9bd069/R/utils.R
+
+# rmarkdown sets an option for the Pandoc output format from markdown
+pandoc_to = function(x) {
+  fmt = knitr::opts_knit$get('rmarkdown.pandoc.to')
+  if (missing(x)) fmt else !is.null(fmt) && (fmt %in% x)
+}
+
+# if LHS is NULL, return the RHS
+`%n%` = function(x, y) if (is.null(x)) y else x
+
+# return the output format, or if current format is in specified formats
+out_format = function(x) {
+  fmt = knitr::opts_knit$get('out.format')
+  if (missing(x)) fmt else !is.null(fmt) && (fmt %in% x)
+}
