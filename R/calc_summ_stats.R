@@ -8,8 +8,13 @@
 #' missing observations (missing); mean, standard deviation (sd), minimum value
 #' (p0), maximum value (p100), median (p50), interquartile rane (p25, p75).
 #'
-#' @import dplyr
-#' @importFrom tidyr gather
+#' @importFrom dplyr across
+#' @importFrom dplyr group_vars
+#' @importFrom dplyr group_by
+#' @importFrom dplyr mutate
+#' @importFrom dplyr one_of
+#' @importFrom dplyr summarise
+#' @importFrom tidyr pivot_longer
 #' @importFrom rlang .data
 #'
 #' @param .data A tbl
@@ -62,17 +67,20 @@
 calc_summ_stats <- function(.data, ...) {
 
   .data %>%
-    # dplyr::transmute(...) %>%
-    tidyr::gather(key = "variable",
-                  value = "value",
-                  ...,
-                  -dplyr::one_of(dplyr::group_vars(.)),
-                  factor_key = TRUE) %>%
-    group_by(.data$variable, add = TRUE) %>%
-    summarise_at(vars(.data$value),
-                 summary_functions) %>%
-    mutate(range = .data$p100 - .data$p0,
-           CV = 100 * .data$sd / .data$mean) %>%
+    tidyr::pivot_longer(data = .,
+                        cols = c(...,
+                                 -dplyr::one_of(dplyr::group_vars(.))),
+                        names_to = "variable",
+                        values_to = "value",
+                        names_transform = list(key = forcats::fct_inorder)) %>%
+    dplyr::group_by(.data$variable,
+                    .add = TRUE) %>%
+    dplyr::summarise(dplyr::across(.cols = c(.data$value),
+                                   .fns = summary_functions,
+                                   .names = "{.fn}"),
+                     .groups = "drop") %>%
+    dplyr::mutate(range = .data$p100 - .data$p0,
+                  CV = 100 * .data$sd / .data$mean) %>%
     dplyr::mutate(variable = as.character(.data$variable))
 }
 
@@ -81,15 +89,20 @@ calc_summ_stats <- function(.data, ...) {
 calc_summ_stats_t <- function(.data, ...) {
   .data %>%
     dplyr::transmute(...) %>%
-    tidyr::gather(key = "variable",
-                  value = "value",
-                  -dplyr::one_of(dplyr::group_vars(.)),
-                  factor_key = TRUE) %>%
-    group_by(.data$variable, add = TRUE) %>%
-    summarise_at(vars(.data$value),
-                 summary_functions) %>%
-    mutate(range = .data$p100 - .data$p0,
-           CV = 100 * .data$sd / .data$mean) %>%
+    tidyr::pivot_longer(data = .,
+                        cols = c(dplyr::everything(),
+                                 -dplyr::one_of(dplyr::group_vars(.))),
+                        names_to = "variable",
+                        values_to = "value",
+                        names_transform = list(key = forcats::fct_inorder)) %>%
+    dplyr::group_by(.data$variable,
+                    .add = TRUE) %>%
+    dplyr::summarise(dplyr::across(.cols = c(.data$value),
+                                   .fns = summary_functions,
+                                   .names = "{.fn}"),
+                     .groups = "drop") %>%
+    dplyr::mutate(range = .data$p100 - .data$p0,
+                  CV = 100 * .data$sd / .data$mean) %>%
     dplyr::mutate(variable = as.character(.data$variable))
 }
 
@@ -108,3 +121,39 @@ summary_functions <- list(
   p75 =      ~ quantile(., probs = 0.75, na.rm = TRUE),
   p100 =     ~ max(., na.rm = TRUE)
 )
+
+
+
+#### Old version with _at verbs --------------------------------
+
+#' calc_summ_stats <- function(.data, ...) {
+#'
+#'   .data %>%
+#'     # dplyr::transmute(...) %>%
+#'     tidyr::gather(key = "variable",
+#'                   value = "value",
+#'                   ...,
+#'                   -dplyr::one_of(dplyr::group_vars(.)),
+#'                   factor_key = TRUE) %>%
+#'     group_by(.data$variable, .add = TRUE) %>%
+#'     summarise_at(vars(.data$value),
+#'                  summary_functions) %>%
+#'     mutate(range = .data$p100 - .data$p0,
+#'            CV = 100 * .data$sd / .data$mean) %>%
+#'     dplyr::mutate(variable = as.character(.data$variable))
+#' }
+#'
+#' calc_summ_stats_t <- function(.data, ...) {
+#'   .data %>%
+#'     dplyr::transmute(...) %>%
+#'     tidyr::gather(key = "variable",
+#'                   value = "value",
+#'                   -dplyr::one_of(dplyr::group_vars(.)),
+#'                   factor_key = TRUE) %>%
+#'     group_by(.data$variable, .add = TRUE) %>%
+#'     summarise_at(vars(.data$value),
+#'                  summary_functions) %>%
+#'     mutate(range = .data$p100 - .data$p0,
+#'            CV = 100 * .data$sd / .data$mean) %>%
+#'     dplyr::mutate(variable = as.character(.data$variable))
+#' }
