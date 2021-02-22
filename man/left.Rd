@@ -5,17 +5,14 @@
 \alias{right}
 \title{Return text to the left and the right of a string}
 \usage{
-left(string, char, pattern = "/|:|\\\\?|<|>|\\\\|\\\\\\\\|\\\\*\\\\.()")
+left(string, char)
 
-right(string, char, pattern = "/|:|\\\\?|<|>|\\\\|\\\\\\\\|\\\\*\\\\.()")
+right(string, char)
 }
 \arguments{
 \item{string}{The string}
 
 \item{char}{A character used to delimit the string}
-
-\item{pattern}{Special characters that need to be escaped. Default is
-"/|:|\\?|<|>|\\|\\\\|\\*\\.()"}
 }
 \value{
 A string
@@ -56,4 +53,6 @@ stringr::str_trim(left(test_df$label, "="), side = "both")
 \url{https://stackoverflow.com/questions/45070117/r-check-if-special-character-in-string}
 
 \url{https://stackoverflow.com/questions/36928870/r-check-if-string-contains-special-characters}
+
+\url{https://stackoverflow.com/questions/14836754/is-there-an-r-function-to-escape-a-string-for-regex-characters{}}
 }

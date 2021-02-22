@@ -16,10 +16,10 @@
 #'
 #' \url{https://stackoverflow.com/questions/36928870/r-check-if-string-contains-special-characters}
 #'
+#' \url{https://stackoverflow.com/questions/14836754/is-there-an-r-function-to-escape-a-string-for-regex-characters{}}
+#'
 #' @param string The string
 #' @param char A character used to delimit the string
-#' @param pattern Special characters that need to be escaped. Default is
-#'   "/|:|\\?|<|>|\\|\\\\|\\*\\.()"
 #'
 #' @importFrom stringr str_sub
 #' @importFrom stringr str_locate
@@ -49,47 +49,29 @@
 #' stringr::str_trim(left(test_df$label, "="), side = "both")
 #'
 
-left <- function(string, char, pattern = "/|:|\\?|<|>|\\|\\\\|\\*\\.()") {
+left <- function(string, char) {
 
-  special <- pattern
-
-  if (grepl(char, special)) {
-    esc <- "\\"
-  } else {
-    esc <- ""
-  }
-
-  # substr(string,
-  #        start = 1,
-  #        stop = unlist(gregexpr(paste0(esc, char), string)) - 1)
+  # From Hmisc::escapRegex
+  char <- gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", char)
 
   stringr::str_sub(string,
                    start = 1,
                    end = stringr::str_locate(string,
-                                               paste0(esc, char))[, 1] - 1)
+                                             char)[, 1] - 1)
 
 }
 
 
 #' @rdname left
 #' @export
-right <- function(string, char, pattern = "/|:|\\?|<|>|\\|\\\\|\\*\\.()") {
+right <- function(string, char) {
 
-  special <- pattern
-
-  if (grepl(char, special)) {
-    esc <- "\\"
-  } else {
-    esc <- ""
-  }
-
-  # substr(string,
-  #        start = unlist(gregexpr(paste0(esc, char), string)) + 1,
-  #        stop = nchar(string))
+  # From Hmisc::escapRegex
+  char <- gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", char)
 
   stringr::str_sub(string,
                    start = stringr::str_locate(string,
-                                               paste0(esc, char))[, 1] + 1,
+                                               char)[, 1] + 1,
                    end = nchar(string))
 
 
@@ -99,3 +81,93 @@ right <- function(string, char, pattern = "/|:|\\?|<|>|\\|\\\\|\\*\\.()") {
 
 
 
+
+
+
+
+#### Old versions of these --------------------------------
+
+
+#' #' @param string The string
+#' #' @param char A character used to delimit the string
+#' #' @param pattern Special characters that need to be escaped. Default is
+#' #'   "/|:|\\?|<|>|\\|\\\\|\\*\\.()"
+#' #'
+#' #' @importFrom stringr str_sub
+#' #' @importFrom stringr str_locate
+#' #'
+#' #' @return A string
+#' #' @export
+#' #'
+#' #' @examples
+#' #' a <- c("left.right","left.right","left.right")
+#' #' left(a, ".")
+#' #' right(a, ".")
+#' #'
+#' #' library(dplyr)
+#' #' library(tibble)
+#' #'
+#' #' test_df <- tibble::tibble(
+#' #'   label = c("resection_margin=Mohs, > 1 cm",
+#' #'             "resection_margin=Mohs, > 1 cm",
+#' #'             "resection_margin=Mohs, <= 1 cm",
+#' #'             "  resection_margin=Mohs, > 1 cm"))
+#' #' test_df %>%
+#' #'   mutate(left = left(label, "="),
+#' #'          right = right(label, "="))
+#' #'
+#' #' right(test_df$label, "=")
+#' #' left(test_df$label, "=")
+#' #' stringr::str_trim(left(test_df$label, "="), side = "both")
+#' #'
+#'
+#' left <- function(string, char, pattern = "/|:|\\?|<|>|\\|\\\\|\\*\\.()") {
+#'
+#'   special <- pattern
+#'
+#'   if (grepl(char, special)) {
+#'     esc <- "\\"
+#'   } else {
+#'     esc <- ""
+#'   }
+#'
+#'   # substr(string,
+#'   #        start = 1,
+#'   #        stop = unlist(gregexpr(paste0(esc, char), string)) - 1)
+#'
+#'   stringr::str_sub(string,
+#'                    start = 1,
+#'                    end = stringr::str_locate(string,
+#'                                                paste0(esc, char))[, 1] - 1)
+#'
+#' }
+#'
+#'
+#' #' @rdname left
+#' #' @export
+#' right <- function(string, char, pattern = "/|:|\\?|<|>|\\|\\\\|\\*\\.()") {
+#'
+#'   special <- pattern
+#'
+#'   if (grepl(char, special)) {
+#'     esc <- "\\"
+#'   } else {
+#'     esc <- ""
+#'   }
+#'
+#'   # substr(string,
+#'   #        start = unlist(gregexpr(paste0(esc, char), string)) + 1,
+#'   #        stop = nchar(string))
+#'
+#'   stringr::str_sub(string,
+#'                    start = stringr::str_locate(string,
+#'                                                paste0(esc, char))[, 1] + 1,
+#'                    end = nchar(string))
+#'
+#'
+#' }
+#'
+#'
+#'
+#'
+#'
