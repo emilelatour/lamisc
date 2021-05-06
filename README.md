@@ -23,5 +23,3 @@ This is a basic example which shows you how to solve a common problem:
 ```
 
 TESTING GIT
-
-Checking that my tokens updated
