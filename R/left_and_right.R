@@ -54,10 +54,16 @@ left <- function(string, char) {
   # From Hmisc::escapRegex
   char <- gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", char)
 
-  stringr::str_sub(string,
-                   start = 1,
-                   end = stringr::str_locate(string,
-                                             char)[, 1] - 1)
+  # stringr::str_sub(string,
+  #                  start = 1,
+  #                  end = stringr::str_locate(string,
+  #                                            char)[, 1] - 1)
+
+  stringr::str_split(string = string,
+                     pattern = char,
+                     n = 2,
+                     simplify = TRUE)[, 1]
+
 
 }
 
@@ -69,17 +75,17 @@ right <- function(string, char) {
   # From Hmisc::escapRegex
   char <- gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", char)
 
-  stringr::str_sub(string,
-                   start = stringr::str_locate(string,
-                                               char)[, 1] + 1,
-                   end = nchar(string))
+  # stringr::str_sub(string,
+  #                  start = stringr::str_locate(string,
+  #                                              char)[, 1] + 1,
+  #                  end = nchar(string))
 
+  stringr::str_split(string = string,
+                     pattern = char,
+                     n = 2,
+                     simplify = TRUE)[, 2]
 
 }
-
-
-
-
 
 
 
@@ -171,3 +177,4 @@ right <- function(string, char) {
 #'
 #'
 #'
+
