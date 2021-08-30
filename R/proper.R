@@ -24,15 +24,22 @@
 #'
 proper <- function(x, just_first_word = TRUE) {
 
+  which_are_na <- is.na(x)
+  raw_x <- x
+
   if (just_first_word) {
 
-    paste0(toupper(substr(x, 1, 1)), tolower(substring(x, 2)))
+    x <- paste0(toupper(substr(x, 1, 1)), tolower(substring(x, 2)))
 
   } else {
 
-    gsub("(?<=\\b)([a-z])", "\\U\\1", tolower(x), perl = TRUE)
+    x <- gsub("(?<=\\b)([a-z])", "\\U\\1", tolower(x), perl = TRUE)
 
   }
+
+  x[which_are_na] <- raw_x[which_are_na]
+
+  return(x)
 
 }
 
