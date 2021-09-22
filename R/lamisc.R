@@ -40,3 +40,23 @@ if (getRversion() >= "2.15.1") {
 
 # Evaluates all arguments (see #81)
 force_all <- function(...) list(...)
+
+
+
+# ggladder: no visible binding for global variable ‘inv_square_root’
+#   ggladder: no visible binding for global variable ‘inverse’
+#   ggladder: no visible binding for global variable ‘inv_square’
+#   ggladder: no visible binding for global variable ‘inv_cubic’
+#   ladder: no visible binding for global variable ‘adj_chi2’
+#   ladder: no visible binding for global variable ‘p_value’
+#   make_histos: no visible binding for global variable ‘sqrt_n’
+#   make_histos: no visible binding for global variable ‘ten_log_10’
+#   make_histos: no visible binding for global variable ‘..density..’
+#   make_histos: no visible binding for global variable ‘dnorm’
+#   qqladder: no visible binding for global variable ‘inv_square_root’
+#   qqladder: no visible binding for global variable ‘inverse’
+#   qqladder: no visible binding for global variable ‘inv_square’
+#   qqladder: no visible binding for global variable ‘inv_cubic’
+#   Undefined global functions or variables:
+#     ..density.. adj_chi2 dnorm inv_cubic inv_square inv_square_root
+#     inverse p_value sqrt_n ten_log_10

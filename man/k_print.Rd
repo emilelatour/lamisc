@@ -8,6 +8,7 @@ k_print(
   x,
   format,
   col_names = NA,
+  full_width = FALSE,
   bootstrap_options = c("striped"),
   escape = TRUE,
   align = NULL,
@@ -15,7 +16,23 @@ k_print(
   latex_options = "basic",
   caption = NULL,
   cols = NULL,
-  widths = NULL
+  widths = NULL,
+  position = "center",
+  font_size = NULL,
+  row_label_position = "l",
+  repeat_header_text = "\\\\textit{(continued)}",
+  repeat_header_method = c("append", "replace"),
+  repeat_header_continued = FALSE,
+  stripe_color = "gray!6",
+  stripe_index = NULL,
+  latex_table_env = NULL,
+  protect_latex = TRUE,
+  table.envir = "table",
+  fixed_thead = FALSE,
+  htmltable_class = NULL,
+  html_font = NULL,
+  wraptable_width = "0pt",
+  ...
 )
 }
 \arguments{
@@ -29,10 +46,15 @@ string.}
 
 \item{col_names}{A character vector of column names to be used in the table.}
 
+\item{full_width}{A TRUE or FALSE variable controlling whether the HTML table
+should have 100\ the preferable format for full_width. If not specified, a
+HTML table will have full width by default but this option will be set to
+FALSE for a LaTeX table}
+
 \item{bootstrap_options}{A character vector for bootstrap table options.
 Please see package vignette or visit the w3schools' Bootstrap Page for more
 information. Possible options include basic, striped, bordered, hover,
-condensed and responsive.}
+condensed, responsive and none.}
 
 \item{escape}{Boolean; whether to escape special characters when producing
 HTML or LaTeX tables. When escape = FALSE, you have to make sure that
@@ -54,10 +76,10 @@ striped, hold_position, HOLD_position, scale_down & repeat_header. striped
 will add alternative row colors to the table. It will imports LaTeX package
 xcolor if enabled. hold_position will "hold" the floating table to the
 exact position. It is useful when the LaTeX table is contained in a table
-environment after you specified captions in \code{kable()}. It will force the
+environment after you specified captions in kable(). It will force the
 table to stay in the position where it was created in the document. A
-stronger version: HOLD_position requires the float package and specifies.
-scale_down is useful for super wide table. It will automatically
+stronger version: HOLD_position requires the float package and specifies
+(H). scale_down is useful for super wide table. It will automatically
 adjust the table to page width. repeat_header in only meaningful in a
 longtable environment. It will let the header row repeat on every page in
 that long table.}
@@ -68,6 +90,65 @@ that long table.}
 
 \item{widths}{A character string telling HTML & LaTeX how wide the column
 needs to be, e.g. "10cm", "3in" or "30em".}
+
+\item{position}{A character string determining how to position the table on a
+page. Possible values include left, center, right, float_left and
+float_right. Please see the package doc site for demonstrations. For a
+LaTeX table, if float_* is selected, LaTeX package wrapfig will be
+imported.}
+
+\item{font_size}{A numeric input for table font size}
+
+\item{row_label_position}{A character string determining the justification of
+the row labels in a table. Possible values inclued l for left, c for
+center, and r for right. The default value is l for left justifcation.}
+
+\item{repeat_header_text}{LaTeX option. A text string you want to append on
+or replace the caption.}
+
+\item{repeat_header_method}{LaTeX option, can either be append(default) or
+replace}
+
+\item{repeat_header_continued}{T/F or a text string. Whether or not to put a
+continued mark on the second page of longtable. If you put in text, we will
+use this text as the "continued" mark.}
+
+\item{stripe_color}{LaTeX option allowing users to pick a different color for
+their strip lines. This option is not available in HTML}
+
+\item{stripe_index}{LaTeX option allowing users to customize which rows
+should have stripe color.}
+
+\item{latex_table_env}{LaTeX option. A character string to define customized
+table environment such as tabu or tabularx.You shouldn't expect all
+features could be supported in self-defined environments.}
+
+\item{protect_latex}{If TRUE, LaTeX code embedded between dollar signs will
+be protected from HTML escaping.}
+
+\item{table.envir}{LaTeX floating table environment. kable_style will put a
+plain no-caption table in a table environment in order to center the table.
+You can specify this option to things like table* or float* based on your
+need.}
+
+\item{fixed_thead}{HTML table option so table header row is fixed at top.
+Values can be either T/F or list(enabled = T/F, background = "anycolor").}
+
+\item{htmltable_class}{Options to use the in-house lightable themes. Choices
+include lightable-minimal, lightable-classic, lightable-classic-2,
+lightable-material, lightable-striped and lightable-hover. If you have your
+customized style sheet loaded which defines your own table class, you can
+also load it here.}
+
+\item{html_font}{A string for HTML css font. For example, html_font = '"Arial
+Narrow", arial, helvetica, sans-serif'.}
+
+\item{wraptable_width}{Width of the wraptable area if you specify
+"float_left/right" for latex table. Default is "0pt" for automated
+determination but you may specify it manually.}
+
+\item{...}{Other arguments passed to knitr::kable (see Examples and
+References).}
 }
 \value{
 A character vector of the table source code.

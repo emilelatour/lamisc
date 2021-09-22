@@ -36,6 +36,7 @@
 #' @importFrom rlang enquo
 #' @importFrom rlang quo_name
 #' @importFrom rlang sym
+#' @importFrom stats dnorm
 #' @importFrom tibble tibble
 #'
 #' @return

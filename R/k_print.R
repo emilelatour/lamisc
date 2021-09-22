@@ -45,6 +45,70 @@
 #' @param cols A numeric value or vector indicating which column(s) to be selected.
 #' @param widths A character string telling HTML & LaTeX how wide the column
 #'   needs to be, e.g. "10cm", "3in" or "30em".
+#' @param bootstrap_options A character vector for bootstrap table options.
+#'   Please see package vignette or visit the w3schools' Bootstrap Page for more
+#'   information. Possible options include basic, striped, bordered, hover,
+#'   condensed, responsive and none.
+#' @param latex_options A character vector for LaTeX table options. Please see
+#'   package vignette for more information. Possible options include basic,
+#'   striped, hold_position, HOLD_position, scale_down & repeat_header. striped
+#'   will add alternative row colors to the table. It will imports LaTeX package
+#'   xcolor if enabled. hold_position will "hold" the floating table to the
+#'   exact position. It is useful when the LaTeX table is contained in a table
+#'   environment after you specified captions in kable(). It will force the
+#'   table to stay in the position where it was created in the document. A
+#'   stronger version: HOLD_position requires the float package and specifies
+#'   (H). scale_down is useful for super wide table. It will automatically
+#'   adjust the table to page width. repeat_header in only meaningful in a
+#'   longtable environment. It will let the header row repeat on every page in
+#'   that long table.
+#' @param full_width A TRUE or FALSE variable controlling whether the HTML table
+#'   should have 100\ the preferable format for full_width. If not specified, a
+#'   HTML table will have full width by default but this option will be set to
+#'   FALSE for a LaTeX table
+#' @param position A character string determining how to position the table on a
+#'   page. Possible values include left, center, right, float_left and
+#'   float_right. Please see the package doc site for demonstrations. For a
+#'   LaTeX table, if float_* is selected, LaTeX package wrapfig will be
+#'   imported.
+#' @param font_size A numeric input for table font size
+#' @param row_label_position A character string determining the justification of
+#'   the row labels in a table. Possible values inclued l for left, c for
+#'   center, and r for right. The default value is l for left justifcation.
+#' @param repeat_header_text LaTeX option. A text string you want to append on
+#'   or replace the caption.
+#' @param repeat_header_method LaTeX option, can either be append(default) or
+#'   replace
+#' @param repeat_header_continued T/F or a text string. Whether or not to put a
+#'   continued mark on the second page of longtable. If you put in text, we will
+#'   use this text as the "continued" mark.
+#' @param stripe_color LaTeX option allowing users to pick a different color for
+#'   their strip lines. This option is not available in HTML
+#' @param stripe_index LaTeX option allowing users to customize which rows
+#'   should have stripe color.
+#' @param latex_table_env LaTeX option. A character string to define customized
+#'   table environment such as tabu or tabularx.You shouldn't expect all
+#'   features could be supported in self-defined environments.
+#' @param protect_latex If TRUE, LaTeX code embedded between dollar signs will
+#'   be protected from HTML escaping.
+#' @param table.envir LaTeX floating table environment. kable_style will put a
+#'   plain no-caption table in a table environment in order to center the table.
+#'   You can specify this option to things like table* or float* based on your
+#'   need.
+#' @param fixed_thead HTML table option so table header row is fixed at top.
+#'   Values can be either T/F or list(enabled = T/F, background = "anycolor").
+#' @param htmltable_class Options to use the in-house lightable themes. Choices
+#'   include lightable-minimal, lightable-classic, lightable-classic-2,
+#'   lightable-material, lightable-striped and lightable-hover. If you have your
+#'   customized style sheet loaded which defines your own table class, you can
+#'   also load it here.
+#' @param html_font A string for HTML css font. For example, html_font = '"Arial
+#'   Narrow", arial, helvetica, sans-serif'.
+#' @param wraptable_width Width of the wraptable area if you specify
+#'   "float_left/right" for latex table. Default is "0pt" for automated
+#'   determination but you may specify it manually.
+#' @param ... Other arguments passed to knitr::kable (see Examples and
+#'   References).
 #'
 #' @importFrom knitr opts_knit
 #' @importFrom knitr is_latex_output
@@ -68,6 +132,7 @@
 k_print <- function(x,
                     format,
                     col_names = NA,
+                    full_width = FALSE,
                     bootstrap_options = c("striped"),
                     escape = TRUE,
                     align = NULL,
@@ -75,7 +140,22 @@ k_print <- function(x,
                     latex_options = "basic",
                     caption = NULL,
                     cols = NULL,
-                    widths = NULL) {
+                    widths = NULL,
+                    position = "center",
+                    font_size = NULL,
+                    row_label_position = "l",
+                    repeat_header_text = "\\textit{(continued)}",
+                    repeat_header_method = c("append", "replace"),
+                    repeat_header_continued = FALSE,
+                    stripe_color = "gray!6",
+                    stripe_index = NULL,
+                    latex_table_env = NULL,
+                    protect_latex = TRUE,
+                    table.envir = "table",
+                    fixed_thead = FALSE,
+                    htmltable_class = NULL,
+                    html_font = NULL,
+                    wraptable_width = "0pt",...) {
 
   format = kable_format(format)
 
@@ -86,12 +166,28 @@ k_print <- function(x,
                         escape = escape,
                         align = align,
                         longtable = long_table,
-                        caption = caption)
+                        caption = caption,
+                        ...)
 
   k_tab <- kableExtra::kable_styling(kable_input = k_tab,
-                                     full_width = FALSE,
+                                     full_width = full_width,
                                      bootstrap_options = bootstrap_options,
-                                     latex_options = latex_options)
+                                     latex_options = latex_options,
+                                     position = position,
+                                     font_size = font_size,
+                                     row_label_position = row_label_position,
+                                     repeat_header_text = repeat_header_text,
+                                     repeat_header_method = repeat_header_method,
+                                     repeat_header_continued = repeat_header_continued,
+                                     stripe_color = stripe_color,
+                                     stripe_index = stripe_index,
+                                     latex_table_env = latex_table_env,
+                                     protect_latex = protect_latex,
+                                     table.envir = table.envir,
+                                     fixed_thead = fixed_thead,
+                                     htmltable_class = htmltable_class,
+                                     html_font = html_font,
+                                     wraptable_width = wraptable_width)
 
   if (length(widths) > 0 & length(widths) != length(cols)) {
     stop("'cols' and 'widths' must be the same length.")
