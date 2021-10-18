@@ -32,6 +32,8 @@ Imports:
     nlme,
     nortest, 
     openxlsx,
+    nycflights13, 
+    palmerpenguins, 
     patchwork, 
     psych,
     purrr,
