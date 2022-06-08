@@ -59,8 +59,8 @@ print_2x2_kable_table <- function(data, x, y,
   x <- rlang::enquo(x)
   y <- rlang::enquo(y)
 
-  header_names <- c(1, 2, 1)
-  names(header_names) <- c(" ", as.name(paste(y_name)), " ")
+  header_df <- tibble::tibble(header_names = c(" ", y_name, " "),
+                              col_span = c(1, 2, 1))
 
   data %>%
     janitor::tabyl(!! x, !! y) %>%
@@ -72,7 +72,7 @@ print_2x2_kable_table <- function(data, x, y,
     knitr::kable(., format = format) %>%
     kableExtra::kable_styling(full_width = FALSE) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
-    kableExtra::add_header_above(header_names)
+    kableExtra::add_header_above(header = header_df)
 
 
 }
