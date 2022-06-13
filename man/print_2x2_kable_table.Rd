@@ -10,7 +10,20 @@ print_2x2_kable_table(
   y,
   x_name = NULL,
   y_name = NULL,
-  format = "html"
+  format = "html",
+  full_width = FALSE,
+  bootstrap_options = c("basic"),
+  escape = TRUE,
+  align = "lccc",
+  caption = NULL,
+  cols = NULL,
+  widths = NULL,
+  position = "center",
+  font_size = NULL,
+  row_label_position = "l",
+  stripe_color = "gray!6",
+  stripe_index = NULL,
+  ...
 )
 }
 \arguments{
@@ -26,6 +39,55 @@ print_2x2_kable_table(
 
 \item{format}{A character string. Possible values are "latex", "html",
 "markdown", "pandoc", and "rst". This is an argument for \code{knitr::kable()}}
+
+\item{full_width}{A TRUE or FALSE variable controlling whether the HTML table
+should have 100\ the preferable format for full_width. If not specified, a
+HTML table will have full width by default but this option will be set to
+FALSE for a LaTeX table}
+
+\item{bootstrap_options}{A character vector for bootstrap table options.
+Please see package vignette or visit the w3schools' Bootstrap Page for more
+information. Possible options include basic, striped, bordered, hover,
+condensed, responsive and none.}
+
+\item{escape}{Boolean; whether to escape special characters when producing
+HTML or LaTeX tables. When escape = FALSE, you have to make sure that
+special characters will not trigger syntax errors in LaTeX or HTML.}
+
+\item{align}{Column alignment: a character vector consisting of 'l' (left),
+'c' (center) and/or 'r' (right). By default or if align = NULL, numeric
+columns are right-aligned, and other columns are left-aligned. If
+length(align) == 1L, the string will be expanded to a vector of individual
+letters, e.g. 'clc' becomes c('c', 'l', 'c'), unless the output format is
+LaTeX.}
+
+\item{caption}{The table caption.}
+
+\item{cols}{A numeric value or vector indicating which column(s) to be selected.}
+
+\item{widths}{A character string telling HTML & LaTeX how wide the column
+needs to be, e.g. "10cm", "3in" or "30em".}
+
+\item{position}{A character string determining how to position the table on a
+page. Possible values include left, center, right, float_left and
+float_right. Please see the package doc site for demonstrations. For a
+LaTeX table, if float_* is selected, LaTeX package wrapfig will be
+imported.}
+
+\item{font_size}{A numeric input for table font size}
+
+\item{row_label_position}{A character string determining the justification of
+the row labels in a table. Possible values inclued l for left, c for
+center, and r for right. The default value is l for left justifcation.}
+
+\item{stripe_color}{LaTeX option allowing users to pick a different color for
+their strip lines. This option is not available in HTML}
+
+\item{stripe_index}{LaTeX option allowing users to customize which rows
+should have stripe color.}
+
+\item{...}{Other arguments passed to knitr::kable (see Examples and
+References).}
 }
 \value{
 A character vector of the table source code.
