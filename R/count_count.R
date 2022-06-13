@@ -7,7 +7,7 @@
 #' Wrapper function to `dplyr::count()` and `dplyr::add_count()`
 #'
 #' @param data  A tibble or data frame.
-#' @param ... <data-masking> Variables to group by.
+#' @param ... data-masking Variables to group by.
 #' @param sort If TRUE, will show the largest groups at the top.
 #' @param .drop For count(): if FALSE will include counts for empty groups (i.e. for levels of factors that don't exist in the data). Deprecated in add_count() since it didn't actually affect the output.
 #'

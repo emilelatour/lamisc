@@ -9,7 +9,7 @@ count_count(data, ..., sort = FALSE, .drop = FALSE)
 \arguments{
 \item{data}{A tibble or data frame.}
 
-\item{...}{<data-masking> Variables to group by.}
+\item{...}{data-masking Variables to group by.}
 
 \item{sort}{If TRUE, will show the largest groups at the top.}
 

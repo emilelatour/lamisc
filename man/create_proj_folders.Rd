@@ -7,6 +7,7 @@
 create_proj_folders(
   main_dir = getwd(),
   sub_dir = NULL,
+  is_iit = FALSE,
   folder_names = c("data", "code", "docs", "admin", "deliverables")
 )
 }
@@ -17,6 +18,9 @@ folders. Default is the current working directory (\code{getwd()})}
 \item{sub_dir}{Name of the sub-directory where you want to create folders.
 Default is \code{Null}; folder can be completely specified using \code{main_dir} if
 you'd like.}
+
+\item{is_iit}{Default is \code{FALSE} and the default folder names below are
+used. If \code{TRUE} then the following BSR IIT folders are used \code{c("Admin", "Data", "Code", "Protocol", "EDC", "Deliverables", "Publishing")}}
 
 \item{folder_names}{A character vector of the folder names to create in the
 directory that you specified. Defaults are \code{c("data", "code", "docs", "admin", "deliverables")}.}
