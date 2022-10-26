@@ -40,6 +40,7 @@
 #' @importFrom rlang get_expr
 #' @importFrom rlang quo_name
 #' @importFrom stats bartlett.test
+#' @importFrom stats qt
 #' @importFrom stats t.test
 #' @importFrom tibble tibble
 #'

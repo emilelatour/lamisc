@@ -48,9 +48,10 @@ Imports:
     tableone,
     tibble,
     tidyr,
+    titanic, 
     vcd
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 URL: https://github.com/emilelatour/lamisc
 BugReports: https://github.com/emilelatour/lamisc/issues
 Suggests: 
