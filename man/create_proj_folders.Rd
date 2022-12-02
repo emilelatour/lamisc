@@ -8,7 +8,7 @@ create_proj_folders(
   main_dir = getwd(),
   sub_dir = NULL,
   is_iit = FALSE,
-  folder_names = c("data", "code", "docs", "admin", "deliverables")
+  folder_names = c("admin", "code", "data", "deliverables", "docs")
 )
 }
 \arguments{
@@ -23,7 +23,8 @@ you'd like.}
 used. If \code{TRUE} then the following BSR IIT folders are used \code{c("Admin", "Data", "Code", "Protocol", "EDC", "Deliverables", "Publishing")}}
 
 \item{folder_names}{A character vector of the folder names to create in the
-directory that you specified. Defaults are \code{c("data", "code", "docs", "admin", "deliverables")}.}
+directory that you specified. Defaults are `c("admin", "code", "data",
+"deliverables", "docs").}
 }
 \description{
 A helper function that will create folders for an analysis project in the

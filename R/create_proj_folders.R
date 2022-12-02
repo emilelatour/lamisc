@@ -16,8 +16,8 @@
 #'     used. If `TRUE` then the following BSR IIT folders are used `c("Admin",
 #'     "Data", "Code", "Protocol", "EDC", "Deliverables", "Publishing")`
 #' @param folder_names A character vector of the folder names to create in the
-#'   directory that you specified. Defaults are `c("data", "code", "docs",
-#'   "admin", "deliverables")`.
+#'   directory that you specified. Defaults are `c("admin", "code", "data",
+#'   "deliverables", "docs").
 #'
 #' @importFrom fs path_tidy
 #' @importFrom fs dir_exists
@@ -33,11 +33,11 @@
 create_proj_folders <- function(main_dir = getwd(),
                                 sub_dir = NULL,
                                 is_iit = FALSE,
-                                folder_names = c("data",
+                                folder_names = c("admin",
                                                  "code",
-                                                 "docs",
-                                                 "admin",
-                                                 "deliverables")) {
+                                                 "data",
+                                                 "deliverables",
+                                                 "docs")) {
 
   main_dir <- fs::path_tidy(main_dir)
 
@@ -58,13 +58,13 @@ create_proj_folders <- function(main_dir = getwd(),
 
 
   if (is_iit) {
-    folder_names <- c("Admin",    # Bridge support request emails, contract/budget info
-                      "Data",     # EDC test (UAT) and real trial participant data
+    folder_names <- c("Admin",         # Bridge support request emails, contract/budget info
+                      "Data",          # EDC test (UAT) and real trial participant data
                       "Code",
-                      "Protocol", # LOIs, CRRC/IRB docs, manufacturer docs, FDA docs
-                      "EDC",      # Blueprints, CRF templates, Catherine’s Endpoint Collection Tool
+                      "Protocol",      # LOIs, CRRC/IRB docs, manufacturer docs, FDA docs
+                      "EDC",           # Blueprints, CRF templates, Catherine’s Endpoint Collection Tool
                       "Deliverables",  # anything BSR sends out to collaborators (eg, sample size statement; annotated Blueprint)
-                      "Publishing")   # abstracts, posters, manuscripts
+                      "Publishing")    # abstracts, posters, manuscripts
   }
 
 
