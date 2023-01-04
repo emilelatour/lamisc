@@ -31,3 +31,4 @@
 factor_to_numeric <- function(x) {
   match(x, levels(x))
 }
+
