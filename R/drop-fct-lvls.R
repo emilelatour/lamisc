@@ -9,7 +9,7 @@
 #'
 #' @param data A data frame or tibble
 #' @param x A factor (or character vector).
-#' @param lvls Chacter string of factors to drop
+#' @param lvls Character string of factors to drop
 #'
 #' @importFrom dplyr filter
 #' @importFrom dplyr mutate
