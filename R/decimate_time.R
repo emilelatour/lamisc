@@ -1,5 +1,4 @@
 
-
 #' @title
 #' Convert time to decimals
 #'
@@ -31,15 +30,15 @@
 #'
 #' decimate_time(time = lubridate::hms("3:30:00"),
 #'               units = "minutes")
-
+#'
 decimate_time <- function(time,
                           units = "hours") {
 
-  if (any((class(time) %in% c("hms",
-                              "difftime",
-                              "Period")))) {
+  if (any(inherits(time, c("hms",
+                           "difftime",
+                           "Period")))) {
     time <- time
-  } else if (class(time) == "character") {
+  } else if (inherits(time, "character")) {
     time <- lubridate::hms(time)
   } else {
     stop("Class not character or hms or difftime")

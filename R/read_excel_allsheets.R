@@ -3,7 +3,7 @@
 #' Read in all sheets in an excel spreadsheet.
 #'
 #' @description
-#' Helper function to quickly and easily read in all the sheets in an excel spreadsheet using `readxl::read_excel`/
+#' Helper function to quickly and easily read in all the sheets in an excel spreadsheet using `readxl::read_excel`
 #'
 #' @param file Path to the xls/xlsx file
 #' @param tibble `TRUE` to return a tibble, `FALSE` to return data frame.

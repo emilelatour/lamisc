@@ -28,4 +28,5 @@ decimate_time(time = "3:30:00",
 
 decimate_time(time = lubridate::hms("3:30:00"),
               units = "minutes")
+
 }

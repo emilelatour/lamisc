@@ -2,55 +2,167 @@
 % Please edit documentation in R/calc_ttest.R
 \name{calc_ttest}
 \alias{calc_ttest}
-\title{Calculate t-test}
+\alias{calc_ttest_i}
+\title{Calculate a t-test and summary statistics}
 \usage{
 calc_ttest(
   data,
   var,
   by = NULL,
   mu = 0,
-  paired = TRUE,
+  paired = FALSE,
   var_equal = FALSE,
-  df_form = "Welch",
+  df_form = "Satterthwaite",
   conf_level = 0.95,
   check_variance = FALSE,
   reverse_groups = FALSE,
-  show_cohens_d = FALSE
+  show_cohens_d = FALSE,
+  show_alternative = FALSE,
+  fmt_res = FALSE,
+  accuracy = 0.1,
+  ...
+)
+
+calc_ttest_i(
+  n1,
+  m1,
+  s1,
+  n2 = NULL,
+  m2 = NULL,
+  s2 = NULL,
+  mu = 0,
+  var_equal = FALSE,
+  df_form = "Satterthwaite",
+  conf_level = 0.95,
+  check_variance = FALSE,
+  reverse_groups = FALSE,
+  show_cohens_d = FALSE,
+  show_alternative = FALSE,
+  fmt_res = FALSE,
+  accuracy = 0.1,
+  ...
 )
 }
 \arguments{
-\item{data}{A tibble or data frame.}
+\item{data}{A data frame or tibble.}
 
-\item{var}{A numeric vector of data values.}
+\item{var}{A (non-empty) numeric vector of data values.}
 
-\item{by}{Factor or character indicating groups}
+\item{by}{A factor (or character) with two levels giving the corresponding groups.}
 
-\item{mu}{a number indicating the true value of the mean (or difference in means if you are performing a two sample test).}
+\item{mu}{A number indicating the true value of the mean (or difference in
+means if you are performing a two sample test).}
 
-\item{paired}{a logical indicating whether you want a paired t-test.}
+\item{paired}{A logical indicating whether you want a paired t-test.}
 
-\item{var_equal}{a logical variable indicating whether to treat the two variances as being equal. If TRUE then the pooled variance is used to estimate the variance otherwise the Welch (or Satterthwaite) approximation to the degrees of freedom is used.}
+\item{var_equal}{logical variable indicating whether to treat the two
+variances as being equal. If TRUE then the pooled variance is used to
+estimate the variance otherwise if FALSE then unequal variance is assumed
+and the Welch (or Satterthwaite) approximation to the degrees of freedom is
+used.}
 
-\item{df_form}{Character string indicating the formula to use to calculate the degrees of freedom when the variances are unequal: "Welch" (default) or "Satterthwaite"}
+\item{df_form}{If unequal variances are assumed, then specify to use "Welch"
+or "Satterthwaite" (default) approximation to the degrees of freedom. R
+\code{t.test} documentation says it uses "Welch" but actually they use
+"Satterthwaite". At least, "Welch" in R matches "Satterthwaite" in Stata.}
 
-\item{conf_level}{confidence level of the interval.}
+\item{conf_level}{Confidence level of the interval. Default level is 0.95.}
 
-\item{check_variance}{If TRUE returns checks on the Hogeneity of variances. Default is FALSE}
+\item{check_variance}{A logical whether to return some tests of homogeneity
+of variances. Bartlett's, Levene's, Fligner, and check of the ratio of the
+standard deviations.}
 
-\item{reverse_groups}{If TRUE, the \code{by} groups are reversed}
+\item{reverse_groups}{If TRUE, then uses \code{forcats::fct_rev()} to reverse the
+order of the groups being compared. Default is FALSE.}
 
-\item{show_cohens_d}{If TRUE, then estimated Cohen's d (effect size) is returned.}
+\item{show_cohens_d}{Logical whether to return the effect size, Cohen's d.
+T-test conventional effect sizes, proposed by Cohen, are: 0.2 (small effect),
+0.5 (moderate effect) and 0.8 (large effect) (Cohen 1998, Navarro (2015)).
+This means that if two groups' means don’t differ by 0.2 standard
+deviations or more, the difference is trivial, even if it is statistically
+significant.}
+
+\item{show_alternative}{Logical whether to show alternative hypothesis
+notation in the test results. Default is FALSE.}
+
+\item{fmt_res}{Logical whether to format estimates and p-values for the summary_stats,
+hypothesis_tests, tests_of_homogeneity_of_variance, and variance_check.}
+
+\item{accuracy}{A number to round to. Use (e.g.) 0.01 to show 2 decimal
+places of precision. If NULL, the default, uses a heuristic that should
+ensure breaks have the minimum number of digits needed to show the
+difference between adjacent values.}
+
+\item{...}{Additional arguments passed to \code{scales::number()}}
+
+\item{n1}{Sample size of group 1}
+
+\item{m1}{Mean for group 1}
+
+\item{s1}{Standard deviation for group 1}
+
+\item{n2}{Sample size of group 2 (if applicable)}
+
+\item{m2}{Mean for group 2 (if applicable)}
+
+\item{s2}{Standard deviation for group 2 (if applicable)}
 }
 \value{
 A list
+\itemize{
+\item summary_stats - Summary statistics. Estimates and confidence intervals.
+\item difference - A statement of the Null hypothesis.
+\item method - What test is being used. Character string.
+\item hypothesis_tests - Test statistics, p-values, estimates and
+confidence intervals for two-sided and one-sided tests.
+\item tests_of_homogeneity_of_variance - A few difference checks for
+homogeneity of variances. Levene's test and the F test are fragile w.r.t to
+normality. Don't rely on these. Levene's test is an example of a test where
+alpha should be set quite high, say 0.10 or 0.15. This is because Type II
+error for this test are more severe (claim equal variances when they are
+not). F-test: Compare the variances of two samples. The data must be
+normally distributed. Bartlett’s test: Compare the variances of k samples,
+where k can be more than two samples. The data must be normally
+distributed. The Levene test is an alternative to the Bartlett test that is
+less sensitive to departures from normality. Levene’s test: Compare the
+variances of k samples, where k can be more than two samples. It’s an
+alternative to the Bartlett’s test that is less sensitive to departures
+from normality. Fligner-Killeen test: a non-parametric test which is very
+robust against departures from normality.
+\item variance_check - A variance check. If the ratio of SDmax and SDmin
+is less than 2 (SDmax / SDmin < 2) the the pooled estimate of the common
+variance can be used. (Use \code{var_equal = TRUE}). If the ratio of population
+standard deviations is "close" to 3, then the test can suffer if the sample
+sizes are dissimilar (even worse if it's the smaller sample size has larger
+variance). If distributions are slightly skewed, then skewness should be in
+the same direction and sample sizes should be nearly equal to minimize the
+impact of this problem. For practical purposes, t-tests give good results
+when data are approximately symmetric and the ratio of sample standard
+deviations doesn't exceed 2 (e.g. SDmax / SDmin < 2).
+
+}
+
+A list
 }
 \description{
-Perform two sample t-tests (one sample coming later). Wrapper around \code{t.test}
-to return cleaner results and more information in one function.
+Function to return tidy results for a t-test along with the summary
+statistics if the groups. Fashioned after the t-test output in Stata and the
+details given there. Also, if requested, checks for equal variance and
+Cohen's d are returned.
+
+Calculate a t-test (immediate form) and summary statistics. Similar to
+\code{calc_ttest()} except that we specify summary statistics rather than
+variables and data as arguments.
+
+Function to return tidy results for a t-test along with the summary
+statistics if the groups. Fashioned after the t-test output in Stata and the
+details given there. Also, if requested, checks for equal variance and
+Cohen's d are returned.
 }
 \examples{
-
+library(dplyr)
 library(tibble)
+library(tidyr)
 
 fuel <- tibble::tribble(
   ~mpg, ~treated,
@@ -81,109 +193,78 @@ fuel <- tibble::tribble(
 )
 
 
-# Unpaired, unequal variances, Welch DF
-calc_ttest(data = fuel,
-           var = mpg,
-           by = treated,
-           mu = 0,
-           paired = FALSE,
-           var_equal = FALSE,
-           conf_level = 0.95)
+#### One sample t-test --------------------------------
 
-# Unpaired, unequal variances, Satterthwaite DF
 calc_ttest(data = fuel,
-           var = mpg,
-           by = treated,
-           mu = 0,
-           paired = FALSE,
-           var_equal = FALSE,
-           df_form = "Satterthwaite",
-           conf_level = 0.95)
+           var = mpg)
 
 
 calc_ttest(data = fuel,
            var = mpg,
-           by = treated,
-           mu = 0,
-           paired = FALSE,
-           var_equal = TRUE,
-           conf_level = 0.95)
+           mu = 20)
 
 calc_ttest(data = fuel,
            var = mpg,
-           by = treated,
-           mu = 0,
-           paired = FALSE,
-           var_equal = TRUE,
-           conf_level = 0.95,
+           mu = 20,
            show_cohens_d = TRUE)
 
 
 calc_ttest(data = fuel,
            var = mpg,
-           by = treated,
-           mu = 0,
-           paired = FALSE,
-           var_equal = TRUE,
-           conf_level = 0.95,
-           reverse_groups = TRUE)
+           mu = 20,
+           fmt_res = TRUE)
+
+
+#### Paired t-test --------------------------------
 
 calc_ttest(data = fuel,
            var = mpg,
            by = treated,
-           mu = 0,
+           paired = TRUE)
+
+
+#### 2-sample t-test --------------------------------
+
+calc_ttest(data = fuel,
+           var = mpg,
+           by = treated,
+           paired = FALSE)
+
+calc_ttest(data = fuel,
+           var = mpg,
+           by = treated,
            paired = FALSE,
-           var_equal = FALSE,
-           conf_level = 0.95,
            check_variance = TRUE)
 
+calc_ttest(data = fuel,
+           var = mpg,
+           by = treated,
+           paired = FALSE,
+           check_variance = TRUE,
+           fmt_res = TRUE)
 
 
+calc_ttest(data = fuel,
+           var = mpg,
+           by = treated,
+           df_form = "Satterthwaite",
+           paired = FALSE)
 
-### --------------------------------------------------------------
-### Paired t-test, Flicker feather example, p. 185
-### --------------------------------------------------------------
-
-feather <- tibble::tribble(
-  ~Bird,     ~name, ~value,
-  "A", "Typical", -0.255,
-  "A",     "Odd", -0.324,
-  "B", "Typical", -0.213,
-  "B",     "Odd", -0.185,
-  "C", "Typical",  -0.19,
-  "C",     "Odd", -0.299,
-  "D", "Typical", -0.185,
-  "D",     "Odd", -0.144,
-  "E", "Typical", -0.045,
-  "E",     "Odd", -0.027,
-  "F", "Typical", -0.025,
-  "F",     "Odd", -0.039,
-  "G", "Typical", -0.015,
-  "G",     "Odd", -0.264,
-  "H", "Typical",  0.003,
-  "H",     "Odd", -0.077,
-  "I", "Typical",  0.015,
-  "I",     "Odd", -0.017,
-  "J", "Typical",   0.02,
-  "J",     "Odd", -0.169,
-  "K", "Typical",  0.023,
-  "K",     "Odd", -0.096,
-  "L", "Typical",   0.04,
-  "L",     "Odd",  -0.33,
-  "M", "Typical",   0.04,
-  "M",     "Odd", -0.346,
-  "N", "Typical",   0.05,
-  "N",     "Odd", -0.191,
-  "O", "Typical",  0.055,
-  "O",     "Odd", -0.128,
-  "P", "Typical",  0.058,
-  "P",     "Odd", -0.182
-)
+# Compare to Base R
+with(fuel, t.test(mpg ~ treated))
 
 
+calc_ttest(data = fuel,
+           var = mpg,
+           by = treated,
+           df_form = "Welch",
+           paired = FALSE)
+#### Immediate form --------------------------------
 
-calc_ttest(data = feather,
-           var = value,
-           by = name,
-           paired = TRUE)
+# One sample t-test
+calc_ttest_i(n1 = 24, m1 = 21.88, s1 = 3.06)
+
+# Two sample t-test (only available for unpaired)
+calc_ttest_i(n1 = 12, m1 = 21.0, s1 = 2.7,
+             n2 = 12, m2 = 22.75, s2 = 3.3)
 }

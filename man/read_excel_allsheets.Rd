@@ -17,7 +17,7 @@ read_excel_allsheets(file, tibble = TRUE, ...)
 A list of tibbles.
 }
 \description{
-Helper function to quickly and easily read in all the sheets in an excel spreadsheet using \code{readxl::read_excel}/
+Helper function to quickly and easily read in all the sheets in an excel spreadsheet using \code{readxl::read_excel}
 }
 \examples{
 library(readxl)

@@ -41,6 +41,10 @@ count_count <- function(data, ...,
                         sort = FALSE,
                         .drop = FALSE) {
 
+  # Fix no visible binding for global variable
+  nn <- NULL
+
+
   vars <- rlang::enquos(...)
 
   if (length(vars) > 2) {

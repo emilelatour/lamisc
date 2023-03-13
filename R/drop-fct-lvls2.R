@@ -143,6 +143,10 @@ pacman::p_load(
 
 drop_lvls2 <- function(data, var, lvls_to_drop = NULL) {
 
+  # Fix no visible binding for global variable
+  temp_var <- NULL
+
+
   var <- rlang::enquo(var)
   var_nm <- rlang::quo_name(var)
 
@@ -175,9 +179,9 @@ drop_lvls2 <- function(data, var, lvls_to_drop = NULL) {
     new_lvls <- lvls[!lvls %in% lvls_to_drop]
 
     data <- data %>%
-      mutate(foo = dplyr::if_else(!! var %in% lvls_to_drop, 1, 0)) %>%
-      subset(., foo != 1) %>%
-      dplyr::select(-foo) %>%
+      mutate(temp_var = dplyr::if_else(!! var %in% lvls_to_drop, 1, 0)) %>%
+      subset(., temp_var != 1) %>%
+      dplyr::select(-temp_var) %>%
       mutate(!! var_nm := factor(!! var,
                                  levels = new_lvls))
 
@@ -192,9 +196,9 @@ drop_lvls2 <- function(data, var, lvls_to_drop = NULL) {
 
     data <- data %>%
       srvyr::as_survey_design() %>%
-      mutate(foo = dplyr::if_else(!! var %in% lvls_to_drop, 1, 0)) %>%
-      subset(., foo != 1) %>%
-      dplyr::select(-foo) %>%
+      mutate(temp_var = dplyr::if_else(!! var %in% lvls_to_drop, 1, 0)) %>%
+      subset(., temp_var != 1) %>%
+      dplyr::select(-temp_var) %>%
       mutate(!! var_nm := factor(!! var,
                                  levels = new_lvls)) %>%
       survey::as.svydesign2()
