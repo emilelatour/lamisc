@@ -4,7 +4,13 @@
 \alias{fmt_pvl}
 \title{p-values formatter}
 \usage{
-fmt_pvl(x, accuracy = 0.001, decimal.mark = ".", add_p = FALSE)
+fmt_pvl(
+  x,
+  accuracy = 0.001,
+  decimal.mark = ".",
+  add_p = FALSE,
+  as_factor = FALSE
+)
 }
 \arguments{
 \item{x}{A numeric vector of p-values.}
@@ -15,6 +21,8 @@ fmt_pvl(x, accuracy = 0.001, decimal.mark = ".", add_p = FALSE)
 decimal point.}
 
 \item{add_p}{Add "P =" before the value?}
+
+\item{as_factor}{Logical; if TRUE, a factor is returned}
 }
 \value{
 \code{pvalue_format} returns a function with single parameter

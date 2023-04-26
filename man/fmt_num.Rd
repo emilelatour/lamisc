@@ -15,6 +15,7 @@ fmt_num(
   decimal.mark = ".",
   trim = TRUE,
   as_numeric = FALSE,
+  as_factor = FALSE,
   ...
 )
 
@@ -50,6 +51,8 @@ decimal point.}
 width (see \code{\link[base:format]{base::format()}}).}
 
 \item{as_numeric}{Logical; if TRUE, a numeric value is returned}
+
+\item{as_factor}{Logical; if TRUE, a factor is returned}
 
 \item{...}{Other arguments passed on to \code{\link[base:format]{base::format()}}.}
 }

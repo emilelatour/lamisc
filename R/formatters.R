@@ -27,7 +27,12 @@
 #' @param trim Logical, if `FALSE`, values are right-justified to a common
 #'   width (see [base::format()]).
 #' @param as_numeric Logical; if TRUE, a numeric value is returned
+#' @param as_factor Logical; if TRUE, a factor is returned
 #' @param ... Other arguments passed on to [base::format()].
+#'
+#' @importFrom forcats fct_reorder
+#' @importFrom readr parse_number
+#'
 #' @export
 #' @examples
 #' v <- c(12.3, 4, 12345.789, 0.0002)
@@ -52,7 +57,8 @@ fmt_num <- function(x,
                     big.mark = "",
                     decimal.mark = ".",
                     trim = TRUE,
-                    as_numeric = FALSE, ...) {
+                    as_numeric = FALSE,
+                    as_factor = FALSE, ...) {
 
   if (length(x) == 0) return(character())
   accuracy <- accuracy %||% .precision(x)
@@ -60,7 +66,7 @@ fmt_num <- function(x,
   nsmall <- -floor(log10(accuracy))
   nsmall <- min(max(nsmall, 0), 20)
 
-  ret <- format(
+  res <- format(
     scale * x,
     big.mark = big.mark,
     decimal.mark = decimal.mark,
@@ -69,16 +75,20 @@ fmt_num <- function(x,
     scientific = FALSE,
     ...
   )
-  ret <- paste0(prefix, ret, suffix)
-  ret[is.infinite(x)] <- as.character(x[is.infinite(x)])
+  res <- paste0(prefix, res, suffix)
+  res[is.infinite(x)] <- as.character(x[is.infinite(x)])
 
   # restore NAs from input vector
-  ret[is.na(x)] <- NA
+  res[is.na(x)] <- NA
 
   if (as_numeric) {
-    as.numeric(ret)
+    as.numeric(res)
+  } else if (as_factor) {
+    forcats::fct_reorder(.f = res,
+                         .x = readr::parse_number(res),
+                         .na_rm = FALSE)
   } else {
-    ret
+    res
   }
 
 }
@@ -139,12 +149,12 @@ fmt_num <- function(x,
 #' fmt_pct(x = c(1, runif(10)), trim = FALSE)
 fmt_pct <- function(x,
                     accuracy = NULL,
-                     scale = 100,
-                     prefix = "",
-                     suffix = "%",
-                     big.mark = "",
-                     decimal.mark = ".",
-                     trim = TRUE, ...) {
+                    scale = 100,
+                    prefix = "",
+                    suffix = "%",
+                    big.mark = "",
+                    decimal.mark = ".",
+                    trim = TRUE, ...) {
   fmt_num(
     x = x,
     accuracy = accuracy,
@@ -173,6 +183,7 @@ fmt_pct <- function(x,
 #'   decimal point.
 #' @param add_p Add "P =" before the value?
 #' @param x A numeric vector of p-values.
+#' @param as_factor Logical; if TRUE, a factor is returned
 #' @export
 #' @examples
 #' p <- c(.50, 0.12, .045, .011, .009, .00002, NA)
@@ -182,7 +193,8 @@ fmt_pct <- function(x,
 fmt_pvl <- function(x,
                     accuracy = .001,
                     decimal.mark = ".",
-                    add_p = FALSE) {
+                    add_p = FALSE,
+                    as_factor = FALSE) {
   res <- fmt_num(
     x,
     accuracy = accuracy,
@@ -193,9 +205,9 @@ fmt_pvl <- function(x,
   if (add_p) res <- paste0("P = ", res)
 
   below <- fmt_num(accuracy,
-                  accuracy = accuracy,
-                  decimal.mark = decimal.mark,
-                  big.mark = "")
+                   accuracy = accuracy,
+                   decimal.mark = decimal.mark,
+                   big.mark = "")
 
   if (add_p) {
     below <- paste0("P < ", below)
@@ -204,5 +216,13 @@ fmt_pvl <- function(x,
   }
 
   res[x < accuracy] <- below
-  res
+
+  if (as_factor) {
+    forcats::fct_reorder(.f = res,
+                         .x = readr::parse_number(res),
+                         .na_rm = FALSE)
+  } else {
+    res
+  }
+
 }
