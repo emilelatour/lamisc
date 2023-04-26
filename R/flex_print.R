@@ -21,7 +21,7 @@
 #'   vector of individual letters, e.g. 'clc' becomes c('c', 'l', 'c').
 #' @param align_j Column selection for `align` argument. Default is
 #'   `1:length(align)`.
-#' @param auto_fit Logical (Default is TRUE). See `flextable::autofit()`
+#' @param auto_fit Logical (Default is FALSE). See `flextable::autofit()`
 #' @param width width in inches as a character vector.
 #' @param width_j columns selection for width.
 #' @param width_unit unit for width, one of "in", "cm", "mm".
@@ -35,6 +35,7 @@
 #' @param title_size Font size for the title. Default is 16.
 #' @param subtitle_size  Font size for the subtitle. Default is 11.
 #' @param footer_size  Font size for the footer Default is 11.
+#' @param na_dflt,nan_dflt string to be used for NA and NaN values.
 #'
 #' @importFrom flextable add_footer_lines
 #' @importFrom flextable add_header_lines
@@ -48,6 +49,7 @@
 #' @importFrom flextable fp_border_default
 #' @importFrom flextable hline
 #' @importFrom flextable hline_top
+#' @importFrom flextable set_flextable_defaults
 #' @importFrom flextable set_header_labels
 #' @importFrom flextable width
 #' @importFrom officer fp_border
@@ -103,7 +105,7 @@ flex_print <- function(x,
                        font_size = 11,
                        align = NULL,
                        align_j = NULL,
-                       auto_fit = TRUE,
+                       auto_fit = FALSE,
                        width = NULL,
                        width_j = NULL,
                        width_unit = "in",
@@ -114,7 +116,13 @@ flex_print <- function(x,
                        footer = NULL,
                        title_size = 16,
                        subtitle_size = 11,
-                       footer_size = 11) {
+                       footer_size = 11,
+                       na_dflt = "NA",
+                       nan_dflt = "NaN") {
+
+
+  # Set the defaults for NA and NaN
+  na_def <- flextable::set_flextable_defaults(na_str = na_dflt, nan_str = nan_dflt)
 
   # Get the dimensions of x
   x_dim <- dim(x)
@@ -276,6 +284,8 @@ flex_print <- function(x,
       flextable::autofit()
   }
 
+  # Set the defaults for NA and NaN back to normal
+  do.call(flextable::set_flextable_defaults, na_def)
 
   return(x)
 

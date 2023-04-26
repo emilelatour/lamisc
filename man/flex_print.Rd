@@ -10,7 +10,7 @@ flex_print(
   font_size = 11,
   align = NULL,
   align_j = NULL,
-  auto_fit = TRUE,
+  auto_fit = FALSE,
   width = NULL,
   width_j = NULL,
   width_unit = "in",
@@ -21,7 +21,9 @@ flex_print(
   footer = NULL,
   title_size = 16,
   subtitle_size = 11,
-  footer_size = 11
+  footer_size = 11,
+  na_dflt = "NA",
+  nan_dflt = "NaN"
 )
 }
 \arguments{
@@ -42,7 +44,7 @@ vector of individual letters, e.g. 'clc' becomes c('c', 'l', 'c').}
 \item{align_j}{Column selection for \code{align} argument. Default is
 \code{1:length(align)}.}
 
-\item{auto_fit}{Logical (Default is TRUE). See \code{flextable::autofit()}}
+\item{auto_fit}{Logical (Default is FALSE). See \code{flextable::autofit()}}
 
 \item{width}{width in inches as a character vector.}
 
@@ -67,6 +69,8 @@ of the table.}
 \item{subtitle_size}{Font size for the subtitle. Default is 11.}
 
 \item{footer_size}{Font size for the footer Default is 11.}
+
+\item{na_dflt, nan_dflt}{string to be used for NA and NaN values.}
 }
 \value{
 A flextable
