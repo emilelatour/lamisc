@@ -105,7 +105,7 @@ flex_print <- function(x,
                        font_size = 11,
                        align = NULL,
                        align_j = NULL,
-                       auto_fit = FALSE,
+                       auto_fit = TRUE,
                        width = NULL,
                        width_j = NULL,
                        width_unit = "in",
@@ -136,6 +136,12 @@ flex_print <- function(x,
   # Make a flextable object
   x <- x |>
     flextable::flextable()
+
+  # Autofit if TRUE
+  if (auto_fit) {
+    x <- x |>
+      flextable::autofit()
+  }
 
 
   # Set columns width
@@ -278,14 +284,9 @@ flex_print <- function(x,
   }
 
 
-  # Autofit if TRUE
-  if (auto_fit) {
-    x <- x |>
-      flextable::autofit()
-  }
-
   # Set the defaults for NA and NaN back to normal
   do.call(flextable::set_flextable_defaults, na_def)
+
 
   return(x)
 

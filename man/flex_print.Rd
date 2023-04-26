@@ -10,7 +10,7 @@ flex_print(
   font_size = 11,
   align = NULL,
   align_j = NULL,
-  auto_fit = FALSE,
+  auto_fit = TRUE,
   width = NULL,
   width_j = NULL,
   width_unit = "in",
