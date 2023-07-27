@@ -47,19 +47,8 @@
 #'           replace = TRUE,
 #'           ordered = FALSE)
 
-
-
 #' @rdname my_sample
-perm <- function(n, k) {
-  factorial(n) / factorial(n - k)
-}
-
-#' @rdname my_sample
-comb <- function(n, k) {
-  factorial(n) / factorial(n - k) / factorial(k)
-}
-
-#' @rdname my_sample
+#' @export
 #' @param replace Logical indicating with or without replacement; default is
 #'   `TRUE`.
 #' @param ordered Logical indicating ordered or unordered; default is
@@ -86,6 +75,18 @@ my_sample <- function(n, k, replace = TRUE, ordered = TRUE) {
 
   }
 
-
-
 }
+
+#' @rdname my_sample
+#' @export
+perm <- function(n, k) {
+  factorial(n) / factorial(n - k)
+}
+
+#' @rdname my_sample
+#' @export
+comb <- function(n, k) {
+  factorial(n) / factorial(n - k) / factorial(k)
+}
+
+

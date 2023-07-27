@@ -11,7 +11,7 @@ drop_fct_lvls(data, x, lvls)
 
 \item{x}{A factor (or character vector).}
 
-\item{lvls}{Character string of factors to drop}
+\item{lvls}{Character string of factor levels to drop}
 }
 \value{
 An object of the same type as data.
