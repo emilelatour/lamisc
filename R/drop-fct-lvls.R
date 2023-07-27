@@ -9,7 +9,7 @@
 #'
 #' @param data A data frame or tibble
 #' @param x A factor (or character vector).
-#' @param lvls Character string of factors to drop
+#' @param lvls Character string of factor levels to drop
 #'
 #' @importFrom dplyr filter
 #' @importFrom dplyr mutate
@@ -52,9 +52,17 @@ drop_fct_lvls <- function(data, x, lvls) {
     warning("Some levels don't appear in the column in the data")
   }
 
+  curr_lvls <- dplyr::pull(.data = data,
+                           var = {{ x }}) %>%
+    levels()
+
+  new_lvls <- curr_lvls[!curr_lvls %in% lvls]
+
   data <- data %>%
     dplyr::filter(! {{ x }} %in% lvls) %>%
-    dplyr::mutate({{ x }} := forcats::fct_drop({{ x }}))
+    # dplyr::mutate({{ x }} := forcats::fct_drop({{ x }})) |>
+    mutate({{ x }} := factor({{ x }},
+                             levels = new_lvls))
 
   return(data)
 }
