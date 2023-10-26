@@ -117,7 +117,9 @@ summarytools::st_options(bootstrap.css     = FALSE,       # Already part of the 
 # Load the data
 
 ```{r load-the-data}
-data <- data("airquality", package = "naniar")
+
+# data("riskfactors", package = "naniar")
+data <- riskfactors
 
 ```
 
@@ -138,24 +140,20 @@ print(summarytools::dfSummary(data,
 
 ```{r}
 
-data %>% 
+data |> 
   summarise(
-    n_rows = dim(.)[[1]], 
-    n_missing = naniar::n_case_miss(.), 
-    # prop_missing = naniar::prop_miss_case(.), 
+    n_rows = dim(data)[[1]], 
+    n_missing = naniar::n_case_miss(data), 
     prop_missing = n_missing / n_rows, 
-    n_complete = naniar::n_case_complete(.), 
-    # prop_complete = naniar::prop_complete_case(.)
+    n_complete = naniar::n_case_complete(data), 
     prop_complete = n_complete / n_rows
-  ) %>% 
-  flextable::flextable() %>% 
-  flextable::fontsize(x = ., 
-                      part = "body", 
-                      size = 12) %>% 
-  flextable::fontsize(x = ., 
-                      part = "header", 
+  ) |> 
+  flextable::flextable() |> 
+  flextable::fontsize(part = "body", 
+                      size = 12) |> 
+  flextable::fontsize(part = "header", 
                       size = 14)
-  
+
 
 ```
 
@@ -165,11 +163,10 @@ Missingness plot with variables that have any missing at all selected.
 
 ```{r}
 # https://cran.r-project.org/web/packages/naniar/vignettes/getting-started-w-naniar.html
-data %>% 
-  dplyr::select_if(.tbl = ., 
-                   .predicate = naniar::any_na) %>% 
-  naniar::vis_miss(., 
-                   cluster = TRUE, 
+
+dplyr::select_if(.tbl = data, 
+                 .predicate = naniar::any_na) |> 
+  naniar::vis_miss(cluster = TRUE, 
                    sort_miss = FALSE)
 ```
 
@@ -178,24 +175,21 @@ data %>%
 Summary of the number of columns with any missing values. 
 
 ```{r}
-data %>% 
-  purrr::map_df(.x = ., 
-                .f = ~ sum(is.na(.))) %>% 
-  tidyr::gather(., 
-                key = "vars", 
-                value = "n_miss") %>% 
+purrr::map_df(.x = data, 
+              .f = ~ sum(is.na(.x))) |> 
+  tidyr::pivot_longer(cols = dplyr::everything(), 
+                      names_to = "vars", 
+                      values_to = "n_miss") |> 
   summarise(n_var = length(n_miss), 
             n_missing = sum(n_miss > 0), 
             prop_missing = n_missing / n_var, 
             n_complete = sum(n_miss == 0), 
             prop_complete = n_complete / n_var, 
-            ) %>% 
-  flextable::flextable() %>% 
-  flextable::fontsize(x = ., 
-                      part = "body", 
-                      size = 12) %>% 
-  flextable::fontsize(x = ., 
-                      part = "header", 
+  ) |> 
+  flextable::flextable() |> 
+  flextable::fontsize(part = "body", 
+                      size = 12) |> 
+  flextable::fontsize(part = "header", 
                       size = 14)
 
 ```
@@ -206,15 +200,13 @@ data %>%
 Summary for each variable of the number or missings and the percent missings of the variables. By default, it orders by the most missings in each variable
 
 ```{r}
-data %>% 
-  naniar::miss_var_summary() %>% 
-  # dplyr::slice(1:20) %>% 
-  flextable::flextable() %>% 
-  flextable::fontsize(x = ., 
-                      part = "body", 
-                      size = 12) %>% 
-  flextable::fontsize(x = ., 
-                      part = "header", 
+data |> 
+  naniar::miss_var_summary() |> 
+  # dplyr::slice(1:20) |> 
+  flextable::flextable() |> 
+  flextable::fontsize(part = "body", 
+                      size = 12) |> 
+  flextable::fontsize(part = "header", 
                       size = 14)
 ```
 
@@ -223,14 +215,12 @@ data %>%
 The number of cases with 0, 1, 2, up to n, missing values and the proportion of the number of cases those cases make up. 
 
 ```{r}
-data %>% 
-  naniar::miss_case_table() %>% 
-  flextable::flextable() %>% 
-  flextable::fontsize(x = ., 
-                      part = "body", 
-                      size = 12) %>% 
-  flextable::fontsize(x = ., 
-                      part = "header", 
+data |> 
+  naniar::miss_case_table() |> 
+  flextable::flextable() |> 
+  flextable::fontsize(part = "body", 
+                      size = 12) |> 
+  flextable::fontsize(part = "header", 
                       size = 14)
 ```
 
