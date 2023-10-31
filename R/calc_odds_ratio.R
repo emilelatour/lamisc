@@ -56,13 +56,27 @@ calc_odds_ratio <- function(data,
                             pad_zeros = FALSE,
                             conf_level = 0.95) {
 
-  tab <- lamisc::make_table(data = data,
-                            x = !! rlang::enquo(x),
-                            y = !! rlang::enquo(y),
-                            x_lvls = NULL,
-                            y_lvls = NULL,
-                            labs = c(NA, NA),
-                            useNA = "ifany")
+  # tab <- lamisc::make_table(data = data,
+  #                           x = !! rlang::enquo(x),
+  #                           y = !! rlang::enquo(y),
+  #                           x_lvls = NULL,
+  #                           y_lvls = NULL,
+  #                           labs = c(NA, NA),
+  #                           useNA = "ifany")
+
+  tab <- data %>%
+    dplyr::select({{ x }}, {{ y }}) |>
+    na.omit() |>
+    table()
+
+
+  if (dim(tab)[[1]] != 2) {
+    stop("x variable must have two levels.")
+  }
+
+  if (dim(tab)[[2]] != 2) {
+    stop("y variable must have two levels.")
+  }
 
   if (pad_zeros) {
     if (any(tab == 0)) tab <- tab + 0.5
@@ -78,3 +92,4 @@ calc_odds_ratio <- function(data,
                  upper_ci = CI[[2]],
                  conf_level = conf_level)
 }
+

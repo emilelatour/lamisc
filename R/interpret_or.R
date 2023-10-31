@@ -134,21 +134,21 @@
 
 interpret_or <- function(data, x, y, alpha = 0.05) {
 
-  xtab <- data %>%
-    dplyr::select({{ x }}, {{ y }}) %>%
-    table(.)
+  xtab <- data |>
+    dplyr::select({{ x }}, {{ y }}) |>
+    table()
 
   n00 <- xtab[1, 1]
   n01 <- xtab[1, 2]
   n10 <- xtab[2, 1]
   n11 <- xtab[2, 2]
 
-  fisher_res <- fisher.test(xtab) %>%
-    broom::tidy() %>%
+  fisher_res <- fisher.test(xtab) |>
+    broom::tidy() |>
     janitor::clean_names()
 
-  chisq_res <- chisq.test(xtab) %>%
-    broom::tidy() %>%
+  chisq_res <- chisq.test(xtab) |>
+    broom::tidy() |>
     janitor::clean_names()
 
   out_list <- vector("list", 5)

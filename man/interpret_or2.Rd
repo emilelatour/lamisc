@@ -24,7 +24,7 @@ interpret_or2(
 \item{d}{Count of lower right}
 
 \item{dim_names}{A list; labels or the rows and columns of the 2x2
-contingency table. Default is \code{dim_names = list(exposure_status = c("Exposed", "Unexposed"), outcome_status = c("Postive", "Negative"))}}
+contingency table. Default is \code{dim_names = list(exposure_status = c("Exposed", "Unexposed"), outcome_status = c("Positive", "Negative"))}}
 
 \item{alpha}{Default = 0.05. The significance level for the two-sided Wald
 confidence interval.}

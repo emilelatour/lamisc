@@ -23,7 +23,7 @@
 #' @param d Count of lower right
 #' @param dim_names A list; labels or the rows and columns of the 2x2
 #'   contingency table. Default is `dim_names = list(exposure_status =
-#'   c("Exposed", "Unexposed"), outcome_status = c("Postive", "Negative"))`
+#'   c("Exposed", "Unexposed"), outcome_status = c("Positive", "Negative"))`
 #' @param alpha Default = 0.05. The significance level for the two-sided Wald
 #'   confidence interval.
 #'
@@ -159,12 +159,12 @@ interpret_or2 <- function(a, b, c, d,
   n10 <- xtab[2, 1]
   n11 <- xtab[2, 2]
 
-  fisher_res <- fisher.test(xtab) %>%
-    broom::tidy() %>%
+  fisher_res <- fisher.test(xtab) |>
+    broom::tidy() |>
     janitor::clean_names()
 
-  chisq_res <- chisq.test(xtab) %>%
-    broom::tidy() %>%
+  chisq_res <- chisq.test(xtab) |>
+    broom::tidy() |>
     janitor::clean_names()
 
   out_list <- vector("list", 5)
