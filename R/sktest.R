@@ -5,14 +5,14 @@
 #'
 #' @description
 #'
-#' This is an implementation of the `sktest` function thta is available in
+#' This is an implementation of the `sktest` function that is available in
 #' Stata. The function returns a test for normality based on skewness and on
 #' kurtosis, and the a combination of the two tests into an overall test
 #' statistic.
 #'
-#' All of this work here owes a big debt of gratitude and recognitition to Stata
+#' All of this work here owes a big debt of gratitude and recognition to Stata
 #' and to the
-#' [autovar]("https://github.com/roqua/autovar/blob/e7d17834108163315605fc173d31dc6ea8b59e50/R/sktest.r")
+#' [autovar]("https://github.com/roqua/autovar")
 #' package.
 #'
 #' Skewness is a measure of the asymmetry of the probability distribution of a
@@ -40,7 +40,7 @@
 #' + https://www.stata.com/manuals/rsktest.pdf
 #' + D’Agostino, R. B., A. J. Belanger, and R. B. D’Agostino, Jr. 1990. A suggestion for using powerful and informative tests of normality. American Statistician 44: 316–321. https://doi.org/10.2307/2684359.
 #' + Royston, P. 1991a. sg3.1: Tests for departure from normality. Stata Technical Bulletin 2: 16–17. Reprinted in Stata Technical Bulletin Reprints, vol. 1, pp. 101–104. College Station, TX: Stata Press.
-#' + [autovar]("https://github.com/roqua/autovar/blob/e7d17834108163315605fc173d31dc6ea8b59e50/R/sktest.r")
+#' + [autovar]("https://github.com/roqua/autovar")
 #'
 #' @return
 #' A tibble with with variable names, number of observations, probability of
