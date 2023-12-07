@@ -11,9 +11,7 @@
 #' statistic.
 #'
 #' All of this work here owes a big debt of gratitude and recognition to Stata
-#' and to the
-#' [autovar]("https://github.com/roqua/autovar")
-#' package.
+#' and to the autovar package. (link here: https://github.com/roqua/autovar)
 #'
 #' Skewness is a measure of the asymmetry of the probability distribution of a
 #' random variable about its mean. It represents the amount and direction of
@@ -40,7 +38,7 @@
 #' + https://www.stata.com/manuals/rsktest.pdf
 #' + D’Agostino, R. B., A. J. Belanger, and R. B. D’Agostino, Jr. 1990. A suggestion for using powerful and informative tests of normality. American Statistician 44: 316–321. https://doi.org/10.2307/2684359.
 #' + Royston, P. 1991a. sg3.1: Tests for departure from normality. Stata Technical Bulletin 2: 16–17. Reprinted in Stata Technical Bulletin Reprints, vol. 1, pp. 101–104. College Station, TX: Stata Press.
-#' + [autovar]("https://github.com/roqua/autovar")
+#' + autovar package. https://github.com/roqua/autovar
 #'
 #' @return
 #' A tibble with with variable names, number of observations, probability of

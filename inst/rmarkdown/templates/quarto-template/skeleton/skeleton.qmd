@@ -1,0 +1,106 @@
+---
+title: "Quarto example"
+subtitle: "Draft analysis"
+author: "Emile Latour"
+date: '`r Sys.Date()`'
+author-title: "By"
+published-title: "Date"
+toc: true
+toc-depth: 2
+format:
+  html:
+    # theme: yeti
+    link-external-newwindow: true
+    toc-location: left
+    number-sections: true
+    code-tools: true
+    code-fold: true
+    self-contained: true
+  # pdf: default
+execute:
+  echo: false
+  freeze: auto  # re-render only when source changes
+# editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+
+```{r}
+#| label: "setup"
+#| include: false
+
+
+#### Global chunk options -----------------------------
+
+knitr::opts_chunk$set(
+  eval       = TRUE,      # whether to run code in code chunk
+  include    = TRUE,      # whether to include the chunk output
+  # echo       = FALSE,   # Whether to show code chunk in final output
+  error      = TRUE,      # whether to display error messages
+  message    = FALSE,     # whether to preserve messages
+  warning    = FALSE,     # whether to preserve warnings
+  comment    = NA,        # a character string to append at start of each line of 
+                          # results in final document
+  tidy       = FALSE,     # whether to tidy code chunks for display
+  dpi        = 150,       # dots per inch in graphics when applicable
+  fig.width  = 8,         # consistent width for figures
+  fig.asp    = 0.618,     # the golden ratio, can be adjusted in individual chunks
+  out.width  = "100%",    # controls the output size
+  fig.align  = "center",  # give plot room to breathe
+  # fig.path   = "figures/somedir/"  # file path to store plots
+  NULL
+)
+
+
+#### Other options --------------------------------
+
+## Scientific notation ---------------
+# Turn off scientific notation
+options(scipen = 999)
+
+
+#### Packages --------------------------------------
+# Load the packages to be used.
+
+## Define the repository for packages ----------------
+options(repos = c(CRAN = "https://cran.rstudio.com"))
+
+## universally useful packages ----------------
+# if (!require("pacman")) {install.packages("pacman")}
+# if (!require("devtools")) {install.packages("devtools")}
+
+pacman::p_load(
+  tidyverse,     # packages ggplot2, dplyr, tidyr, readr, purrr, tibble, 
+  # stringr, and forcats
+  broom,         # functions tidy(), glance(), augment()
+  fs,            # Cross-platform interface to file system operations
+  glue,          # Glue strings to data in R
+  here,          # Constructs paths to your project's files
+  janitor,       # for working with dirty data 
+  khroma,        # Colour Schemes for Scientific Data Visualization
+  lubridate,     # Functions to work with date-times and time-spans 
+  mice,          # Multiple imputation using Fully Conditional Specification
+  naniar,        # structures, summaries, and visualisations for missing data 
+  readxl,        # read in excel files
+  scales,        # Scale functions for visualization
+  install = FALSE
+)
+
+#### Other packages ----------------------------- 
+
+library(lamisc)       # devtools::install_github("emilelatour/lamisc") 
+library(latable)      # devtools::install_github("emilelatour/latable")
+library(laviz)        # devtools::install_github("emilelatour/laviz") 
+library(purposeful)   # devtools::install_github("emilelatour/purposeful")
+library(redcaptools)  # devtools::install_github("emilelatour/redcaptools")
+
+
+```
+
+```{r}
+#| label: "load-the-data"
+
+
+
+```

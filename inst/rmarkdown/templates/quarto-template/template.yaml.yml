@@ -1,0 +1,4 @@
+name: quarto template
+description: >
+  Quarto template with preferences, packages and yaml headers set.
+create_dir: false
