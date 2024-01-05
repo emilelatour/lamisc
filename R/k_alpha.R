@@ -24,14 +24,27 @@
 #' Biostatistics, Stanford University. Wiley & Sons, New York; 1992.
 #'
 #'
-#' @param ratings_t A matirx or data frame or tibble of the ratings. Rows =
+#' @param ratings_t A matrix or data frame or tibble of the ratings. Rows =
 #'   individuals; columns = raters. Missing values coded by `NA`.
 #' @param alpha_q Numeric; two-sided type one error, default = 0.05
-#' @param nboot Integer; number of Bootstrap samples, defaul = 1000
+#' @param nboot Integer; number of Bootstrap samples, default = 1000
 #' @param scaling String; measurement scale ("nominal", "ordinal", "interval",
 #'   "ratio"), default = "nominal"
 #'
+#' @importFrom dplyr distinct
+#' @importFrom dplyr group_by
+#' @importFrom dplyr mutate
+#' @importFrom dplyr n_distinct
+#' @importFrom dplyr pull
+#' @importFrom dplyr rename
+#' @importFrom dplyr row_number
+#' @importFrom dplyr summarise
+#' @importFrom dplyr ungroup
+#' @importFrom tibble as_tibble
 #' @importFrom tibble tibble
+#' @importFrom tidyr complete
+#' @importFrom tidyr fill
+#' @importFrom tidyr pivot_longer
 #' @importFrom stats na.omit
 #' @importFrom stats quantile
 #'
@@ -312,6 +325,52 @@ k_alpha <- function(ratings_t,
                            na.rm = TRUE)
 
 
+  #### Observed Agreement --------------------------------
+
+  # These, c(agr_k, agr_alpha), don't seem to calculate the correct observed
+  # agreement. Doing it my own way.
+
+  N <- N_subjects <- Pi <- category <- k_categories <- n_raters <- nij <- rater <- subject <- NULL
+
+  calc_step <- ratings_t |>
+    tibble::as_tibble(.name_repair = "unique") |>
+    mutate(subject = dplyr::row_number()) |>
+    tidyr::pivot_longer(cols = -subject,
+                        names_to = "rater",
+                        values_to = "category") |>
+    mutate(N_subjects = dplyr::n_distinct(subject),
+           n_raters = dplyr::n_distinct(rater),
+           k_categories = dplyr::n_distinct(category)) |>
+    dplyr::count(N_subjects,
+                 n_raters,
+                 k_categories,
+                 subject,
+                 category) |>
+    tidyr::complete(subject,
+                    category,
+                    fill = list(n = 0)) |>
+    tidyr::fill(N_subjects:k_categories,
+                .direction = "downup") |>
+    dplyr::rename(nij = n) |>
+    mutate(N = sum(nij)) |>
+    group_by(category) |>
+    mutate(pj = sum(nij) / N) |>
+    ungroup() |>
+    group_by(subject) |>
+    mutate(Pi = nij ^ 2,
+           Pi = sum(Pi),
+           Pi = Pi - n_raters,
+           Pi = Pi / (n_raters * (n_raters - 1))) |>
+    ungroup()
+
+  pbar <- calc_step |>
+    dplyr::distinct(subject,
+                    Pi) |>
+    summarise(pbar = mean(Pi)) |>
+    dplyr::pull()
+
+  agr_k <- agr_alpha <- pbar
+
   #### Output --------------------------------
 
   ## For nominal data ----------------
@@ -332,7 +391,7 @@ k_alpha <- function(ratings_t,
       upper_asym_ci = c(CI_asymp_k[[2]], NA),
       lower_boot_ci = c(CI_boot_k[[1]], CI_boot_alpha[[1]]),
       upper_boot_ci = c(CI_boot_k[[2]], CI_boot_alpha[[2]])
-      ))
+    ))
   }
 
   ## For not nominal data ----------------

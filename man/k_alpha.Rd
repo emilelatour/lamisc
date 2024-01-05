@@ -7,12 +7,12 @@
 k_alpha(ratings_t, alpha_q = 0.05, nboot = 1000, scaling = "nominal")
 }
 \arguments{
-\item{ratings_t}{A matirx or data frame or tibble of the ratings. Rows =
+\item{ratings_t}{A matrix or data frame or tibble of the ratings. Rows =
 individuals; columns = raters. Missing values coded by \code{NA}.}
 
 \item{alpha_q}{Numeric; two-sided type one error, default = 0.05}
 
-\item{nboot}{Integer; number of Bootstrap samples, defaul = 1000}
+\item{nboot}{Integer; number of Bootstrap samples, default = 1000}
 
 \item{scaling}{String; measurement scale ("nominal", "ordinal", "interval",
 "ratio"), default = "nominal"}
