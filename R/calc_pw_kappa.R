@@ -100,7 +100,10 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
     all_levels <- union(levels(factor(data[[x]])), levels(factor(data[[y]])))
 
     # Create table with counts for each combination of levels
-    result <- table(factor(data[[x]], levels = all_levels), factor(data[[y]], levels = all_levels))
+    res_table <- table(factor(data[[x]], levels = all_levels),
+                       factor(data[[y]], levels = all_levels))
+
+    return(res_table)
 
   }
 
