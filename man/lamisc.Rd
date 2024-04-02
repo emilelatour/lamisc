@@ -2,6 +2,7 @@
 % Please edit documentation in R/lamisc.R
 \docType{package}
 \name{lamisc}
+\alias{-package}
 \alias{lamisc}
 \title{lamisc: Miscellaneous helper functions}
 \description{

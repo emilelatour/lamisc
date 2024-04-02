@@ -11,7 +11,7 @@
 #'
 #' @docType package
 #' @name lamisc
-NULL
+
 
 ## quiets concerns of R CMD check re: the .'s that appear in pipelines
 ## From Jenny Bryan's googlesheets package
@@ -60,3 +60,6 @@ force_all <- function(...) list(...)
 #   Undefined global functions or variables:
 #     ..density.. adj_chi2 dnorm inv_cubic inv_square inv_square_root
 #     inverse p_value sqrt_n ten_log_10
+
+
+NULL

@@ -74,6 +74,9 @@
 
 calc_pw_kappa <- function(data, ..., type = "unweighted") {
 
+  # Silence Undefined global functions or variables warning
+  combo <- conf_high <- conf_low <- estimate <- kap <- po <- se_po <- x <- y <- NULL
+
   vars <- rlang::enquos(...)
 
   #### Check number of ratings --------------------------------
@@ -90,7 +93,15 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
   ## get_table ---------------
 
   get_table <- function(data, x, y) {
-    table(data[[x]], data[[y]])
+
+    # table(data[[x]], data[[y]])
+
+    # Combine unique levels of both variables
+    all_levels <- union(levels(factor(data[[x]])), levels(factor(data[[y]])))
+
+    # Create table with counts for each combination of levels
+    result <- table(factor(data[[x]], levels = all_levels), factor(data[[y]], levels = all_levels))
+
   }
 
   ## get_kappa ---------------
@@ -127,23 +138,23 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
     dplyr::select(!!! vars) %>%
     names() %>%
     tidyr::crossing(x = ., y = .) %>%
-    mutate(table = purrr::map2(.x = .data$x,
-                               .y = .data$y,
+    mutate(table = purrr::map2(.x = x,
+                               .y = y,
                                .f = ~ get_table(data = data, x = .x, y = .y)),
-           kap = purrr::map(.x = .data$table,
+           kap = purrr::map(.x = table,
                             .f = ~ get_kappa(table = .x))) %>%
-    tidyr::unnest(data = ., .data$kap) %>%
+    tidyr::unnest(data = ., kap) %>%
     # dplyr::filter(type == type) %>%
     mutate(combo =
-             paste0(lamisc::fmt_num(.data$estimate,
+             paste0(lamisc::fmt_num(estimate,
                                     accuracy = 0.01,
                                     trim = FALSE),
                     " (",
-                    lamisc::fmt_num(.data$conf_low,
+                    lamisc::fmt_num(conf_low,
                                     accuracy = 0.01,
                                     trim = FALSE),
                     " to ",
-                    lamisc::fmt_num(.data$conf_high,
+                    lamisc::fmt_num(conf_high,
                                     accuracy = 0.01,
                                     trim = FALSE),
                     ")"))  %>%
@@ -168,8 +179,8 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
 
 
   pw_k_table <- pw_k_results %>%
-    dplyr::select(.data$x, .data$y, .data$combo) %>%
-    tidyr::spread(data = ., key = .data$y, value = .data$combo)
+    dplyr::select(x, y, combo) %>%
+    tidyr::spread(data = ., key = y, value = combo)
 
 
   ## Turn values above diagonal to "" ---------------
@@ -179,8 +190,8 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
   #### Get min/max kappa --------------------------------
 
   ranked_res <- pw_k_results %>%
-    dplyr::filter(.data$estimate < 1.0) %>%
-    mutate(rank = rank(.data$estimate,
+    dplyr::filter(estimate < 1.0) %>%
+    mutate(rank = rank(estimate,
                        ties.method = "first"))
 
   min_max_kappa <- dplyr::bind_rows(ranked_res %>%
@@ -196,38 +207,38 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
     dplyr::select(!!! vars) %>%
     names() %>%
     tidyr::crossing(x = ., y = .) %>%
-    mutate(table = purrr::map2(.x = .data$x,
-                               .y = .data$y,
+    mutate(table = purrr::map2(.x = x,
+                               .y = y,
                                .f = ~ get_table(data = data, x = .x, y = .y)),
-           n = purrr::map2(.x = .data$x,
-                           .y = .data$y,
+           n = purrr::map2(.x = x,
+                           .y = y,
                            .f = ~ get_agree(data = data,
                                             x = .x,
                                             y = .y)$subjects),
-           po = purrr::map2(.x = .data$x,
-                            .y = .data$y,
+           po = purrr::map2(.x = x,
+                            .y = y,
                             .f = ~ get_agree(data = data,
                                              x = .x,
                                              y = .y)$value / 100)) %>%
-    tidyr::unnest(data = ., .data$n, .data$po) %>%
-    mutate(se_po = sqrt(.data$po * (1 - .data$po) / .data$n),
-           lower_ci = .data$po + c(-1) * qnorm(1 - .05 / 2) * .data$se_po,
-           upper_ci = .data$po + c(1) * qnorm(1 - .05 / 2) * .data$se_po) %>%
-    mutate_at(.vars = vars(.data$po:.data$upper_ci),
+    tidyr::unnest(data = ., n, po) %>%
+    mutate(se_po = sqrt(po * (1 - po) / n),
+           lower_ci = po + c(-1) * qnorm(1 - .05 / 2) * se_po,
+           upper_ci = po + c(1) * qnorm(1 - .05 / 2) * se_po) %>%
+    mutate_at(.vars = vars(po:upper_ci),
               .funs = list(~ lamisc::fmt_num(.,
                                              accuracy = 0.001,
                                              trim = FALSE,
                                              as_numeric = TRUE))) %>%
     mutate(combo =
-             paste0(lamisc::fmt_num(.data$po,
+             paste0(lamisc::fmt_num(po,
                                     accuracy = 0.01,
                                     trim = FALSE),
                     " (",
-                    lamisc::fmt_num(.data$lower_ci,
+                    lamisc::fmt_num(lower_ci,
                                     accuracy = 0.01,
                                     trim = FALSE),
                     " to ",
-                    lamisc::fmt_num(.data$upper_ci,
+                    lamisc::fmt_num(upper_ci,
                                     accuracy = 0.01,
                                     trim = FALSE),
                     ")"))
@@ -235,8 +246,8 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
   ## Make table of observed agreement ---------------
 
   pw_po_table <- pw_po_results %>%
-    dplyr::select(.data$x, .data$y, .data$combo) %>%
-    tidyr::spread(data = ., key = .data$y, value = .data$combo)
+    dplyr::select(x, y, combo) %>%
+    tidyr::spread(data = ., key = y, value = combo)
 
 
   ## Turn values above diagonal to "" ---------------
@@ -246,8 +257,8 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
   #### Get min/max po --------------------------------
 
   ranked_po <- pw_po_results %>%
-    dplyr::filter(.data$po < 1.0) %>%
-    mutate(rank = rank(.data$po,
+    dplyr::filter(po < 1.0) %>%
+    mutate(rank = rank(po,
                        ties.method = "first"))
 
   min_max_po <- dplyr::bind_rows(ranked_po %>%
