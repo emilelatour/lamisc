@@ -146,7 +146,7 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
                                .f = ~ get_table(data = data, x = .x, y = .y)),
            kap = purrr::map(.x = table,
                             .f = ~ get_kappa(table = .x))) %>%
-    tidyr::unnest(data = ., kap) %>%
+    tidyr::unnest(kap) %>%
     # dplyr::filter(type == type) %>%
     mutate(combo =
              paste0(lamisc::fmt_num(estimate,
@@ -223,7 +223,7 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
                             .f = ~ get_agree(data = data,
                                              x = .x,
                                              y = .y)$value / 100)) %>%
-    tidyr::unnest(data = ., c(n, po)) %>%
+    tidyr::unnest(c(n, po)) %>%
     mutate(se_po = sqrt(po * (1 - po) / n),
            lower_ci = po + c(-1) * qnorm(1 - .05 / 2) * se_po,
            upper_ci = po + c(1) * qnorm(1 - .05 / 2) * se_po) %>%
