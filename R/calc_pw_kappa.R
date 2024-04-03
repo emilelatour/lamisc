@@ -20,6 +20,7 @@
 #' @import broom
 #' @importFrom purrr map
 #' @importFrom purrr map2
+#' @importFrom purrr map_int
 #' @importFrom janitor clean_names
 #' @importFrom irr agree
 #' @importFrom psych cohen.kappa
@@ -124,15 +125,15 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
 
   ## get_agree ----------------
 
-  get_agree <- function(data, x, y) {
-    # x <- rlang::enquo(x)
-    # y <- rlang::enquo(y)
-    data %>%
-      # dplyr::select(!! x, !! y) %>%
-      dplyr::select(x, y) %>%
-      irr::agree(.)
-
-  }
+  # get_agree <- function(data, x, y) {
+  #   # x <- rlang::enquo(x)
+  #   # y <- rlang::enquo(y)
+  #   data %>%
+  #     # dplyr::select(!! x, !! y) %>%
+  #     dplyr::select(x, y) %>%
+  #     irr::agree(.)
+  #
+  # }
 
 
   #### Pairwise kappa --------------------------------
@@ -213,17 +214,23 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
     mutate(table = purrr::map2(.x = x,
                                .y = y,
                                .f = ~ get_table(data = data, x = .x, y = .y)),
-           n = purrr::map2(.x = x,
-                           .y = y,
-                           .f = ~ get_agree(data = data,
-                                            x = .x,
-                                            y = .y)$subjects),
-           po = purrr::map2(.x = x,
-                            .y = y,
-                            .f = ~ get_agree(data = data,
-                                             x = .x,
-                                             y = .y)$value / 100)) %>%
-    tidyr::unnest(c(n, po)) %>%
+           n = purrr::map_int(.x = table,
+                        .f = ~ sum(.x, na.rm = TRUE)),
+         po = purrr::map_int(.x = table,
+                        .f = ~ sum(diag(.x), na.rm = TRUE)),
+         po = po / n
+           # n = purrr::map2(.x = x,
+           #                 .y = y,
+           #                 .f = ~ get_agree(data = data,
+           #                                  x = .x,
+           #                                  y = .y)$subjects),
+           # po = purrr::map2(.x = x,
+           #                  .y = y,
+           #                  .f = ~ get_agree(data = data,
+           #                                   x = .x,
+           #                                   y = .y)$value / 100)
+           ) %>%
+    # tidyr::unnest(c(n, po)) %>%
     mutate(se_po = sqrt(po * (1 - po) / n),
            lower_ci = po + c(-1) * qnorm(1 - .05 / 2) * se_po,
            upper_ci = po + c(1) * qnorm(1 - .05 / 2) * se_po) %>%
