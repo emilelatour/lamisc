@@ -81,12 +81,12 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
 
   #### Check number of ratings --------------------------------
 
-  check <- data %>%
-    dplyr::select(!!! vars) %>%
-    dplyr::pull(.) %>%
-    unique(.)
-
-  if (length(check) > 2) stop("Only 2 ratings are allowed.")
+  # check <- data %>%
+  #   dplyr::select(!!! vars) %>%
+  #   dplyr::pull(.) %>%
+  #   unique(.)
+  #
+  # if (length(check) > 2) stop("Only 2 ratings are allowed.")
 
   #### Helper functions --------------------------------
 
@@ -223,7 +223,7 @@ calc_pw_kappa <- function(data, ..., type = "unweighted") {
                             .f = ~ get_agree(data = data,
                                              x = .x,
                                              y = .y)$value / 100)) %>%
-    tidyr::unnest(data = ., n, po) %>%
+    tidyr::unnest(data = ., c(n, po)) %>%
     mutate(se_po = sqrt(po * (1 - po) / n),
            lower_ci = po + c(-1) * qnorm(1 - .05 / 2) * se_po,
            upper_ci = po + c(1) * qnorm(1 - .05 / 2) * se_po) %>%
