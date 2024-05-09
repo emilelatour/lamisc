@@ -37,6 +37,7 @@
 #' @param footer_size  Font size for the footer Default is 11.
 #' @param na_dflt,nan_dflt string to be used for NA and NaN values.
 #'
+#' @importFrom dplyr case_when
 #' @importFrom flextable add_footer_lines
 #' @importFrom flextable add_header_lines
 #' @importFrom flextable align
@@ -172,6 +173,14 @@ flex_print <- function(x,
     if (is.null(align_j)) {
       align_j <- c(1:length(align))
     }
+
+    # "left", "center", "right", "justify"
+    align <- dplyr::case_match(align,
+                               "l" ~ "left",
+                               "c" ~ "center",
+                               "r" ~ "right",
+                               "j" ~ "justify")
+
 
     x <- x |>
       flextable::align(j = align_j,
