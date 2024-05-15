@@ -372,7 +372,10 @@ gt_print <- function(x,
   } else {
 
     x <- x |>
-      gt::opt_row_striping(row_striping = FALSE)
+      gt::opt_row_striping(row_striping = FALSE) |>
+      # Fix to keep stripes from showing up in quarto
+      # https://github.com/quarto-dev/quarto-cli/issues/6945
+      gt::tab_options(quarto.disable_processing = TRUE)
 
   }
 
