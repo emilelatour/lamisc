@@ -73,6 +73,8 @@
 #' @importFrom glue glue
 #' @importFrom dplyr case_match
 #' @importFrom dplyr everything
+#' @importFrom janitor clean_names
+#' @importFrom janitor make_clean_names
 #' @importFrom rlang list2
 #' @importFrom rlang !!!
 #'
@@ -162,6 +164,20 @@ gt_print <- function(x,
                      span_lbls = NULL) {
 
 
+  if (!is.null(col_nms) & length(col_nms) != length(col_lbls)) {
+    stop("`col_nms` must be the same length as `col_lbls`.")
+  }
+
+  if (is.null(col_nms) & !is.null(col_lbls) & dim(x)[2] != length(col_lbls)) {
+    stop("`col_lbls` must be the same length as number of column in the data.")
+  }
+
+
+  if (!is.null(col_nms) & any(!col_nms %in% names(x))) {
+    stop("`col_nms` don't match names of the data.")
+
+  }
+
 
   # Get the dimensions of x
   x_dim <- dim(x)
@@ -169,8 +185,34 @@ gt_print <- function(x,
   # Get column names for later
   col_nms_0 <- names(x)
 
-  if (is.null(col_nms)) {
-    col_nms <- names(x)
+  # Combine the column labels with the unchanged column names to make col_lbls
+  if (!is.null(col_nms) & !is.null(col_lbls)) {
+
+    col_lbls_0 <- col_lbls
+    col_lbls <- col_nms_0
+
+    # Find the positions of matches of elements in col_nms_0 within col_nms
+    positions <- match(col_nms_0, col_nms)
+
+    # Replace the matching elements in a with corresponding elements from c
+    col_lbls[!is.na(positions)] <- col_lbls_0[positions[!is.na(positions)]]
+
+  } else if (is.null(col_lbls)) {
+
+    col_lbls <- names(x)
+
+  }
+
+
+  # Clean names to make gt run smoothly
+  x <- x |>
+    janitor::clean_names()
+
+  col_nms <- names(x)
+
+  if (length(span_lbls) > 0) {
+    span_lbls <- purrr::map(.x = span_lbls,
+                            .f = ~ janitor::make_clean_names(.x))
   }
 
 
@@ -193,7 +235,7 @@ gt_print <- function(x,
     width <- c(width,
                rep(width[length(width)], w_pad))
 
-    w_nms <- col_nms_0[width_j]
+    w_nms <- col_nms[width_j]
 
     for (i in 1:length(width_j)) {
 
@@ -237,7 +279,7 @@ gt_print <- function(x,
 
       x <- gt::cols_align(data = x,
                           align = align[i],
-                          columns = col_nms_0[i])
+                          columns = col_nms[i])
 
     }
 
@@ -245,34 +287,24 @@ gt_print <- function(x,
 
 
   # Column labels
-  if (!is.null(col_lbls)) {
-
-    # col_lbls <- gt::md(col_lbls)
-    #
-    # header_list <- rlang::list2(!!! setNames(col_lbls, col_nms))
-    #
-    # x <- x |>
-    #   gt::cols_label(.list = header_list)
-
-    col_lbls <- stringr::str_replace(string = col_lbls,
-                                     pattern = "\\n",
-                                     replacement = "<br />")
+  col_lbls <- stringr::str_replace(string = col_lbls,
+                                   pattern = "\\n",
+                                   replacement = "<br />")
 
 
-    for (i in 1:length(col_lbls)) {
+  for (i in 1:length(col_lbls)) {
 
-      x <- x |>
-        gt::cols_label(as.formula(glue::glue("{col_nms[i]} ~ gt::md('{col_lbls[i]}')")))
-
-    }
+    x <- x |>
+      gt::cols_label(as.formula(glue::glue("{col_nms[i]} ~ gt::md('{col_lbls[i]}')")))
 
   }
 
+
   # Bold column labels
-  x <- x |> tab_style(
-      style = gt::cell_text(weight = "bold"),
-      locations = gt::cells_column_labels(columns = col_nms_0)
-    )
+  x <- x |> gt::tab_style(
+    style = gt::cell_text(weight = "bold"),
+    locations = gt::cells_column_labels(columns = col_nms)
+  )
 
 
   # Add tab spanner labels
@@ -367,7 +399,8 @@ gt_print <- function(x,
   if (row_stripes) {
 
     x <- x |>
-      gt::opt_row_striping(row_striping = TRUE)
+      gt::opt_row_striping(row_striping = TRUE) |>
+      gt::tab_options(quarto.disable_processing = TRUE)
 
   } else {
 
@@ -383,7 +416,3 @@ gt_print <- function(x,
   return(x)
 
 }
-
-
-
-
