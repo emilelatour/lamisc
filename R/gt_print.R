@@ -203,6 +203,12 @@ gt_print <- function(x,
 
   }
 
+  # Fix for empty col_lbls
+  if (any(col_lbls == "")) {
+
+    col_lbls[which(col_lbls == "")] <- " "
+
+  }
 
   # Clean names to make gt run smoothly
   x <- x |>
