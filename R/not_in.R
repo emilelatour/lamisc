@@ -5,7 +5,7 @@
 #'
 #' @description
 #' Creating %not_in% with purrr::negate. Adapted from the cool, on going, Your
-#' daily dose of {purrr} from Colin Fay.
+#' daily dose of `purrr` from Colin Fay.
 #'
 #' @references
 #' \url{https://twitter.com/_ColinFay/status/987260548344631298/photo/1}

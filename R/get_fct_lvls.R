@@ -9,7 +9,7 @@
 #' is a value in the data.
 #'
 #' @references
-#' /url{https://chemicalstatistician.wordpress.com/2018/03/10/use-unique-instead-of-levels-to-find-the-possible-values-of-a-character-variable-in-r/}
+#' \url{https://chemicalstatistician.wordpress.com/2018/03/10/use-unique-instead-of-levels-to-find-the-possible-values-of-a-character-variable-in-r/}
 #'
 #' @import rlang
 #' @import dplyr

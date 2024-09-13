@@ -21,9 +21,11 @@ be more successful than \code{invisible()}. I basically followed the Stack
 Overflow discussion in the references to create this one.
 }
 \examples{
+\dontrun{
 x <- dput(names(mtcars))
 x <- hush(dput(names(mtcars)))
 x
+}
 }
 \references{
 \url{https://stackoverflow.com/questions/2723034/suppress-one-commands-output-in-r}

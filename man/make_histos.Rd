@@ -3,16 +3,6 @@
 \name{make_histos}
 \alias{make_histos}
 \title{Internal function - Make the histograms}
-\usage{
-make_histos(
-  df,
-  x,
-  x_title,
-  fill = "cyan4",
-  line_color = "black",
-  line_type = "solid"
-)
-}
 \arguments{
 \item{df}{A data frame or tibble.}
 
@@ -27,6 +17,6 @@ make_histos(
 \item{line_type}{Line type}
 }
 \description{
-Internal function - Make the histograms
+This function generates histograms for a given numeric vector in a data frame.
 }
 \keyword{internal}

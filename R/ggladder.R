@@ -131,7 +131,12 @@ ggladder <- function(data, var, fill = "cyan4",
 }
 
 
-#' Internal function - Make the histograms
+#' @title Internal function - Make the histograms
+#'
+#' @description
+#' This function generates histograms for a given numeric vector in a data frame.
+#'
+#' @name make_histos
 #'
 #' @param df A data frame or tibble.
 #' @param x A (non-empty) numeric vector of data values.
@@ -151,13 +156,14 @@ ggladder <- function(data, var, fill = "cyan4",
 #'
 #' @keywords internal
 
+utils::globalVariables(c("..density.."))
+
 make_histos <- function(df, x, x_title,
                         fill = "cyan4", line_color = "black",
                         line_type = "solid") {
 
   # Fix no visible binding for global variable
-  sqrt_n <- NULL
-ten_log_10 <- NULL
+  sqrt_n <- ten_log_10 <- NULL
 
   mean_sd <- df %>%
     dplyr::summarise(mean = mean(!! rlang::sym(x), na.rm = TRUE),

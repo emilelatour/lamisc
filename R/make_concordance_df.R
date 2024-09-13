@@ -3,18 +3,18 @@
 #' @title Make a table of concordance for multi-rater kappa
 #'
 #' @description
-#' This function is a helper for working with the /code{concordance} function
-#' from the \code{raters}. Rather than a table or the orginal columns of data,
+#' This function is a helper for working with the \code{concordance} function
+#' from the \code{raters} package. Rather than a table or the original columns of data,
 #' the \code{concordance} function takes, as an input, a data frame that shows
 #' for each thing being rated (patient, sample, etc.) the number of raters that
 #' gave a particular rating. It creates a data frame of counts of raters by
 #' ratee and rating.
 #'
 #' @param df A data frame or tibble.
-#' @param id A column/ariable (any type) that uniquely identifies the unit being
+#' @param id A column/variable (any type) that uniquely identifies the unit being
 #'   rated (i.e. patient id, ssn, name, etc.).
 #' @param ... The columns of ratings by the raters, character or factor.
-#' @param keep_id Logical; if /code{TRUE} then it will keep the /code{id} column
+#' @param keep_id Logical; if \code{TRUE} then it will keep the \code{id} column
 #'   else it will be dropped.
 #'
 #' @import dplyr

@@ -18,8 +18,10 @@ debug_contrast_error2(form, dat, subset_vec = NULL)
 }
 \value{
 \code{debug_contrast_error} returns a list with:
-\item{n_levels}{(a tibble) gives the number of factor levels for all factor variables.}
-\item{levels}{(a list) gives levels for all factor variables.}
+\itemize{
+\item n_levels: A tibble that gives the number of factor levels for all factor variables.
+\item levels: A list that gives levels for all factor variables.
+}
 
 \code{debug_contrast_error2} returns a list with:
 \itemize{

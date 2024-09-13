@@ -32,5 +32,5 @@ get_fct_lvls(data = iris2, x = Species)
 get_fct_lvls(data = iris2, x = Species, unique_lvls = FALSE)
 }
 \references{
-/url{https://chemicalstatistician.wordpress.com/2018/03/10/use-unique-instead-of-levels-to-find-the-possible-values-of-a-character-variable-in-r/}
+\url{https://chemicalstatistician.wordpress.com/2018/03/10/use-unique-instead-of-levels-to-find-the-possible-values-of-a-character-variable-in-r/}
 }

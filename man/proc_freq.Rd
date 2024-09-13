@@ -40,5 +40,5 @@ proc_freq(SexualFun)
 
 }
 \references{
-/url{http://users.stat.ufl.edu/~presnell/Courses/sta4504-2000sp/R/R-CDA.pdf}
+\url{http://users.stat.ufl.edu/~presnell/Courses/sta4504-2000sp/R/R-CDA.pdf}
 }

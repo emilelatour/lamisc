@@ -8,7 +8,7 @@
 #' somehow. See references for link.
 #'
 #' @references
-#' /url{http://users.stat.ufl.edu/~presnell/Courses/sta4504-2000sp/R/R-CDA.pdf}
+#' \url{http://users.stat.ufl.edu/~presnell/Courses/sta4504-2000sp/R/R-CDA.pdf}
 #'
 #' @import vcd
 #' @importFrom stats pchisq

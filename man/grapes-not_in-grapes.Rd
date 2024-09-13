@@ -16,7 +16,7 @@ A logical
 }
 \description{
 Creating \%not_in\% with purrr::negate. Adapted from the cool, on going, Your
-daily dose of {purrr} from Colin Fay.
+daily dose of \code{purrr} from Colin Fay.
 }
 \examples{
 1 \%not_in\% 1:10

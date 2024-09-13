@@ -17,10 +17,11 @@
 #' @return The output of your code, but without printing to console.
 #' @export
 #'
-#' @examples
+#' @examples \dontrun{
 #' x <- dput(names(mtcars))
 #' x <- hush(dput(names(mtcars)))
 #' x
+#' }
 
 hush <- function(code, is_unix = FALSE) {
 
