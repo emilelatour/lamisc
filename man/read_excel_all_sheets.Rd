@@ -20,6 +20,7 @@ Given an excel file with muliple sheets, the function will iterate over each
 sheet and save them all to a list or to individual data frames.
 }
 \examples{
+\dontrun{
 library(readxl)
 path <- readxl::readxl_example("datasets.xlsx")
 
@@ -33,6 +34,7 @@ list_of_sheets
 
 read_excel_all_sheets(path_to_excel_file = path,
                       as_list = FALSE)
+}
 }
 \references{
 \url{https://stackoverflow.com/questions/12945687/read-all-worksheets-in-an-excel-workbook-into-an-r-list-with-data-frames}

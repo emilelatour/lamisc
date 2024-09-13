@@ -99,12 +99,12 @@
 check_joins <- function(x, y, by = NULL) {
 
   # Ensure x and y are data frames
-  if (!is.data.frame(x) || !is.data.frame(y)) {
-    stop("Both x and y must be data frames")
-  }
+  if (!is.data.frame(x)) stop("Argument 'x' must be a data frame.")
+  if (!is.data.frame(y)) stop("Argument 'y' must be a data frame.")
+
 
   # Determine join columns
-  if (class(by) == "dplyr_join_by") {
+  if (inherits(by, "dplyr_join_by")) {
 
     rev_by <- by
 
@@ -134,15 +134,15 @@ check_joins <- function(x, y, by = NULL) {
 
 
   tibble::tibble(
-    join = c("X",
-             "Y",
-             "Left",
-             "Right",
-             "Inner",
-             "Semi",
-             "Anti, X",
-             "Anti, Y",
-             "Full")) |>
+    join_type = c("Original X",
+                  "Original Y",
+                  "Left Join (X -> Y)",
+                  "Right Join (Y -> X)",
+                  "Inner Join",
+                  "Semi Join (X in Y)",
+                  "Anti Join (X - Y)",
+                  "Anti Join (Y - X)",
+                  "Full Join (X <-> Y)")) |>
     mutate(n_rows = purrr::map_int(.x = join_list,
                                    .f = ~ .x[1]),
            n_cols = purrr::map_int(.x = join_list,

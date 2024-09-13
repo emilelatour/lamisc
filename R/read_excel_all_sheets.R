@@ -22,7 +22,7 @@
 #' @return A list of data frames. Or a number of data frames.
 #' @export
 #'
-#' @examples
+#' @examples \dontrun{
 #' library(readxl)
 #' path <- readxl::readxl_example("datasets.xlsx")
 #'
@@ -36,6 +36,7 @@
 #'
 #' read_excel_all_sheets(path_to_excel_file = path,
 #'                       as_list = FALSE)
+#' }
 read_excel_all_sheets <- function(path_to_excel_file, as_list = TRUE) {
 
   #### old way --------------------------------

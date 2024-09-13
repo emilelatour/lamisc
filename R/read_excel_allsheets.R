@@ -17,10 +17,11 @@
 #'
 #' @export
 #'
-#' @examples
+#' @examples \dontrun{
 #' library(readxl)
 #' datasets <- readxl_example("datasets.xlsx")
 #' read_excel_allsheets(datasets)
+#' }
 
 read_excel_allsheets <- function(file, tibble = TRUE, ...) {
 

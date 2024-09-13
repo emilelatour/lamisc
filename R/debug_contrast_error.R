@@ -22,11 +22,14 @@
 #' @importFrom tibble enframe
 #'
 #' @return
-#' `debug_contrast_error`returns a list with
-#' \describe{
-#'   \item{n_levels}{(a tibble) gives the number of factor levels for all factor variables}
-#'   \item{levels}{(a list) gives levels for all factor variables}
-#'   }
+#' `debug_contrast_error` returns a list with:
+#' \itemize{
+#'   \item n_levels: A tibble that gives the number of factor levels for all factor variables.
+#'   \item levels: A list that gives levels for all factor variables.
+#' }
+#'
+#'
+#'
 #' @export
 #'
 #' @examples
@@ -198,12 +201,12 @@ debug_contrast_error <- function(dat, subset_vec = NULL) {
 #' @importFrom tibble as_tibble
 #'
 #' @return
-#' `debug_contrast_error2` returns a list with
+#' `debug_contrast_error2` returns a list with:
 #' \itemize{
-#'   \item{model_frame}{(a tibble) gives the model frame (with "terms" attribute dropped)}
-#'   \item{n_levels}{(a tibble) gives the number of factor levels for all factor variables}
-#'   \item{levels}{(a list) gives levels for all factor variables}
-#'   }
+#'   \item model_frame: A tibble that gives the model frame (with the "terms" attribute dropped).
+#'   \item n_levels: A tibble that gives the number of factor levels for all factor variables.
+#'   \item levels: A list that gives levels for all factor variables.
+#' }
 #' @export
 #'
 #' @examples

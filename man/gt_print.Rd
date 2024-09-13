@@ -117,7 +117,7 @@ gt_print(x = head(iris),
          font_name = "Times New Roman",
          title = "Edgar Anderson's Iris Data",
          title_size = 16,
-         footer = "The data were collected by Anderson, Edgar (1935). The irises of the Gaspe Peninsula, Bulletin of the American Iris Society, 59, 2–5.")
+         footer = "The data were collected by Anderson, Edgar (1935)...")
 
 gt_print(x = head(iris),
          align = c("c"),

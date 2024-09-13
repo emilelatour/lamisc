@@ -20,7 +20,9 @@ A list of tibbles.
 Helper function to quickly and easily read in all the sheets in an excel spreadsheet using \code{readxl::read_excel}
 }
 \examples{
+\dontrun{
 library(readxl)
 datasets <- readxl_example("datasets.xlsx")
 read_excel_allsheets(datasets)
+}
 }

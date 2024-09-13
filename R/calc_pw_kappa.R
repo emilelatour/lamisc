@@ -1,76 +1,48 @@
 #' @title
-#' Calculate pairwiese agreement statistics for multiple raters
+#' Calculate pairwise agreement statistics for multiple raters
 #'
 #' @description
-#' When working with multiple-raters, it can be helpful to look at pairwise
-#' agreement for all raters. The goal of this function is to automate some of
-#' the steps incvolved to calculate statistics for each pair and summarize them
-#' nicely in a table or a data frame.
+#' This function calculates pairwise agreement statistics for multiple raters. It computes statistics such as pairwise kappa (both unweighted and weighted) and the proportion of observed agreement. It summarizes these statistics in a table or data frame.
 #'
-#' Currently, pairwise kappa and proportion of obeserved agreement are the only
-#' statistics available.
+#' @param data A data frame or tibble containing the ratings from multiple raters.
+#' @param ... Variable (column) names of the raters in the data.
+#' @param type A character string indicating whether to calculate "unweighted" or "weighted" kappa.
 #'
-#' @param data A data frame or tibble
-#' @param ... Variable (column) names
-#' @param type Character; "unweighted" or "weighted" kappa
-#'
-#' @import dplyr
-#' @import tidyr
-#' @import rlang
-#' @import broom
-#' @importFrom purrr map
-#' @importFrom purrr map2
-#' @importFrom purrr map_int
+#' @importFrom dplyr select mutate rename filter slice arrange pull summarise ungroup
+#' @importFrom tidyr crossing unnest spread
+#' @importFrom rlang enquos .data
+#' @importFrom broom tidy
+#' @importFrom purrr map map2 map_int
 #' @importFrom janitor clean_names
 #' @importFrom irr agree
 #' @importFrom psych cohen.kappa
-#' @importFrom rlang .data
+#' @importFrom stats qnorm
+#' @importFrom lamisc fmt_num
 #'
-#' @return A list
-#' @export
+#' @return A list containing the results and tables of the pairwise agreement statistics, including kappa results and observed agreement.
 #'
 #' @examples
 #' diagnostic_df <- data.frame(stringsAsFactors = FALSE,
-#'   id = c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L,
-#'          15L, 16L, 17L, 18L, 19L, 20L, 21L, 22L, 23L,
-#'          24L, 25L, 26L, 27L, 28L, 29L, 30L),
+#'   id = c(1:30),
 #'   rater_1 = c("Yes", "No", "No", "No", "No", "No", "No", "No", "No", "No",
-#'               "No", "No", "No", "No", "No", "No", "No",
-#'               "No", "No", "No", "No", "Yes", "No", "No", "No",
-#'               "No", "No", "No", "No", "No"),
+#'               "No", "No", "No", "No", "No", "No", "No", "No", "No", "No",
+#'               "No", "Yes", "No", "No", "No", "No", "No", "No", "No", "No"),
 #'   rater_2 = c("Yes", "No", "No", "No", "No", "No", "No", "No", "No", "No",
-#'               "Yes", "No", "No", "Yes", "No", "No", "No",
-#'               "No", "No", "No", "No", "Yes", "No", "No",
-#'               "Yes", "No", "No", "No", "No", "No"),
+#'               "Yes", "No", "No", "Yes", "No", "No", "No", "No", "No", "No",
+#'               "No", "Yes", "No", "No", "Yes", "No", "No", "No", "No", "No"),
 #'   rater_3 = c("Yes", "No", "No", "No", "No", "No", "No", "No", "Yes", "No",
-#'               "Yes", "Yes", "No", "Yes", "Yes", "No",
-#'               "No", "No", "Yes", "No", "No", "Yes", "Yes",
-#'               "Yes", "Yes", "No", "No", "Yes", "No", "No"),
-#'   rater_4 = c("Yes", "No", "No", "No", "Yes", "No", "No", "No", "Yes", "No",
-#'               "Yes", "Yes", "No", "Yes", "Yes", "No",
-#'               "Yes", "No", "Yes", "No", "No", "Yes", "No",
-#'               "Yes", "Yes", "No", "No", "Yes", "No", "No"),
-#'   rater_5 = c("Yes", "No", "No", "No", "Yes", "No", "No", "No", "Yes", "No",
-#'               "Yes", "Yes", "No", "Yes", "Yes", "No",
-#'               "No", "No", "Yes", "No", "No", "Yes", "No", "Yes",
-#'               "Yes", "No", "No", "Yes", "No", "No"),
-#'   rater_6 = c("Yes", "No", "No", "No", "Yes", "No", "No", "Yes", "Yes",
-#'               "No", "Yes", "Yes", "No", "Yes", "No", "No",
-#'               "No", "No", "Yes", "No", "No", "No", "No",
-#'               "Yes", "No", "Yes", "No", "Yes", "No", "No")
+#'               "Yes", "Yes", "No", "Yes", "Yes", "No", "No", "No", "Yes", "No",
+#'               "No", "Yes", "Yes", "Yes", "Yes", "No", "No", "Yes", "No", "No")
 #' )
 #'
+#' results <- calc_pw_kappa(diagnostic_df, rater_1, rater_2, rater_3, type = "unweighted")
+#' names(results)
+#' results$k_table
+#' results$k_min_max
+#' results$po_table
+#' results$po_min_max
 #'
-#' foo <- calc_pw_kappa(data = diagnostic_df,
-#'                      rater_1:rater_6)
-#' names(foo)
-#' foo$k_table
-#' foo$k_results
-#' foo$k_min_max
-#' foo$po_table
-#' foo$po_results
-#' foo$po_min_max
-#'
+#' @export
 
 
 calc_pw_kappa <- function(data, ..., type = "unweighted") {
