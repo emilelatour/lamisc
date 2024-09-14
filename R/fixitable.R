@@ -47,8 +47,9 @@ library(tibble)
 #'
 #' \url{https://stackoverflow.com/questions/42613167/replace-values-in-dataframe-column-based-on-match-in-second-data-frame-columns}
 #'
-#' @import dplyr
-#' @import rlang
+#' @importFrom dplyr filter
+#' @importFrom rlang enquo
+#' @importFrom rlang quo_name
 #' @importFrom rlang .data
 #'
 #' @param x Vector to modify

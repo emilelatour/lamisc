@@ -13,7 +13,7 @@
 #' @param countcol the name of the column containing the counts
 #'   (default = "Freq")
 #'
-#' @import tibble
+#' @importFrom tibble as_tibble
 #'
 #' @return A data frame
 #' @export

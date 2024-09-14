@@ -13,9 +13,9 @@
 #' @param data A data frame or tibble
 #' @param ... Column(s) in the data frame to be moved
 #'
-#' @importFrom dplyr select
+#' @importFrom dplyr select everything
 #' @importFrom purrr map
-#' @import rlang
+#' @importFrom rlang quos expr
 #'
 #' @return A data frame
 #' @export

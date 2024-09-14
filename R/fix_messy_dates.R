@@ -28,7 +28,7 @@
 #' @return A date or vector of dates
 #' @export
 #'
-#' @import dplyr
+#' @importFrom dplyr coalesce
 #' @importFrom janitor excel_numeric_to_date
 #' @importFrom lubridate parse_date_time
 #'

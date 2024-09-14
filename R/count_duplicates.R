@@ -18,10 +18,13 @@
 #'
 #' \url{https://github.com/sfirke/janitor/blob/master/R/get_dupes.R}
 #'
-#' @import dplyr
-#' @import rlang
 #' @param data A data frame or tibble
 #' @param ... Unquoted variable names to search for duplicates.
+#'
+#' @importFrom dplyr select
+#' @importFrom dplyr %>%
+#' @importFrom rlang syms
+#' @importFrom rlang enquos
 #'
 #' @return
 #' Returns a data.frame (actually a \code{tbl_df}) with the full records where
@@ -69,5 +72,4 @@ count_duplicates <- function(data, ...) {
   cbind(df[ox[cumsum(rl$lengths)], , drop = FALSE], dupe_count = rl$lengths)
 
 }
-
 

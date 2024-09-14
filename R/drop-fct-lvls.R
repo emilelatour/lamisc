@@ -15,7 +15,8 @@
 #' @importFrom dplyr mutate
 #' @importFrom dplyr pull
 #' @importFrom forcats fct_drop
-#' @import rlang
+#' @importFrom rlang enquo
+#' @importFrom rlang quo_name
 #'
 #' @return
 #' An object of the same type as data.
