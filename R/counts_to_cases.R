@@ -13,7 +13,6 @@
 #' @param countcol the name of the column containing the counts
 #'   (default = "Freq")
 #'
-#' @import vcd
 #' @import tibble
 #'
 #' @return A data frame

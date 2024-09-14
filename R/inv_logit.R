@@ -8,7 +8,6 @@
 #'
 #' @param logit A numeric object. Missing values (NAs) are allowed.
 #'
-#' @import titanic
 #' @importFrom dplyr mutate
 #' @importFrom stats coef
 #' @importFrom stats predict

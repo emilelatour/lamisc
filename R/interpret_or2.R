@@ -33,7 +33,7 @@
 #' https://stats.idre.ucla.edu/other/mult-pkg/faq/general/faq-how-do-i-interpret-odds-ratios-in-logistic-regression/
 #'
 #'
-#' @import rlang
+#' @importFrom rlang sym
 #' @importFrom broom tidy
 #' @importFrom dplyr select
 #' @importFrom glue glue
@@ -55,92 +55,23 @@
 #'
 #' @examples
 #' library(dplyr)
-#' library(forcats)
-#' library(readr)
 #' library(broom)
 #' library(janitor)
 #'
-#' #### Example 1 --------------------------------
-#' mydata <- admissions
-#' mydata <- mydata %>%
-#'   mutate(rank = factor(rank),
-#'          rank = forcats::fct_collapse(rank,
-#'                                       "1" = c("1", "2"),
-#'                                       "2" = c("3", "4")),
-#'          admit = factor(admit,
-#'                         levels = c(1, 0),
-#'                         labels = c("Yes", "No")))
-#'
-#' glm((admit == "Yes") ~ rank,
-#'     data = mydata,
-#'     family = binomial(link = "logit")) %>%
-#'   broom::tidy(., exponentiate = TRUE)
-#'
-#' # Get a 2x2 table
-#' janitor::tabyl(dat = mydata,
-#'                rank,
-#'                admit)
-#'
-#' # Note that I flip the values to match the refernce level in the logistic
-#' # regression
-#' interpret_or2(a = 40,
-#'               b = 148,
-#'               c = 87,
-#'               d = 125,
+#' # Example 1: Interpreting a 2x2 table
+#' interpret_or2(a = 40, b = 148, c = 87, d = 125,
 #'               dim_names = list(rank = c("2", "1"),
 #'                                admit = c("Yes", "No")))
 #'
-#' #### Example 2 --------------------------------
-#'
+#' # Example 2: Using a contingency table from data
 #' dis_df <- tibble::tibble(
-#'   Outcome = sample(c("Diseased", "Non-diseased"),
-#'                    size = 100,
-#'                    replace = TRUE,
-#'                    prob = c(0.25, 0.75)),
-#'   Exposure = sample(c("Exposed", "Unexposed"),
-#'                    size = 100,
-#'                    replace = TRUE,
-#'                    prob = c(0.40, 0.60))) %>%
-#'   mutate_all(.tbl = .,
-#'              .funs = list(~ factor(.)))
-#'
-#' # Get a 2x2 table
-#' janitor::tabyl(dat = dis_df,
-#'                Exposure,
-#'                Outcome) %>%
-#'   janitor::adorn_title(placement = "combined")
-#'
-#'
-#' interpret_or2(a = 11,
-#'               b = 28,
-#'               c = 15,
-#'               d = 46,
+#'   Outcome = sample(c("Diseased", "Non-diseased"), 100, TRUE, c(0.25, 0.75)),
+#'   Exposure = sample(c("Exposed", "Unexposed"), 100, TRUE, c(0.40, 0.60))
+#' )
+#' janitor::tabyl(dis_df, Exposure, Outcome)
+#' interpret_or2(a = 11, b = 28, c = 15, d = 46,
 #'               dim_names = list(Exposure = c("Exposed", "Unexposed"),
 #'                                Outcome = c("Diseased", "Non-diseased")))
-#'
-#'
-#' #### Example 3 --------------------------------
-#'
-#' sample_df <- hsb_sample
-#' sample_df <- sample_df %>%
-#'   mutate(female = factor(female,
-#'                          levels = c(0, 1),
-#'                          labels = c("male", "female")))
-#'
-#' xtabs(~ female + hon,
-#'       data = sample_df)
-#'
-#' glm((hon == 1) ~ female,
-#'     data = sample_df,
-#'     family = binomial(link = "logit")) %>%
-#'   broom::tidy(., exponentiate = TRUE)
-#'
-#' interpret_or2(a = 32,
-#'               b = 77,
-#'               c = 17,
-#'               d = 74,
-#'               dim_names = list(Sex = c("Female", "Male"),
-#'                                Honors = c("Yes", "No")))
 
 
 interpret_or2 <- function(a, b, c, d,

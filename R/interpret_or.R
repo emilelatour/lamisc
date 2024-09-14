@@ -28,11 +28,12 @@
 #' https://stats.idre.ucla.edu/other/mult-pkg/faq/general/faq-how-do-i-interpret-odds-ratios-in-logistic-regression/
 #'
 #'
-#' @import rlang
-#' @importFrom broom tidy
-#' @importFrom dplyr select
+#' @importFrom rlang enquo
+#' @importFrom dplyr select mutate
 #' @importFrom glue glue
+#' @importFrom broom tidy
 #' @importFrom janitor clean_names
+#' @importFrom stats fisher.test chisq.test qnorm
 #' @importFrom tibble tibble
 #'
 #' @return
@@ -134,40 +135,60 @@
 
 interpret_or <- function(data, x, y, alpha = 0.05) {
 
-  xtab <- data |>
-    dplyr::select({{ x }}, {{ y }}) |>
-    table()
+  # Ensure x and y are factors
+  data <- data %>%
+    dplyr::mutate({{ x }} := as.factor({{ x }}),
+                  {{ y }} := as.factor({{ y }}))
 
-  n00 <- xtab[1, 1]
-  n01 <- xtab[1, 2]
-  n10 <- xtab[2, 1]
-  n11 <- xtab[2, 2]
+  # Generate contingency table
+  xtab <- table(dplyr::select(data, {{ x }}, {{ y }}))
 
-  fisher_res <- fisher.test(xtab) |>
-    broom::tidy() |>
-    janitor::clean_names()
+  # Fisher and Chi-square tests
+  fisher_res <- broom::tidy(fisher.test(xtab)) %>% janitor::clean_names()
+  chisq_res <- broom::tidy(chisq.test(xtab)) %>% janitor::clean_names()
 
-  chisq_res <- chisq.test(xtab) |>
-    broom::tidy() |>
-    janitor::clean_names()
+  # Calculate OR and Wald CI
+  n_vals <- as.numeric(xtab)
+  or_res <- calc_or_wald(n_vals[1], n_vals[2], n_vals[3], n_vals[4], alpha)
 
-  out_list <- vector("list", 5)
-  out_list[[1]] <- xtab
-  out_list[[2]] <- glue::glue("The odds of [ {names(dimnames(xtab)[2])} = {dimnames(xtab)[[2]][1]} ] among those with [ {names(dimnames(xtab)[1])} = {dimnames(xtab)[[1]][1]} ] is x times the odds of those with [ {names(dimnames(xtab)[1])} = {dimnames(xtab)[[1]][2]} ]")
-  out_list[[3]] <- calc_or_wald(n00, n01, n10, n11, alpha)
-  out_list[[4]] <- fisher_res
-  out_list[[5]] <- chisq_res
-  names(out_list) <- c("table", "interpretaion", "results", "fishers", "chisq")
-  out_list
+  # Generate interpretation text
+  interpretation <- glue::glue(
+    "The odds of [{names(dimnames(xtab)[2])} = {dimnames(xtab)[[2]][1]}] among those with [{names(dimnames(xtab)[1])} = {dimnames(xtab)[[1]][1]}]
+    is x times the odds of those with [{names(dimnames(xtab)[1])} = {dimnames(xtab)[[1]][2]}]."
+  )
 
+  # Return results as a list
+  list(
+    table = xtab,
+    interpretation = interpretation,
+    results = or_res,
+    fishers = fisher_res,
+    chisq = chisq_res
+  )
 }
-
 
 
 #### calc_or_wald --------------------------------
 
 # A helper function
 # https://exploringdatablog.blogspot.com/2011/05/computing-odds-ratios-in-r.html
+#' @title
+#' Calculate Odds Ratio with Wald Confidence Intervals
+#'
+#' @description
+#' Computes the odds ratio between two binary variables along with the Wald confidence intervals.
+#'
+#' @param n00 Number of cases where both variables are 0.
+#' @param n01 Number of cases where x = 0 and y = 1.
+#' @param n10 Number of cases where x = 1 and y = 0.
+#' @param n11 Number of cases where both variables are 1.
+#' @param alpha Significance level for the two-sided Wald confidence interval (default is 0.05).
+#'
+#' @importFrom stats qnorm
+#' @importFrom tibble tibble
+#'
+#' @return A tibble containing odds ratio, lower confidence interval, upper confidence interval, and alpha value.
+
 
 calc_or_wald <- function(n00, n01, n10, n11, alpha = 0.05) {
   #

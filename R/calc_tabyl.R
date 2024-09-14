@@ -25,8 +25,8 @@
 #'
 #' @export
 #'
-#' @import janitor
-#' @import dplyr
+#' @importFrom janitor tabyl adorn_totals adorn_pct_formatting
+#' @importFrom dplyr %>%
 #'
 #' @examples
 #'
@@ -54,7 +54,7 @@ calc_tabyl <- function(data, ..., show_na = TRUE, show_missing_levels = TRUE) {
   }
 
   data %>%
-    janitor::tabyl(dat = ., ..., show_na = TRUE, show_missing_levels = TRUE) %>%
+    janitor::tabyl(dat = ., ..., show_na = show_na, show_missing_levels = show_missing_levels) %>%
     janitor::adorn_totals(where = "row") %>%
     janitor::adorn_pct_formatting()
 
