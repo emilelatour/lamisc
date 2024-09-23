@@ -1,25 +1,4 @@
 
-
-
-#### Packages -----------------------------
-
-pacman::p_load(
-  tidyverse,     # packages ggplot2, dplyr, tidyr, readr, purrr, tibble,
-  # stringr, and forcats
-  broom,         # functions tidy(), glance(), augment()
-  fs,            # Cross-platform interface to file system operations
-  glue,          # Glue strings to data in R
-  here,          # Constructs paths to your project's files
-  janitor,       # for working with dirty data
-  lubridate,     # Functions to work with date-times and time-spans
-  mice,          # Multiple imputation using Fully Conditional Specification
-  naniar,        # structures, summaries, and visualisations for missing data
-  readxl,        # read in excel files
-  scales,        # Scale functions for visualization
-  install = FALSE
-)
-
-
 #' @title
 #' Drop factor levels and filter the data the same time
 #'
@@ -38,6 +17,7 @@ pacman::p_load(
 #' @importFrom dplyr mutate
 #' @importFrom dplyr pull
 #' @importFrom dplyr select
+#' @importFrom forcats fct_recode
 #' @importFrom purrr pluck
 #' @importFrom rlang enquo
 #' @importFrom rlang quo_name
@@ -146,63 +126,67 @@ drop_lvls2 <- function(data, var, lvls_to_drop = NULL) {
   # Fix no visible binding for global variable
   temp_var <- NULL
 
-
   var <- rlang::enquo(var)
   var_nm <- rlang::quo_name(var)
 
-  is_srvyr <- any(class(data) %in% c("tbl_svy"))
+  # Check if the data is a survey object (srvyr or survey.design)
+  is_srvyr <- inherits(data, "tbl_svy")
+  is_survey <- inherits(data, c("survey.design2", "survey.design"))
 
-  is_survey <- any(class(data) %in% c("survey.design2",
-                                      "survey.design"))
 
+  # Extract the levels based on the type of data (regular df, srvyr, or survey)
   if (!is_srvyr & !is_survey) {
 
-    lvls <- dplyr::pull(.data = data,
-                        var = !! var) %>%
-      levels()
+    lvls <- levels(dplyr::pull(.data = data, var = !! var))
 
-    new_lvls <- lvls[!lvls %in% lvls_to_drop]
+  } else {
+
+    lvls <- levels(purrr::pluck(data, "variables", var_nm))
+
+  }
+
+
+  # If levels to drop aren't found, give a warning
+  if (any(!lvls_to_drop %in% lvls)) {
+    warning("Some levels to drop don't exist in the factor levels.")
+  }
+
+
+  # Extract the levels based on the type of data (regular df, srvyr, or survey)
+  new_lvls <- lvls[!lvls %in% lvls_to_drop]
+
+
+  # Get the last value of the new levels
+  last_value <- new_lvls[length(new_lvls)]
+
+
+  # If it's a survey, the convert before recoding
+  if (is_survey) {
+    data <- data %>%
+      srvyr::as_survey_design()
+  }
+
+
+  # Filter the data and recode the data iteratively
+  for (i in 1:length(lvls_to_drop)) {
+
+    lvls_to_recode <- lvls_to_drop[i]
+    names(lvls_to_recode) <- last_value
 
     data <- data %>%
-      dplyr::filter(! (!! var %in% lvls_to_drop)) %>%
-      mutate(!! var_nm := factor(!! var,
-                                 levels = new_lvls))
-
-
-  } else if (is_srvyr) {
-
-    lvls <- purrr::pluck(data,
-                         "variables",
-                         var_nm) %>%
-      levels()
-
-    new_lvls <- lvls[!lvls %in% lvls_to_drop]
-
-    data <- data %>%
+      # dplyr::filter(! (!! var %in% lvls_to_recode)) %>%
       mutate(temp_var = dplyr::if_else(!! var %in% lvls_to_drop, 1, 0)) %>%
       subset(., temp_var != 1) %>%
       dplyr::select(-temp_var) %>%
-      mutate(!! var_nm := factor(!! var,
-                                 levels = new_lvls))
+      mutate(!! var_nm := forcats::fct_recode(!! var,
+                                              !!! lvls_to_recode))
 
-  } else if (is_survey) {
+  }
 
-    lvls <- purrr::pluck(data,
-                         "variables",
-                         var_nm) %>%
-      levels()
-
-    new_lvls <- lvls[!lvls %in% lvls_to_drop]
-
+  # If it's a survey, the convert back before returning
+  if (is_survey) {
     data <- data %>%
-      srvyr::as_survey_design() %>%
-      mutate(temp_var = dplyr::if_else(!! var %in% lvls_to_drop, 1, 0)) %>%
-      subset(., temp_var != 1) %>%
-      dplyr::select(-temp_var) %>%
-      mutate(!! var_nm := factor(!! var,
-                                 levels = new_lvls)) %>%
       survey::as.svydesign2()
-
   }
 
 
@@ -210,3 +194,75 @@ drop_lvls2 <- function(data, var, lvls_to_drop = NULL) {
 
 }
 
+
+
+# Old version because there is some code that I like in there to handle the
+# surveys, though it doesn't have the true intended outcome
+# drop_lvls2 <- function(data, var, lvls_to_drop = NULL) {
+#
+#   # Fix no visible binding for global variable
+#   temp_var <- NULL
+#
+#
+#   var <- rlang::enquo(var)
+#   var_nm <- rlang::quo_name(var)
+#
+#   is_srvyr <- any(class(data) %in% c("tbl_svy"))
+#
+#   is_survey <- any(class(data) %in% c("survey.design2",
+#                                       "survey.design"))
+#
+#   if (!is_srvyr & !is_survey) {
+#
+#     lvls <- dplyr::pull(.data = data,
+#                         var = !! var) %>%
+#       levels()
+#
+#     new_lvls <- lvls[!lvls %in% lvls_to_drop]
+#
+#     data <- data %>%
+#       dplyr::filter(! (!! var %in% lvls_to_drop)) %>%
+#       mutate(!! var_nm := factor(!! var,
+#                                  levels = new_lvls))
+#
+#
+#   } else if (is_srvyr) {
+#
+#     lvls <- purrr::pluck(data,
+#                          "variables",
+#                          var_nm) %>%
+#       levels()
+#
+#     new_lvls <- lvls[!lvls %in% lvls_to_drop]
+#
+#     data <- data %>%
+#       mutate(temp_var = dplyr::if_else(!! var %in% lvls_to_drop, 1, 0)) %>%
+#       subset(., temp_var != 1) %>%
+#       dplyr::select(-temp_var) %>%
+#       mutate(!! var_nm := factor(!! var,
+#                                  levels = new_lvls))
+#
+#   } else if (is_survey) {
+#
+#     lvls <- purrr::pluck(data,
+#                          "variables",
+#                          var_nm) %>%
+#       levels()
+#
+#     new_lvls <- lvls[!lvls %in% lvls_to_drop]
+#
+#     data <- data %>%
+#       srvyr::as_survey_design() %>%
+#       mutate(temp_var = dplyr::if_else(!! var %in% lvls_to_drop, 1, 0)) %>%
+#       subset(., temp_var != 1) %>%
+#       dplyr::select(-temp_var) %>%
+#       mutate(!! var_nm := factor(!! var,
+#                                  levels = new_lvls)) %>%
+#       survey::as.svydesign2()
+#
+#   }
+#
+#
+#   return(data)
+#
+# }
