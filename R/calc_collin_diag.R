@@ -8,7 +8,7 @@
 #' @param use How to handle missing values when calculating correlations. Default is `"complete.obs"`.
 #' @param method_for_eigen Specifies the method for calculating eigenvalues and condition indices. Options are `"corr"` for the correlation matrix or `"sscp"` for the scaled sum of squares and cross-product matrix. Default is `"corr"`.
 #' @param show_inv_cor_mat Logical. If `TRUE`, includes the inverse correlation matrix in the output. Default is `FALSE`.
-#' 
+#'
 #' @return A list with the following components:
 #' \item{table}{A tibble with the collinearity diagnostics for each variable. Includes VIF, tolerance, R-squared, eigenvalues, and condition indices.}
 #' \item{summary}{A tibble summarizing the mean VIF, condition number, and determinant of the correlation matrix.}
@@ -19,21 +19,21 @@
 #' library(dplyr)
 #' # Examples from Phil Ender
 #' # http://www.philender.com/courses/categorical/notes2/collin.html
-#' 
+#'
 #' hsbdemo <- read.csv("https://stats.idre.ucla.edu/stat/data/hsbdemo.csv")
 #' dplyr::glimpse(hsbdemo)
-#' 
-#' calc_collin_diag(data = hsbdemo, 
+#'
+#' calc_collin_diag(data = hsbdemo,
 #'                  female,
 #'                  schtyp,
 #'                  read,
 #'                  write,
 #'                  math,
 #'                  science,
-#'                  socst, 
-#'                  method_for_eigen = "corr", 
+#'                  socst,
+#'                  method_for_eigen = "corr",
 #'                  method  = "pearson")
-#' 
+#'
 #' lahigh <- tibble::tribble(
 #'   ~id,  ~gender,    ~ethnic, ~school, ~algebra, ~math, ~eng95, ~eng94, ~mathnce, ~langnce, ~mathpr, ~langpr, ~biling, ~engprof, ~daysatt, ~daysabs,
 #'   1001L,   "male", "hispanic",      1L,       3L,    0L,     2L,     2L, 56.98883, 42.45086,     63L,     36L,      2L,       2L,      73L,       4L,
@@ -353,69 +353,72 @@
 #'   2156L, "female",    "white",      2L,       3L,    3L,     4L,     3L, 76.98948, 69.27759,     90L,     82L,      0L,       0L,      86L,       0L,
 #'   2157L, "female",    "white",      2L,       2L,    2L,     4L,     3L, 65.56011, 70.94328,     77L,     84L,      0L,       0L,      84L,       2L
 #' )
-#' 
+#'
 #' dplyr::glimpse(lahigh)
-#' 
-#' calc_collin_diag(data = lahigh, 
-#'                  mathnce, 
-#'                  langnce, 
-#'                  mathpr, 
-#'                  langpr, 
-#'                  method_for_eigen = "corr", 
+#'
+#' calc_collin_diag(data = lahigh,
+#'                  mathnce,
+#'                  langnce,
+#'                  mathpr,
+#'                  langpr,
+#'                  method_for_eigen = "corr",
 #'                  method  = "pearson")
-#' 
-#' calc_collin_diag(data = lahigh, 
-#'                  mathnce, 
-#'                  langnce, 
-#'                  method_for_eigen = "corr", 
+#'
+#' calc_collin_diag(data = lahigh,
+#'                  mathnce,
+#'                  langnce,
+#'                  method_for_eigen = "corr",
 #'                  method  = "pearson")
 #'
 #' @export
-#' 
-#' 
+#'
+#'
 
 
 
 
 
-calc_collin_diag <- function(data, 
-                             ..., 
-                             method = "pearson", 
-                             use = "complete.obs", 
-                             method_for_eigen = "corr", 
-                             show_inv_cor_mat = FALSE) { 
-  
-  # vars <- rlang::enquos(...) 
-  
-  
-  #### Make sure that all variables are numeric -------------------------------- 
-  
-  # data <- data %>% 
-  #   dplyr::select(!!! vars) %>% 
-  #   mutate_all(.tbl = ., 
+calc_collin_diag <- function(data,
+                             ...,
+                             method = "pearson",
+                             use = "complete.obs",
+                             method_for_eigen = "corr",
+                             show_inv_cor_mat = FALSE) {
+
+  # Fix no visible binding for global variable
+  variable <- predictors <- form <- r_squared <- vif <- sqrt_vif <- tolerance <- eigenval <- rnk <- cond_index <- NULL
+
+  # vars <- rlang::enquos(...)
+
+
+  #### Make sure that all variables are numeric --------------------------------
+
+  # data <- data %>%
+  #   dplyr::select(!!! vars) %>%
+  #   mutate_all(.tbl = .,
   #              .funs = list(~ as.numeric(.)))
-  
-  data <- data %>% 
-    dplyr::select(...) %>% 
-    mutate(dplyr::across(.cols = dplyr::everything(), 
+
+  data <- data %>%
+    dplyr::select(...) %>%
+    mutate(dplyr::across(.cols = dplyr::everything(),
                          .fns = ~ make_numeric(.)))
-  
+
   vars_names <- names(data)
-  
-  
-  #### Rsqrd, vif, tolerance -------------------------------- 
-  
+
+
+  #### Rsqrd, vif, tolerance --------------------------------
+
   res <- tibble::tibble(
     variable = vars_names
-  ) %>% 
+  ) %>%
     mutate(predictors = purrr::map(.x = variable,
-                                   .f = ~ vars_names[!vars_names %in% .x]), 
+                                   .f = ~ vars_names[!vars_names %in% .x]),
            form = purrr::map2_chr(.x = variable,
                                   .y = predictors,
-                                  .f = ~ paste0(.x, " ~ ", paste0(.y, collapse = " + "))), 
+                                  .f = ~ paste0(.x, " ~ ", paste0(.y, collapse = " + "))),
            r_squared = purrr::map_dbl(.x = form,
                                       .f = ~ calc_r_squared(form = .x,
-                                                            data = data)), 
+                                                            data = data)),
            vif = 1 / (1 - r_squared),
            sqrt_vif = sqrt(vif),
            tolerance = 1 / vif) %>%
@@ -425,115 +428,115 @@ calc_collin_diag <- function(data,
                   tolerance,
                   r_squared) %>%
     {.}
-  
-  
-  cor_mat <- cor(data, 
-                 method = method, 
+
+
+  cor_mat <- cor(data,
+                 method = method,
                  use = use)
-  
-  
-  #### Eigenvals, Conditional index -------------------------------- 
-  
-  ## deviation sscp (no intercept) ---------------- 
+
+
+  #### Eigenvals, Conditional index --------------------------------
+
+  ## deviation sscp (no intercept) ----------------
   # Eigenvalues and condition index computed from correlation matrix without a
   # constant.
-  
+
   if (method_for_eigen == "corr") {
-    
+
     svd_x <- svd(cor_mat)
-    
+
     res2 <- tibble::tibble(
-      variable = colnames(cor_mat), 
-      eigenval = eigen(cor_mat)$values, 
-      cond_index = sqrt(max(svd_x$d) / svd_x$d), 
+      variable = colnames(cor_mat),
+      eigenval = eigen(cor_mat)$values,
+      cond_index = sqrt(max(svd_x$d) / svd_x$d),
       rnk = rank(dplyr::desc(eigenval))
-    ) %>% 
+    ) %>%
       dplyr::select(variable, rnk, eigenval, cond_index)
-    
-    res  <- res  %>% 
-      dplyr::left_join(., 
-                       res2, 
+
+    res  <- res  %>%
+      dplyr::left_join(.,
+                       res2,
                        by = "variable")
-    
+
   }
-  
-  
-  ## scaled raw sscp (w/ intercept) ---------------- 
+
+
+  ## scaled raw sscp (w/ intercept) ----------------
   # By default the eigenvalues and condition index are computed on the scaled
   # raw score SSCP matrix with an intercept.
-  
+
   if (method_for_eigen == "sscp") {
-    
-    sscp <- data %>% 
-      mutate(constant = 1) %>% 
-      as.matrix() %>% 
+
+    sscp <- data %>%
+      mutate(constant = 1) %>%
+      as.matrix() %>%
       crossprod()
-    
-    diag_1 <- sscp * diag(ncol(sscp)) 
+
+    diag_1 <- sscp * diag(ncol(sscp))
     diag_1 <- sqrt(diag_1)
     diag_1 <- syminv(diag_1)
     sscp <- diag_1 %*% sscp %*% diag_1
-    
+
     svd_x <- svd(sscp)
-    
+
     res2 <- tibble::tibble(
-      variable = c(colnames(data), "Intercept"), 
-      eigenval = eigen(sscp)$values, 
-      cond_index = sqrt(max(svd_x$d) / svd_x$d), 
+      variable = c(colnames(data), "Intercept"),
+      eigenval = eigen(sscp)$values,
+      cond_index = sqrt(max(svd_x$d) / svd_x$d),
       rnk = rank(dplyr::desc(eigenval))
-    ) %>% 
+    ) %>%
       dplyr::select(variable, rnk, eigenval, cond_index)
-    
-    res  <- res  %>% 
-      dplyr::bind_rows(., 
-                       tibble::tibble(variable = "Intercept", 
-                                      vif = NA_real_, 
-                                      sqrt_vif = NA_real_, 
-                                      tolerance = NA_real_, 
-                                      r_squared = NA_real_)) %>% 
-      dplyr::left_join(., 
-                       res2, 
+
+    res  <- res  %>%
+      dplyr::bind_rows(.,
+                       tibble::tibble(variable = "Intercept",
+                                      vif = NA_real_,
+                                      sqrt_vif = NA_real_,
+                                      tolerance = NA_real_,
+                                      r_squared = NA_real_)) %>%
+      dplyr::left_join(.,
+                       res2,
                        by = "variable")
-    
+
   }
-  
-  
-  #### Summary results -------------------------------- 
-  
+
+
+  #### Summary results --------------------------------
+
   summary_res <- tibble::tibble(
-    info = c("Mean VIF", 
-             "Condition Number", 
-             "Determinant of Correlation Matrix"), 
-    rstls = c(mean(res$vif, na.rm = TRUE), 
-              max(res$cond_index), 
+    info = c("Mean VIF",
+             "Condition Number",
+             "Determinant of Correlation Matrix"),
+    rstls = c(mean(res$vif, na.rm = TRUE),
+              max(res$cond_index),
               det(cor_mat))
   )
-  
-  
-  results <- list(table = res, 
+
+
+  results <- list(table = res,
                   summary = summary_res)
-  
-  
-  #### Inverse correlation matrix -------------------------------- 
-  
-  if (show_inv_cor_mat == TRUE) { 
-    
-    inv_cor_mat <- cor_mat %>% 
-      solve(.) %>% 
+
+
+  #### Inverse correlation matrix --------------------------------
+
+  if (show_inv_cor_mat == TRUE) {
+
+    inv_cor_mat <- cor_mat %>%
+      solve(.) %>%
       round(.,
             digits = 5)
-    
-    results <- list(table = res, 
-                    summary = summary_res, 
+
+    results <- list(table = res,
+                    summary = summary_res,
                     inv_cor_mat = inv_cor_mat)
-    
+
   }
-  
-  
-  #### End of function -------------------------------- 
-  
+
+
+  #### End of function --------------------------------
+
   return(results)
-  
+
 }
 
 
@@ -544,6 +547,8 @@ calc_collin_diag <- function(data,
 #' @param form A formula specifying the regression model (e.g., `"y ~ x1 + x2"`).
 #' @param data A data frame containing the variables used in the formula.
 #'
+#' @importFrom stats lm
+#'
 #' @return The R-squared value from the linear model.
 #'
 #' @examples
@@ -552,42 +557,43 @@ calc_collin_diag <- function(data,
 #' calc_r_squared(form, data)
 #'
 #' @export
-calc_r_squared <- function(form, data) { 
-  
+calc_r_squared <- function(form, data) {
+
+
   # One way - old version
-  # mod1 <- glm(as.formula(form), 
-  #             data = data, 
+  # mod1 <- glm(as.formula(form),
+  #             data = data,
   #             family = gaussian(link = "identity"))
-  # 
+  #
   # # rsq::rsq(mod1)
   # with(summary(mod1), 1 - deviance/null.deviance)
-  
+
   # Another way
   # mod1 <- lm(as.formula(form),
   #            data = data)
-  # 
+  #
   # summary(mod1)$r.squared
-  
-  # Manual method 
+
+  # Manual method
   # Fit the model
   model <- lm(as.formula(form), data = data)
-  
+
   y <- purrr::pluck(model, "model", 1)
-  
+
   # Predicted values
   y_pred <- predict(model)
-  
+
   # Residual sum of squares (SSR)
   ssr <- sum((y - y_pred)^2)
-  
+
   # Total sum of squares (SST)
   sst <- sum((y - mean(y))^2)
-  
+
   # R-squared
   r_squared_manual <- 1 - (ssr / sst)
-  
+
   return(r_squared_manual)
-  
+
 }
 
 
@@ -605,10 +611,10 @@ calc_r_squared <- function(form, data) {
 #'
 #' @export
 syminv <- function(x) {
-  
+
   # https://rdrr.io/cran/MNM/src/R/syminv.R
   # http://www.philender.com/courses/multivariate/notes/magic.html
-  
+
   ch_x <- chol(x)
   chol2inv(ch_x)
 }

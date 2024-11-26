@@ -44,15 +44,15 @@ library(dplyr)
 hsbdemo <- read.csv("https://stats.idre.ucla.edu/stat/data/hsbdemo.csv")
 dplyr::glimpse(hsbdemo)
 
-calc_collin_diag(data = hsbdemo, 
+calc_collin_diag(data = hsbdemo,
                  female,
                  schtyp,
                  read,
                  write,
                  math,
                  science,
-                 socst, 
-                 method_for_eigen = "corr", 
+                 socst,
+                 method_for_eigen = "corr",
                  method  = "pearson")
 
 lahigh <- tibble::tribble(
@@ -377,18 +377,18 @@ lahigh <- tibble::tribble(
 
 dplyr::glimpse(lahigh)
 
-calc_collin_diag(data = lahigh, 
-                 mathnce, 
-                 langnce, 
-                 mathpr, 
-                 langpr, 
-                 method_for_eigen = "corr", 
+calc_collin_diag(data = lahigh,
+                 mathnce,
+                 langnce,
+                 mathpr,
+                 langpr,
+                 method_for_eigen = "corr",
                  method  = "pearson")
 
-calc_collin_diag(data = lahigh, 
-                 mathnce, 
-                 langnce, 
-                 method_for_eigen = "corr", 
+calc_collin_diag(data = lahigh,
+                 mathnce,
+                 langnce,
+                 method_for_eigen = "corr",
                  method  = "pearson")
 
 }
