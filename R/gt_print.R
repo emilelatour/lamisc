@@ -204,11 +204,9 @@ gt_print <- function(x,
   }
 
   # Fix for empty col_lbls
-  if (any(col_lbls == "")) {
-
-    col_lbls[which(col_lbls == "")] <- " "
-
-  }
+  if (any(col_lbls == "" | is.na(col_lbls))) {
+    col_lbls[which(col_lbls == "" | is.na(col_lbls))] <- " "
+}
 
   # Clean names to make gt run smoothly
   x <- x |>
@@ -296,6 +294,8 @@ gt_print <- function(x,
   col_lbls <- stringr::str_replace(string = col_lbls,
                                    pattern = "\\n",
                                    replacement = "<br />")
+
+  col_lbls <- purrr::map_chr(col_lbls, ~ ifelse(.x == " ", "&nbsp;", .x))
 
 
   for (i in 1:length(col_lbls)) {

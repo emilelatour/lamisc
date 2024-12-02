@@ -6,7 +6,6 @@
 #' @param f A factor (or character vector). If a character vector is provided, it will be automatically converted to a factor.
 #' @param na_level A character string specifying the level to assign to missing values (NAs). Defaults to \code{"(Missing)"}.
 #'
-#' @importFrom forcats check_factor
 #' @importFrom forcats fct_expand
 #' @importFrom forcats lvls_revalue
 #'
@@ -55,3 +54,18 @@ fct_explicit_na <- function(f,
   }
 
 }
+
+
+
+# check_factor <- function(x, arg = caller_arg(x), call = caller_env()) {
+#   if (is.character(x)) {
+#     factor(x)
+#   } else if (is.factor(x)) {
+#     x
+#   } else {
+#     cli::cli_abort(
+#       "{.arg {arg}} must be a factor or character vector, not {.obj_type_friendly {x}}.",
+#       call = call
+#     )
+#   }
+# }
