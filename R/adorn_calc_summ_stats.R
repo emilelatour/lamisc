@@ -94,6 +94,9 @@ adorn_calc_summ_stats <- function(tab,
                                                    "{p50} [{p25} to {p75}]",
                                                    "{p0} to {p100}")) {
 
+  # Silence warning Undefined global functions or variables
+  CV <- NULL
+
   # Format numbers
   tab <- tab |>
     mutate(dplyr::across(.cols = c(n:missing),
