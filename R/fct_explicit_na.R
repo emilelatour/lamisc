@@ -31,7 +31,7 @@
 fct_explicit_na <- function(f,
                             na_level = "(Missing)") {
 
-  f <- forcats:::check_factor(f)
+  f <- check_factor(f)
   is_missing <- is.na(f)
   is_missing_level <- is.na(levels(f))
 
