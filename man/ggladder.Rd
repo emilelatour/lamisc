@@ -4,14 +4,23 @@
 \alias{ggladder}
 \title{Ladder-of-powers histograms}
 \usage{
-ggladder(data, var, fill = "cyan4", line_color = "black", line_type = "solid")
+ggladder(
+  data,
+  var,
+  fill = "#0072B2",
+  alpha = 0.8,
+  line_color = "black",
+  line_type = "solid"
+)
 }
 \arguments{
 \item{data}{A tibble or data frame.}
 
 \item{var}{A numeric vector of data values.}
 
-\item{fill}{Fill color for the histograms (default = "cyan4").}
+\item{fill}{Fill color for the histograms (default = "#0072B2").}
+
+\item{alpha}{A numeric value (0–1) specifying the transparency of the histogram fill. Default is \code{0.8}.}
 
 \item{line_color}{Color for the normal curves (default = "black").}
 

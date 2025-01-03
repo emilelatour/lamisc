@@ -10,7 +10,9 @@
 
 \item{x_title}{The title for the plot}
 
-\item{fill}{Color for the histograms}
+\item{fill}{Fill color for the histograms (default = "#0072B2").}
+
+\item{alpha}{A numeric value (0–1) specifying the transparency of the histogram fill. Default is \code{0.8}.}
 
 \item{line_color}{Color for the line}
 

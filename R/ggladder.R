@@ -21,7 +21,8 @@
 #'
 #' @param data A tibble or data frame.
 #' @param var A numeric vector of data values.
-#' @param fill Fill color for the histograms (default = "cyan4").
+#' @param fill Fill color for the histograms (default = "#0072B2").
+#' @param alpha A numeric value (0–1) specifying the transparency of the histogram fill. Default is `0.8`.
 #' @param line_color Color for the normal curves (default = "black").
 #' @param line_type Line type for the normal curves (default = "solid").
 #'
@@ -60,7 +61,9 @@
 #'   ggplot2::theme_classic()
 #'
 
-ggladder <- function(data, var, fill = "cyan4",
+ggladder <- function(data, var,
+                     fill = "#0072B2",
+                     alpha = 0.8,
                      line_color = "black",
                      line_type = "solid") {
 
@@ -94,7 +97,9 @@ ggladder <- function(data, var, fill = "cyan4",
                                           inverse,
                                           inv_square,
                                           inv_cubic),
-                                .fns = ~ -1 * .))
+                                .fns = ~ -1 * .)) %>%
+    dplyr::mutate(dplyr::across(.cols = dplyr::everything(),
+                                .fns = ~ dplyr::if_else(is.infinite(.), NA_real_, .)))
 
 
   hist_list <- purrr::map2(.x = names(transformed_x),
@@ -111,6 +116,7 @@ ggladder <- function(data, var, fill = "cyan4",
                                               x = .x,
                                               x_title = .y,
                                               fill = fill,
+                                              alpha = alpha,
                                               line_color = line_color,
                                               line_type = line_type))
 
@@ -141,7 +147,8 @@ ggladder <- function(data, var, fill = "cyan4",
 #' @param df A data frame or tibble.
 #' @param x A (non-empty) numeric vector of data values.
 #' @param x_title The title for the plot
-#' @param fill Color for the histograms
+#' @param fill Fill color for the histograms (default = "#0072B2").
+#' @param alpha A numeric value (0–1) specifying the transparency of the histogram fill. Default is `0.8`.
 #' @param line_color Color for the line
 #' @param line_type Line type
 #'
@@ -159,8 +166,14 @@ ggladder <- function(data, var, fill = "cyan4",
 utils::globalVariables(c("..density.."))
 
 make_histos <- function(df, x, x_title,
-                        fill = "cyan4", line_color = "black",
+                        fill = "#0072B2",
+                        alpha = 0.8,
+                        line_color = "black",
                         line_type = "solid") {
+
+  # Filter out NA and infinite values
+  df <- df %>%
+    dplyr::filter(!is.na(!!rlang::sym(x)), !is.infinite(!!rlang::sym(x)))
 
   # Fix no visible binding for global variable
   sqrt_n <- ten_log_10 <- NULL
@@ -183,7 +196,7 @@ make_histos <- function(df, x, x_title,
                    # binwidth = function(x) 2 * IQR(x) / (length(x)^(1/3)),
                    bins = n_bins$n_bins,
                    fill =  fill,
-                   alpha = 0.8,
+                   alpha = alpha,
                    color = "white") +
     # geom_density(color = "darkorchid") +
     stat_function(fun = dnorm,
