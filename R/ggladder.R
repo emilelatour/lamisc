@@ -81,6 +81,11 @@ ggladder <- function(data, var,
   x <- data %>%
     dplyr::pull(!! var)
 
+  if (any(is.na(x))) {
+    warning("The variable contains NA values. These will be omitted from the analysis.")
+  }
+
+  # Remove NA values for further processing
   x <- x[!is.na(x)]
 
   transformed_x <- tibble::tibble(
@@ -92,26 +97,45 @@ ggladder <- function(data, var,
     inv_square_root = 1 / sqrt(x),
     inverse = 1 / x,
     inv_square = 1 / (x ^ 2),
-    inv_cubic = 1 / (x ^ 3)) %>%
+    inv_cubic = 1 / (x ^ 3)) |>
     dplyr::mutate(dplyr::across(.cols = c(inv_square_root,
                                           inverse,
                                           inv_square,
                                           inv_cubic),
-                                .fns = ~ -1 * .)) %>%
-    dplyr::mutate(dplyr::across(.cols = dplyr::everything(),
-                                .fns = ~ dplyr::if_else(is.infinite(.), NA_real_, .)))
+                                .fns = ~ -1 * .))
+
+  # Get all the column names
+  transformed_x_nms <- names(transformed_x)
+
+  # Remove columns with any Inf values
+  transformed_x <- transformed_x |>
+    dplyr::select(dplyr::where(~ !any(is.infinite(.))))
+
+  # Check if any columns remain after filtering
+  if (ncol(transformed_x) == 0) {
+    warning("All transformations resulted in Inf values. No histograms will be generated.")
+    return(invisible(NULL))  # Return nothing and end the function
+  }
+
+
+  # Find the positions
+  positions <- match(names(transformed_x), transformed_x_nms)
+
+
+  # Adjust labels to match remaining columns
+  labels <- c("Cubic",
+              "Square",
+              "Identity",
+              "Square root",
+              "Log",
+              "1 / (Square root)",
+              "Inverse",
+              "1 / Square",
+              "1 / Cubic")[positions]
 
 
   hist_list <- purrr::map2(.x = names(transformed_x),
-                           .y = c("Cubic",
-                                  "Square",
-                                  "Identity",
-                                  "Square root",
-                                  "Log",
-                                  "1 / Square root",
-                                  "Inverse",
-                                  "1 / Square",
-                                  "1 / Cubic"),
+                           .y = labels,
                            .f = ~ make_histos(df = transformed_x,
                                               x = .x,
                                               x_title = .y,

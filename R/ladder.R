@@ -33,9 +33,7 @@
 ladder <- function(data, var) {
 
   # Fix no visible binding for global variable
-  adj_chi2 <- NULL
-  p_value <- NULL
-
+  adj_chi2 <- p_value <- transformation <- NULL
 
 
   var <- rlang::enquo(var)
@@ -43,6 +41,11 @@ ladder <- function(data, var) {
   x <- data %>%
     dplyr::pull(!! var)
 
+  if (any(is.na(x))) {
+    warning("The variable contains NA values. These will be omitted from the analysis.")
+  }
+
+  # Remove NA values for further processing
   x <- x[!is.na(x)]
 
   transformed_x <- tibble::tibble(
@@ -57,25 +60,49 @@ ladder <- function(data, var) {
     inv_cubic = 1 / (x ^ 3)
   )
 
+  # Get all the column names
+  transformed_x_nms <- names(transformed_x)
 
-  lamisc::sktest(data = transformed_x,
-                 "cubic",
-                 "square",
-                 "identity",
-                 "square_root",
-                 "log",
-                 "inv_square_root",
-                 "inverse",
-                 "inv_square",
-                 "inv_cubic") %>%
-    dplyr::select(transformation = var,
+  # Remove columns with any Inf values
+  transformed_x <- transformed_x |>
+    dplyr::select(dplyr::where(~ !any(is.infinite(.))))
+
+
+  # Find the positions
+  positions <- match(names(transformed_x), transformed_x_nms)
+
+
+  # Adjust labels to match remaining columns
+  labels <- c("Cubic",
+              "Square",
+              "Identity",
+              "Square root",
+              "Log",
+              "1 / (Square root)",
+              "Inverse",
+              "1 / Square",
+              "1 / Cubic")
+
+  labels_x <- labels[positions]
+
+
+  res <- purrr::map_df(.x = names(transformed_x),
+                       .f = ~ lamisc::sktest(data = transformed_x,
+                                             !! .x))
+
+  res <- tibble::tibble(
+    transformation = labels,
+    var = transformed_x_nms
+  ) |>
+    dplyr::left_join(res,
+                     by = "var") |>
+    dplyr::select(transformation,
                   adj_chi2,
-                  p_value) %>%
-    # mutate(p_value = lamisc::fmt_pvl(x = p_value),
-    #        p_value = stringr::str_pad(p_value,
-    #                                   width = max(nchar(p_value)),
-    #                                   side = "left",
-    #                                   pad = " ")) %>%
+                  p_value) |>
     dplyr::mutate(p_value = lamisc::fmt_pvl(x = p_value))
+
+
+  return(res)
+
 }
 
