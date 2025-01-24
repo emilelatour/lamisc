@@ -10,7 +10,10 @@ calc_ttest_1(
   mu = 0,
   conf_level = 0.95,
   show_cohens_d = FALSE,
-  show_alternative = FALSE
+  show_alternative = FALSE,
+  include_perm = FALSE,
+  n_perms = 10000,
+  include_np = FALSE
 )
 }
 \arguments{
@@ -32,6 +35,15 @@ significant.}
 
 \item{show_alternative}{Logical whether to show alternative hypothesis
 notation in the test results. Default is FALSE.}
+
+\item{include_perm}{Logical indicating whether to perform a permutation test
+in addition to the t-test. Default is FALSE.}
+
+\item{n_perms}{Number of permutations to perform for the permutation test.
+Default is 10000.}
+
+\item{include_np}{Logical indicating whether to perform a non-parametric test
+(Wilcoxon rank-sum or Mann-Whitney U test) in addition to the t-test. Default is FALSE.}
 }
 \description{
 Internal function - one-sample t-test used in public function calc_ttest()

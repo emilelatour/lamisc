@@ -39,6 +39,12 @@
 #'   significant.
 #' @param show_alternative Logical whether to show alternative hypothesis
 #'   notation in the test results. Default is FALSE.
+#' @param include_perm Logical indicating whether to perform a permutation test
+#'   in addition to the t-test. Default is FALSE.
+#' @param n_perms Number of permutations to perform for the permutation test.
+#'   Default is 10000.
+#' @param include_np Logical indicating whether to perform a non-parametric test
+#'   (Wilcoxon rank-sum or Mann-Whitney U test) in addition to the t-test. Default is FALSE.
 #' @param fmt_res Logical whether to format estimates and p-values for the summary_stats,
 #'   hypothesis_tests, tests_of_homogeneity_of_variance, and variance_check.
 #' @param accuracy A number to round to. Use (e.g.) 0.01 to show 2 decimal
@@ -108,6 +114,7 @@
 #' library(dplyr)
 #' library(tibble)
 #' library(tidyr)
+#' library(ggplot2)
 #'
 #' fuel <- tibble::tribble(
 #'   ~mpg, ~treated,
@@ -159,6 +166,74 @@
 #'            mu = 20,
 #'            fmt_res = TRUE)
 #'
+#' calc_ttest(data = fuel,
+#'            var = mpg,
+#'            mu = 0,
+#'            include_perm = TRUE)
+#'
+#'
+#' calc_ttest(data = fuel,
+#'            var = mpg,
+#'            mu = 0,
+#'            include_perm = TRUE,
+#'            include_np = TRUE,
+#'            fmt_res = FALSE)
+#'
+#' calc_ttest(data = fuel,
+#'            var = mpg,
+#'            mu = 0,
+#'            include_perm = TRUE,
+#'            include_np = TRUE,
+#'            fmt_res = TRUE)
+#'
+#'
+#' # Plot the permutation distribution
+#'
+#' (res <- calc_ttest(data = fuel,
+#'                    var = mpg,
+#'                    mu = 0,
+#'                    include_perm = TRUE))
+#'
+#'
+#' perm_results_df <- res$permutation_distribution
+#'
+#' observed <- res |>
+#'   purrr::pluck("summary_stats",
+#'                "mean",
+#'                1)
+#'
+#' # Create a histogram with ggplot2
+#' calc_bw <- function(x) {
+#'
+#'   x <- na.omit(x)
+#'
+#'   # Calculate the Sturges' number of bins
+#'   n <- length(x)  # Number of observations
+#'   k <- ceiling(log2(n) + 1)  # Number of bins using Sturges' formula
+#'
+#'   # Calculate the bin width
+#'   data_range <- max(x) - min(x)  # Range of the data
+#'   bin_width <- data_range / k
+#'
+#'   return(bin_width)
+#'
+#' }
+#'
+#' ggplot(data = perm_results_df,
+#'        aes(x = test_stat)) +
+#'   geom_histogram(binwidth = calc_bw(perm_results_df$test_stat),
+#'                  colour = "white",
+#'                  alpha = 0.7) +
+#'   geom_vline(xintercept = observed,
+#'              colour = "#D5006A",
+#'              linewidth = 2) +
+#'   theme_minimal() +
+#'   labs(
+#'     title = "Permutation Test Statistic Distribution",
+#'     x = "Test Statistic",
+#'     y = "Frequency"
+#'   )
+#'
 #'
 #' #### Paired t-test --------------------------------
 #'
@@ -166,6 +241,12 @@
 #'            var = mpg,
 #'            by = treated,
 #'            paired = TRUE)
+#'
+#' calc_ttest(data = fuel,
+#'            var = mpg,
+#'            by = treated,
+#'            paired = TRUE,
+#'            include_perm = TRUE)
 #'
 #'
 #' #### 2-sample t-test --------------------------------
@@ -204,6 +285,97 @@
 #'            by = treated,
 #'            df_form = "Welch",
 #'            paired = FALSE)
+#'
+#'
+#' calc_ttest(data = fuel,
+#'            var = mpg,
+#'            by = treated,
+#'            mu = 0,
+#'            include_perm = TRUE,
+#'            include_np = TRUE,
+#'            fmt_res = FALSE)
+#'
+#' calc_ttest(data = fuel,
+#'            var = mpg,
+#'            by = treated,
+#'            mu = 0,
+#'            include_perm = TRUE,
+#'            include_np = TRUE,
+#'            fmt_res = TRUE)
+#'
+#'
+#' # Plot the permutation distribution
+#'
+#' (res <- calc_ttest(data = fuel,
+#'                    var = mpg,
+#'                    by = treated,
+#'                    mu = 0,
+#'                    include_perm = TRUE))
+#'
+#'
+#' perm_results_df <- res$permutation_distribution
+#'
+#' observed <- res |>
+#'   purrr::pluck("summary_stats",
+#'                "mean",
+#'                4)
+#'
+#' # Create a histogram with ggplot2
+#' calc_bw <- function(x) {
+#'
+#'   x <- na.omit(x)
+#'
+#'   # Calculate the Sturges' number of bins
+#'   n <- length(x)  # Number of observations
+#'   k <- ceiling(log2(n) + 1)  # Number of bins using Sturges' formula
+#'
+#'   # Calculate the bin width
+#'   data_range <- max(x) - min(x)  # Range of the data
+#'   bin_width <- data_range / k
+#'
+#'   return(bin_width)
+#'
+#' }
+#'
+#' ggplot(data = perm_results_df,
+#'        aes(x = test_stat)) +
+#'   geom_histogram(binwidth = calc_bw(perm_results_df$test_stat),
+#'                  colour = "white",
+#'                  alpha = 0.7) +
+#'   geom_vline(xintercept = observed,
+#'              colour = "#D5006A",
+#'              linewidth = 2) +
+#'   theme_minimal() +
+#'   labs(
+#'     title = "Permutation Test Statistic Distribution",
+#'     x = "Test Statistic",
+#'     y = "Frequency"
+#'   )
+#'
+#'
+#' # library(infer)
+#' #
+#' # null_dist <- fuel |>
+#' #   mutate(treated = factor(treated)) |>
+#' #   infer::specify(formula = mpg ~ treated) %>%
+#' #   hypothesize(null = "independence") %>%
+#' #   generate(reps = 1000, type = "permute") |>
+#' #   calculate(stat = "diff in means")
+#' #
+#' # obs_diff_means <- fuel |>
+#' #   mutate(treated = factor(treated)) |>
+#' #   infer::specify(formula = mpg ~ treated) %>%
+#' #   calculate(stat = "diff in means")
+#' #
+#' # infer::visualise(null_dist) +
+#' #   shade_p_value(obs_stat = obs_diff_means, direction = "both")
+#' #
+#' # null_dist |>
+#' #   get_p_value(obs_stat = obs_diff_means, direction = "both")
+#' #
+#' #
+#' # null_dist |>
+#' #   get_p_value(obs_stat = obs_diff_means, direction = "greater")
 calc_ttest <- function(data,
                        var,
                        by = NULL,
@@ -216,6 +388,9 @@ calc_ttest <- function(data,
                        reverse_groups = FALSE,
                        show_cohens_d = FALSE,
                        show_alternative = FALSE,
+                       include_perm = FALSE,
+                       n_perms = 10000,
+                       include_np = FALSE,
                        fmt_res = FALSE,
                        accuracy = 0.1, ...) {
 
@@ -245,7 +420,10 @@ calc_ttest <- function(data,
                            mu = mu,
                            conf_level = conf_level,
                            show_cohens_d = show_cohens_d,
-                           show_alternative = show_alternative)
+                           show_alternative = show_alternative,
+                           include_perm = include_perm,
+                           n_perms = n_perms,
+                           include_np = include_np)
 
   } else {
 
@@ -260,7 +438,10 @@ calc_ttest <- function(data,
                            check_variance = check_variance,
                            reverse_groups = reverse_groups,
                            show_cohens_d = show_cohens_d,
-                           show_alternative = show_alternative)
+                           show_alternative = show_alternative,
+                           include_perm = include_perm,
+                           n_perms = n_perms,
+                           include_np = include_np)
 
 
 
@@ -283,11 +464,12 @@ calc_ttest <- function(data,
       mutate(dplyr::across(.cols = c(statistic, df, estimate, lower_ci, upper_ci),
                            .fns = ~ scales::number(x = .,
                                                    accuracy = accuracy, ...)),
-             p_value = scales::pvalue(x = p_value,
-                                      accuracy = 0.001,
-                                      decimal.mark = ".",
-                                      prefix = c("< ", "", "> "),
-                                      add_p = FALSE))
+             dplyr::across(.cols = dplyr::starts_with("p_value"),
+                           .fns = ~ scales::pvalue(x = .,
+                                                   accuracy = 0.001,
+                                                   decimal.mark = ".",
+                                                   prefix = c("< ", "", "> "),
+                                                   add_p = FALSE)))
 
   }
 
@@ -297,11 +479,12 @@ calc_ttest <- function(data,
     result$tests_of_homogeneity_of_variance <- result$tests_of_homogeneity_of_variance %>%
       mutate(statistic = scales::number(x = statistic,
                                         accuracy = accuracy, ...),
-             p_value = scales::pvalue(x = p_value,
-                                      accuracy = 0.001,
-                                      decimal.mark = ".",
-                                      prefix = c("< ", "", "> "),
-                                      add_p = FALSE))
+             dplyr::across(.cols = dplyr::starts_with("p_value"),
+                           .fns = ~ scales::pvalue(x = .,
+                                                   accuracy = 0.001,
+                                                   decimal.mark = ".",
+                                                   prefix = c("< ", "", "> "),
+                                                   add_p = FALSE)))
 
 
     result$variance_check <- result$variance_check %>%
@@ -365,6 +548,12 @@ calc_ttest <- function(data,
 #'   significant.
 #' @param show_alternative Logical whether to show alternative hypothesis
 #'   notation in the test results. Default is FALSE.
+#' @param include_perm Logical indicating whether to perform a permutation test
+#'   in addition to the t-test. Default is FALSE.
+#' @param n_perms Number of permutations to perform for the permutation test.
+#'   Default is 10000.
+#' @param include_np Logical indicating whether to perform a non-parametric test
+#'   (Wilcoxon rank-sum or Mann-Whitney U test) in addition to the t-test. Default is FALSE.
 #' @param fmt_res Logical whether to format estimates and p-values for the summary_stats,
 #'   hypothesis_tests, tests_of_homogeneity_of_variance, and variance_check.
 #' @param accuracy A number to round to. Use (e.g.) 0.01 to show 2 decimal
@@ -420,6 +609,9 @@ calc_ttest_i <- function(n1, m1, s1,
                          reverse_groups = FALSE,
                          show_cohens_d = FALSE,
                          show_alternative = FALSE,
+                         include_perm = FALSE,
+                         n_perms = 10000,
+                         include_np = FALSE,
                          fmt_res = FALSE,
                          accuracy = 0.1, ...) {
 
@@ -524,7 +716,12 @@ calc_ttest_i <- function(n1, m1, s1,
 #'   significant.
 #' @param show_alternative Logical whether to show alternative hypothesis
 #'   notation in the test results. Default is FALSE.
-
+#' @param include_perm Logical indicating whether to perform a permutation test
+#'   in addition to the t-test. Default is FALSE.
+#' @param n_perms Number of permutations to perform for the permutation test.
+#'   Default is 10000.
+#' @param include_np Logical indicating whether to perform a non-parametric test
+#'   (Wilcoxon rank-sum or Mann-Whitney U test) in addition to the t-test. Default is FALSE.
 #'
 #' @importFrom broom tidy
 #' @importFrom dplyr mutate
@@ -546,7 +743,10 @@ calc_ttest_1 <- function(data,
                          mu = 0,
                          conf_level = 0.95,
                          show_cohens_d = FALSE,
-                         show_alternative = FALSE) {
+                         show_alternative = FALSE,
+                         include_perm = FALSE,
+                         n_perms = 10000,
+                         include_np = FALSE) {
 
   # Fix no visible binding for global variable
   y <- NULL
@@ -648,6 +848,97 @@ calc_ttest_1 <- function(data,
                       method = method,
                       hypothesis_tests = hypothesis_tests)
 
+  #### Permutation Test --------------------------------
+
+  if (include_perm) {
+
+    # Center the data around the null hypothesis
+    centered_data <- grp1 - mu
+
+    # Calculate observed test statistic
+    observed <- mean(centered_data, na.rm = TRUE)
+
+    # Generate permutation distribution by flipping signs
+    perm_results <- numeric(n_perms)
+
+    for (i in seq_len(n_perms)) {
+      flipped_sample <- centered_data * sample(c(-1, 1), length(centered_data), replace = TRUE)
+      perm_results[i] <- mean(flipped_sample)
+    }
+
+    # Calculate p-values
+    two_sided <- mean(abs(perm_results) >= abs(observed))
+    greater <- mean(perm_results >= observed)
+    less <- mean(perm_results < observed)
+
+    perm_test <- tibble::tibble(
+      alternative = c("two.sided", "less", "greater"),
+      p_value_perm_test = c(two_sided, less, greater)
+    )
+
+    result_list[["hypothesis_tests"]] <- result_list[["hypothesis_tests"]] %>%
+      dplyr::left_join(perm_test, by = "alternative")
+
+    result_list[["observed_difference"]] <- observed
+
+    # Convert perm_results into a data frame
+    perm_results <- tibble::tibble(test_stat = perm_results)
+
+    result_list[["permutation_distribution"]] <- perm_results
+
+    # # Using exactRankTests::perm.test
+    # exactRankTests::perm.test(x = gss$age, mu = 40)
+    # exactRankTests::perm.test(x = gss$age, mu = 40, alternative = "greater")
+    # exactRankTests::perm.test(x = gss$age, mu = 40, alternative = "less")
+    #
+    # library(infer)
+    #
+    # gss %>%
+    #   specify(response = age) %>%
+    #   hypothesize(null = "point",
+    #               mu = 0)
+    #
+    # gss %>%
+    #   specify(response = age) %>%
+    #   hypothesize(null = "point",
+    #               mu = 40) |>
+    #   generate(reps = 10000, type = "bootstrap") |>
+    #   calculate(stat = "mean") |>
+    #   mutate(observed = mean(gss$age)) |>
+    #   summarise(two_sided = mean(abs(stat) >= abs(observed)),
+    #             greater = mean(stat >= observed),
+    #             less = mean(stat < observed))
+    #
+    #
+    # gss_infer <- gss |>
+    #   specify(response = age) |>
+    #   hypothesize(null = "point",
+    #               mu = 40) |>
+    #   generate(reps = 1000, type = "bootstrap") |>
+    #   calculate(stat = "mean")
+    #
+    # gss_infer
+    #
+    # gss_infer |> visualize() +
+    #   shade_p_value(obs_stat = mean(gss$age), direction = "two_sided")
+
+
+  }
+
+  #### Non-Parametric Test --------------------------------
+  if (include_np) {
+
+    np_res <- tibble::tibble(
+      alternative = c("two.sided", "less", "greater")) %>%
+      mutate(p_value_non_param = purrr::map_dbl(.x = alternative,
+                                                .f = ~ wilcox.test(grp1,
+                                                                   mu = mu,
+                                                                   alternative = .x)$p.value))
+
+    result_list[["hypothesis_tests"]] <- result_list[["hypothesis_tests"]] %>%
+      dplyr::left_join(np_res, by = "alternative")
+  }
+
 
   #### Additional results --------------------------------
 
@@ -701,6 +992,12 @@ calc_ttest_1 <- function(data,
 #'   significant.
 #' @param show_alternative Logical whether to show alternative hypothesis
 #'   notation in the test results. Default is FALSE.
+#' @param include_perm Logical indicating whether to perform a permutation test
+#'   in addition to the t-test. Default is FALSE.
+#' @param n_perms Number of permutations to perform for the permutation test.
+#'   Default is 10000.
+#' @param include_np Logical indicating whether to perform a non-parametric test
+#'   (Wilcoxon rank-sum or Mann-Whitney U test) in addition to the t-test. Default is FALSE.
 #'
 #' @importFrom broom tidy
 #' @importFrom car leveneTest
@@ -734,7 +1031,10 @@ calc_ttest_2 <- function(data,
                          check_variance = FALSE,
                          reverse_groups = FALSE,
                          show_cohens_d = FALSE,
-                         show_alternative = FALSE) {
+                         show_alternative = FALSE,
+                         include_perm = FALSE,
+                         n_perms = 10000,
+                         include_np = FALSE) {
 
   # Fix no visible binding for global variable
   x <- NULL
@@ -752,6 +1052,7 @@ calc_ttest_2 <- function(data,
   p_value <- NULL
   alt_hypothesis <- NULL
   prob <- NULL
+  diff_means <- NULL
 
 
 
@@ -879,7 +1180,9 @@ calc_ttest_2 <- function(data,
     # In the case of unequal variance, the Averaged SD is calculated
     sd <- sqrt((s1 ^ 2 + s2 ^ 2) / 2)
 
-    t_stat <- (m1 - m2) / sqrt(A + B)
+    # t_stat <- (m1 - m2) / sqrt(A + B)
+    # Incorporate mu into t-statistic calculation
+    t_stat <- (m1 - m2 - mu) / sqrt(A + B)
 
     df_stmt <- glue::glue("{df_form}'s degrees of freedom = {scales::number(x = df, accuracy = 0.00001)}")
 
@@ -929,6 +1232,9 @@ calc_ttest_2 <- function(data,
     pooled_se <- sqrt(sp2 * (1 / n1 + 1 / n2))
 
     df <- n1 + n2 - 2
+
+    # Incorporate mu into t-statistic calculation
+    t_stat <- (m1 - m2 - mu) / pooled_se
 
     sd <- sp2
 
@@ -1198,6 +1504,102 @@ calc_ttest_2 <- function(data,
     cohens_d <- summary_stats[4, "mean"] / summary_stats[4, "sd"]
 
     result_list[["cohens_d"]] <- cohens_d
+
+  }
+
+
+  #### Permutation test --------------------------------
+
+  if (include_perm) {
+
+    # Calculate observed difference in means
+    observed <- data %>%
+      group_by(x) %>%
+      summarise(n = dplyr::n(),
+                mean = mean(y, na.rm = TRUE)) %>%
+      summarise(diff_means = mean[1] - mean[2] - mu) %>%  # Subtract `mu` from the observed difference
+      pull(diff_means)
+
+    # Get the values from the data in a vector
+    var_values <- data$y
+
+    # Get the group sizes
+    group_sizes <- data %>%
+      group_by(x) %>%
+      summarise(n = n()) %>%
+      pull(n)
+
+
+    # Initialize permutation results
+    perm_results <- numeric(n_perms)
+
+
+    for (i in seq_len(n_perms)) {
+      shuffled <- sample(var_values)
+      group1 <- shuffled[1:group_sizes[1]]
+      group2 <- shuffled[(group_sizes[1] + 1):length(shuffled)]
+      perm_results[i] <- mean(group1) - mean(group2) - mu  # Adjust for `mu`
+    }
+
+
+    # Calculate p-values
+    two_sided <- mean(abs(perm_results) >= abs(observed))
+    greater <- mean(perm_results >= observed)
+    less <- mean(perm_results < observed)
+
+    # Return Permutation Test Results
+
+    perm_test <- tibble::tibble(
+      alternative = c("two.sided",
+                      "less",
+                      "greater"),
+      p_value_perm_test = c(two_sided,
+                            less,
+                            greater)
+
+    )
+
+    result_list[["hypothesis_tests"]] <- result_list[["hypothesis_tests"]] |>
+      dplyr::left_join(perm_test,
+                       by = "alternative")
+
+    result_list[["observed_difference"]] <- observed
+
+    # Convert perm_results into a data frame
+    perm_results <- tibble::tibble(test_stat = perm_results)
+
+    result_list[["permutation_distribution"]] <- perm_results
+
+  }
+
+
+  #### Wilcoxon test / Mann Whitney --------------------------------
+
+  if (include_np) {
+
+    grp1 <- data %>%
+      filter(x == unique(data$x)[1]) %>%
+      pull(y)
+    grp2 <- data %>%
+      filter(x == unique(data$x)[2]) %>%
+      pull(y)
+
+    np_res <- tibble::tibble(
+      alternative = c("two.sided",
+                      "less",
+                      "greater")) |>
+      mutate(p_value_non_param = purrr::map_dbl(.x = alternative,
+                                                .f = ~ wilcox.test(x = grp1,
+                                                                   y = grp2,
+                                                                   mu = mu,
+                                                                   paired = paired,
+                                                                   alternative = .x)$p.value))
+
+
+    result_list[["hypothesis_tests"]] <- result_list[["hypothesis_tests"]] |>
+      dplyr::left_join(np_res,
+                       by = "alternative")
+
 
   }
 

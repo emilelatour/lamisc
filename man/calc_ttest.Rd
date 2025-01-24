@@ -18,6 +18,9 @@ calc_ttest(
   reverse_groups = FALSE,
   show_cohens_d = FALSE,
   show_alternative = FALSE,
+  include_perm = FALSE,
+  n_perms = 10000,
+  include_np = FALSE,
   fmt_res = FALSE,
   accuracy = 0.1,
   ...
@@ -38,6 +41,9 @@ calc_ttest_i(
   reverse_groups = FALSE,
   show_cohens_d = FALSE,
   show_alternative = FALSE,
+  include_perm = FALSE,
+  n_perms = 10000,
+  include_np = FALSE,
   fmt_res = FALSE,
   accuracy = 0.1,
   ...
@@ -84,6 +90,15 @@ significant.}
 
 \item{show_alternative}{Logical whether to show alternative hypothesis
 notation in the test results. Default is FALSE.}
+
+\item{include_perm}{Logical indicating whether to perform a permutation test
+in addition to the t-test. Default is FALSE.}
+
+\item{n_perms}{Number of permutations to perform for the permutation test.
+Default is 10000.}
+
+\item{include_np}{Logical indicating whether to perform a non-parametric test
+(Wilcoxon rank-sum or Mann-Whitney U test) in addition to the t-test. Default is FALSE.}
 
 \item{fmt_res}{Logical whether to format estimates and p-values for the summary_stats,
 hypothesis_tests, tests_of_homogeneity_of_variance, and variance_check.}
@@ -163,6 +178,7 @@ Cohen's d are returned.
 library(dplyr)
 library(tibble)
 library(tidyr)
+library(ggplot2)
 
 fuel <- tibble::tribble(
   ~mpg, ~treated,
@@ -214,6 +230,74 @@ calc_ttest(data = fuel,
            mu = 20,
            fmt_res = TRUE)
 
+calc_ttest(data = fuel,
+           var = mpg,
+           mu = 0,
+           include_perm = TRUE)
+
+
+calc_ttest(data = fuel,
+           var = mpg,
+           mu = 0,
+           include_perm = TRUE,
+           include_np = TRUE,
+           fmt_res = FALSE)
+
+calc_ttest(data = fuel,
+           var = mpg,
+           mu = 0,
+           include_perm = TRUE,
+           include_np = TRUE,
+           fmt_res = TRUE)
+
+
+# Plot the permutation distribution
+
+(res <- calc_ttest(data = fuel,
+                   var = mpg,
+                   mu = 0,
+                   include_perm = TRUE))
+
+
+perm_results_df <- res$permutation_distribution
+
+observed <- res |>
+  purrr::pluck("summary_stats",
+               "mean",
+               1)
+
+# Create a histogram with ggplot2
+calc_bw <- function(x) {
+
+  x <- na.omit(x)
+
+  # Calculate the Sturges' number of bins
+  n <- length(x)  # Number of observations
+  k <- ceiling(log2(n) + 1)  # Number of bins using Sturges' formula
+
+  # Calculate the bin width
+  data_range <- max(x) - min(x)  # Range of the data
+  bin_width <- data_range / k
+
+  return(bin_width)
+
+}
+
+ggplot(data = perm_results_df,
+       aes(x = test_stat)) +
+  geom_histogram(binwidth = calc_bw(perm_results_df$test_stat),
+                 colour = "white",
+                 alpha = 0.7) +
+  geom_vline(xintercept = observed,
+             colour = "#D5006A",
+             linewidth = 2) +
+  theme_minimal() +
+  labs(
+    title = "Permutation Test Statistic Distribution",
+    x = "Test Statistic",
+    y = "Frequency"
+  )
+
 
 #### Paired t-test --------------------------------
 
@@ -221,6 +305,12 @@ calc_ttest(data = fuel,
            var = mpg,
            by = treated,
            paired = TRUE)
+
+calc_ttest(data = fuel,
+           var = mpg,
+           by = treated,
+           paired = TRUE,
+           include_perm = TRUE)
 
 
 #### 2-sample t-test --------------------------------
@@ -259,6 +349,97 @@ calc_ttest(data = fuel,
            by = treated,
            df_form = "Welch",
            paired = FALSE)
+
+
+calc_ttest(data = fuel,
+           var = mpg,
+           by = treated,
+           mu = 0,
+           include_perm = TRUE,
+           include_np = TRUE,
+           fmt_res = FALSE)
+
+calc_ttest(data = fuel,
+           var = mpg,
+           by = treated,
+           mu = 0,
+           include_perm = TRUE,
+           include_np = TRUE,
+           fmt_res = TRUE)
+
+
+# Plot the permutation distribution
+
+(res <- calc_ttest(data = fuel,
+                   var = mpg,
+                   by = treated,
+                   mu = 0,
+                   include_perm = TRUE))
+
+
+perm_results_df <- res$permutation_distribution
+
+observed <- res |>
+  purrr::pluck("summary_stats",
+               "mean",
+               4)
+
+# Create a histogram with ggplot2
+calc_bw <- function(x) {
+
+  x <- na.omit(x)
+
+  # Calculate the Sturges' number of bins
+  n <- length(x)  # Number of observations
+  k <- ceiling(log2(n) + 1)  # Number of bins using Sturges' formula
+
+  # Calculate the bin width
+  data_range <- max(x) - min(x)  # Range of the data
+  bin_width <- data_range / k
+
+  return(bin_width)
+
+}
+
+ggplot(data = perm_results_df,
+       aes(x = test_stat)) +
+  geom_histogram(binwidth = calc_bw(perm_results_df$test_stat),
+                 colour = "white",
+                 alpha = 0.7) +
+  geom_vline(xintercept = observed,
+             colour = "#D5006A",
+             linewidth = 2) +
+  theme_minimal() +
+  labs(
+    title = "Permutation Test Statistic Distribution",
+    x = "Test Statistic",
+    y = "Frequency"
+  )
+
+
+# library(infer)
+#
+# null_dist <- fuel |>
+#   mutate(treated = factor(treated)) |>
+#   infer::specify(formula = mpg ~ treated) \%>\%
+#   hypothesize(null = "independence") \%>\%
+#   generate(reps = 1000, type = "permute") |>
+#   calculate(stat = "diff in means")
+#
+# obs_diff_means <- fuel |>
+#   mutate(treated = factor(treated)) |>
+#   infer::specify(formula = mpg ~ treated) \%>\%
+#   calculate(stat = "diff in means")
+#
+# infer::visualise(null_dist) +
+#   shade_p_value(obs_stat = obs_diff_means, direction = "both")
+#
+# null_dist |>
+#   get_p_value(obs_stat = obs_diff_means, direction = "both")
+#
+#
+# null_dist |>
+#   get_p_value(obs_stat = obs_diff_means, direction = "greater")
 #### Immediate form --------------------------------
 
 # One sample t-test
