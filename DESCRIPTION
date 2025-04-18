@@ -41,6 +41,7 @@ Imports:
     rlang (>= 0.1.2),
     Rmpfr,
     scales, 
+    sjlabelled, 
     srvyr, 
     stringr,
     survey, 
