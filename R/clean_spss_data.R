@@ -24,6 +24,17 @@
 #' raw_data <- haven::read_spss(file = "/Users/latour/Dropbox/code/R/qualtrics/Wages.sav")
 #' cleaned <- clean_spss_data(raw_data, method = "forcats")
 #' str(cleaned$data)
+#'
+#' # Apply labels to the data
+#' labels_list <- stats::setNames(object = as.list(cleaned$dictionary$lbl),
+#'                                nm = cleaned$dictionary$var)
+#'
+#' labelled::var_label(cleaned$data) <- labels_list
+#'
+#' # See that now there are attributes where the labels are stored.
+#' str(cleaned$data)
+#'
+#'
 #' }
 #'
 #' @importFrom dplyr mutate across one_of rename all_of
