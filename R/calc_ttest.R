@@ -1149,7 +1149,14 @@ calc_ttest_2 <- function(data,
       grp2 = grp2,
       diff = grp1 - grp2)
 
+    m1 <- mean(grp1, na.rm = TRUE)
+    m2 <- mean(grp2, na.rm = TRUE)
+    sd <- sd(diff_df$diff, na.rm = TRUE)
+
     df <- length(diff_df$diff) - 1
+
+    t_stat <- mean(diff_df$diff, na.rm = TRUE) / (sd(diff_df$diff, na.rm = TRUE) / sqrt(nrow(diff_df)))
+    pooled_se <- sd(diff_df$diff, na.rm = TRUE) / sqrt(nrow(diff_df))
 
     df_stmt <- glue::glue("degrees of freedom = {scales::number(x = df, accuracy = 1.0)}")
 
@@ -1159,30 +1166,33 @@ calc_ttest_2 <- function(data,
 
     method <- "Two-sample t-test with unequal variances"
 
-    n1 <- by_group_df[["n"]][[1]]
-    n2 <- by_group_df[["n"]][[2]]
-    s1 <- by_group_df[["sd"]][[1]]
-    s2 <- by_group_df[["sd"]][[2]]
+    # Ensure factor levels are respected
+    level_names <- levels(factor(data$x))
 
-    m1 <- by_group_df[["mean"]][[1]]
-    m2 <- by_group_df[["mean"]][[2]]
+    by_df <- by_group_df %>% filter(group %in% level_names)
 
-    A <- s1 ^ 2 / n1
-    B <- s2 ^ 2 / n2
+    m1 <- by_df %>% filter(group == level_names[1]) %>% pull(mean)
+    m2 <- by_df %>% filter(group == level_names[2]) %>% pull(mean)
+
+    s1 <- by_df %>% filter(group == level_names[1]) %>% pull(sd)
+    s2 <- by_df %>% filter(group == level_names[2]) %>% pull(sd)
+
+    n1 <- by_df %>% filter(group == level_names[1]) %>% pull(n)
+    n2 <- by_df %>% filter(group == level_names[2]) %>% pull(n)
+
+    A <- s1^2 / n1
+    B <- s2^2 / n2
 
     sp2 <- A + B
     pooled_se <- sqrt(sp2)
 
-    denom <- A ^ 2 / (n1 + 1) + B ^ 2 / (n2 + 1)
+    denom <- A^2 / (n1 - 1) + B^2 / (n2 - 1)
+    df <- sp2^2 / denom
 
-    df <- -2 + (sp2 ^ 2) / denom
+    # t-statistic with correct direction and mu shift
+    t_stat <- (m1 - m2 - mu) / pooled_se
 
-    # In the case of unequal variance, the Averaged SD is calculated
-    sd <- sqrt((s1 ^ 2 + s2 ^ 2) / 2)
-
-    # t_stat <- (m1 - m2) / sqrt(A + B)
-    # Incorporate mu into t-statistic calculation
-    t_stat <- (m1 - m2 - mu) / sqrt(A + B)
+    sd <- sqrt((s1^2 + s2^2) / 2)
 
     df_stmt <- glue::glue("{df_form}'s degrees of freedom = {scales::number(x = df, accuracy = 0.00001)}")
 
@@ -1192,51 +1202,56 @@ calc_ttest_2 <- function(data,
 
     method <- "Two-sample t-test with unequal variances"
 
-    n1 <- by_group_df[["n"]][[1]]
-    n2 <- by_group_df[["n"]][[2]]
-    s1 <- by_group_df[["sd"]][[1]]
-    s2 <- by_group_df[["sd"]][[2]]
+    level_names <- levels(factor(data$x))
+    by_df <- by_group_df %>% filter(group %in% level_names)
 
-    m1 <- by_group_df[["mean"]][[1]]
-    m2 <- by_group_df[["mean"]][[2]]
+    m1 <- by_df %>% filter(group == level_names[1]) %>% pull(mean)
+    m2 <- by_df %>% filter(group == level_names[2]) %>% pull(mean)
 
-    A <- s1 ^ 2 / n1
-    B <- s2 ^ 2 / n2
+    s1 <- by_df %>% filter(group == level_names[1]) %>% pull(sd)
+    s2 <- by_df %>% filter(group == level_names[2]) %>% pull(sd)
+
+    n1 <- by_df %>% filter(group == level_names[1]) %>% pull(n)
+    n2 <- by_df %>% filter(group == level_names[2]) %>% pull(n)
+
+    A <- s1^2 / n1
+    B <- s2^2 / n2
 
     sp2 <- A + B
     pooled_se <- sqrt(sp2)
 
-    denom <- (A ^ 2) / (n1 - 1) + (B ^ 2) / (n2 - 1)
+    denom <- (A^2) / (n1 - 1) + (B^2) / (n2 - 1)
+    df <- (sp2^2) / denom
 
-    df <- (sp2 ^ 2) / denom
-
-    # In the case of unequal variance, the Averaged SD is calculated
-    sd <- sqrt((s1 ^ 2 + s2 ^ 2) / 2)
+    t_stat <- (m1 - m2 - mu) / pooled_se
+    sd <- sqrt((s1^2 + s2^2) / 2)
 
     df_stmt <- glue::glue("{df_form}'s degrees of freedom = {scales::number(x = df, accuracy = 0.00001)}")
 
     ## Unpaired, equal variance ----------------
-  } else if (var_equal == TRUE) {
+
+  } else if (var_equal == TRUE & paired == FALSE) {
 
     method <- "Two-sample t-test with equal variances"
 
-    n1 <- by_group_df[["n"]][[1]]
-    n2 <- by_group_df[["n"]][[2]]
-    s1 <- by_group_df[["sd"]][[1]]
-    s2 <- by_group_df[["sd"]][[2]]
+    level_names <- levels(factor(data$x))
+    by_df <- by_group_df %>% filter(group %in% level_names)
 
-    m1 <- by_group_df[["mean"]][[1]]
-    m2 <- by_group_df[["mean"]][[2]]
+    m1 <- by_df %>% filter(group == level_names[1]) %>% pull(mean)
+    m2 <- by_df %>% filter(group == level_names[2]) %>% pull(mean)
 
-    sp2 <- (((n1 - 1) * s1 ^ 2) + ((n2 - 1) * s2 ^ 2)) / (n1 + n2 - 2)
-    pooled_se <- sqrt(sp2 * (1 / n1 + 1 / n2))
+    s1 <- by_df %>% filter(group == level_names[1]) %>% pull(sd)
+    s2 <- by_df %>% filter(group == level_names[2]) %>% pull(sd)
+
+    n1 <- by_df %>% filter(group == level_names[1]) %>% pull(n)
+    n2 <- by_df %>% filter(group == level_names[2]) %>% pull(n)
+
+    sp2 <- (((n1 - 1) * s1^2) + ((n2 - 1) * s2^2)) / (n1 + n2 - 2)
+    pooled_se <- sqrt(sp2 * (1/n1 + 1/n2))
 
     df <- n1 + n2 - 2
-
-    # Incorporate mu into t-statistic calculation
     t_stat <- (m1 - m2 - mu) / pooled_se
-
-    sd <- sp2
+    sd <- sqrt((s1^2 + s2^2) / 2)
 
     df_stmt <- glue::glue("degrees of freedom = {scales::number(x = df, accuracy = 1.0)}")
 
@@ -1298,68 +1313,147 @@ calc_ttest_2 <- function(data,
 
   #### Perform hypothesis tests --------------------------------
 
+  # Note: m1 - m2 follows the order of factor levels.
+  # Set reverse_groups = TRUE in calc_ttest() to flip comparison direction.
+
   if (var_equal == FALSE & df_form == "Welch") {
 
-    welch_gt <- tibble::tibble(alternative = c("greater"),
-                               statistic = t_stat,
-                               df = df,
-                               estimate = m1 - m2) %>%
-      mutate(se = pooled_se,
-             sd = sd,
-             lower_qt = qt(p = (1 - conf_level),
-                           df = df,
-                           lower.tail = TRUE),
-             lower_ci = estimate + lower_qt * se,
-             upper_ci = Inf,
-             p_value = 1 - pt(q = t_stat, df = df, lower.tail = TRUE)) %>%
-      dplyr::select(-lower_qt,
-                    -se,
-                    -sd)
+    welch_gt <- tibble::tibble(
+      alternative = "greater",
+      statistic = t_stat,
+      df = df,
+      estimate = m1 - m2,
+      lower_ci = qt(conf_level, df, lower.tail = TRUE) * pooled_se + (m1 - m2),
+      upper_ci = Inf,
+      p_value = pt(t_stat, df, lower.tail = FALSE)
+    )
 
-    welch_lt <- tibble::tibble(alternative = c("less"),
-                               statistic = t_stat,
-                               df = df,
-                               estimate = m1 - m2) %>%
-      mutate(se = pooled_se,
-             sd = sd,
-             upper_qt = qt(p = (1 - conf_level),
-                           df = df,
-                           lower.tail = FALSE),
-             lower_ci = -Inf,
-             upper_ci = estimate + upper_qt * se,
-             p_value = 1 - pt(q = t_stat, df = df, lower.tail = FALSE)) %>%
-      dplyr::select(-upper_qt,
-                    -se,
-                    -sd)
+    welch_lt <- tibble::tibble(
+      alternative = "less",
+      statistic = t_stat,
+      df = df,
+      estimate = m1 - m2,
+      lower_ci = -Inf,
+      upper_ci = qt(conf_level, df, lower.tail = FALSE) * pooled_se + (m1 - m2),
+      p_value = pt(t_stat, df, lower.tail = TRUE)
+    )
 
-    welch_2 <- tibble::tibble(alternative = c("two.sided"),
-                              statistic = t_stat,
-                              df = df,
-                              estimate = m1 - m2) %>%
-      mutate(se = pooled_se,
-             sd = sd,
-             lower_qt = qt(p = (1 - conf_level) / 2,
-                           df = df,
-                           lower.tail = TRUE),
-             upper_qt = qt(p = (1 - conf_level) / 2,
-                           df = df,
-                           lower.tail = FALSE),
-             lower_ci = estimate + lower_qt * se,
-             upper_ci = estimate + upper_qt * se,
-             p_value = 2 * (1 - pt(q = t_stat, df = df, lower.tail = FALSE))) %>%
-      dplyr::select(-lower_qt,
-                    -upper_qt,
-                    -se,
-                    -sd)
+    welch_2 <- tibble::tibble(
+      alternative = "two.sided",
+      statistic = t_stat,
+      df = df,
+      estimate = m1 - m2,
+      lower_ci = (m1 - m2) + qt((1 - conf_level)/2, df) * pooled_se,
+      upper_ci = (m1 - m2) + qt((1 - conf_level)/2, df, lower.tail = FALSE) * pooled_se,
+      p_value = 2 * pt(-abs(t_stat), df)
+    )
 
+    hypothesis_tests <- bind_rows(welch_2, welch_lt, welch_gt)
 
-    hypothesis_tests <- dplyr::bind_rows(welch_2,
-                                         welch_lt,
-                                         welch_gt)
+  } else if (var_equal == FALSE & df_form == "Satterthwaite") {
+
+    satter_gt <- tibble::tibble(
+      alternative = "greater",
+      statistic = t_stat,
+      df = df,
+      estimate = m1 - m2,
+      lower_ci = qt(conf_level, df, lower.tail = TRUE) * pooled_se + (m1 - m2),
+      upper_ci = Inf,
+      p_value = pt(t_stat, df, lower.tail = FALSE)
+    )
+
+    satter_lt <- tibble::tibble(
+      alternative = "less",
+      statistic = t_stat,
+      df = df,
+      estimate = m1 - m2,
+      lower_ci = -Inf,
+      upper_ci = qt(conf_level, df, lower.tail = FALSE) * pooled_se + (m1 - m2),
+      p_value = pt(t_stat, df, lower.tail = TRUE)
+    )
+
+    satter_2 <- tibble::tibble(
+      alternative = "two.sided",
+      statistic = t_stat,
+      df = df,
+      estimate = m1 - m2,
+      lower_ci = (m1 - m2) + qt((1 - conf_level)/2, df) * pooled_se,
+      upper_ci = (m1 - m2) + qt((1 - conf_level)/2, df, lower.tail = FALSE) * pooled_se,
+      p_value = 2 * pt(-abs(t_stat), df)
+    )
+
+    hypothesis_tests <- bind_rows(satter_2, satter_lt, satter_gt)
+
+  } else if (var_equal == TRUE & paired == FALSE) {
+
+    eq_gt <- tibble::tibble(
+      alternative = "greater",
+      statistic = t_stat,
+      df = df,
+      estimate = m1 - m2,
+      lower_ci = qt(conf_level, df, lower.tail = TRUE) * pooled_se + (m1 - m2),
+      upper_ci = Inf,
+      p_value = pt(t_stat, df, lower.tail = FALSE)
+    )
+
+    eq_lt <- tibble::tibble(
+      alternative = "less",
+      statistic = t_stat,
+      df = df,
+      estimate = m1 - m2,
+      lower_ci = -Inf,
+      upper_ci = qt(conf_level, df, lower.tail = FALSE) * pooled_se + (m1 - m2),
+      p_value = pt(t_stat, df, lower.tail = TRUE)
+    )
+
+    eq_2 <- tibble::tibble(
+      alternative = "two.sided",
+      statistic = t_stat,
+      df = df,
+      estimate = m1 - m2,
+      lower_ci = (m1 - m2) + qt((1 - conf_level)/2, df) * pooled_se,
+      upper_ci = (m1 - m2) + qt((1 - conf_level)/2, df, lower.tail = FALSE) * pooled_se,
+      p_value = 2 * pt(-abs(t_stat), df)
+    )
+
+    hypothesis_tests <- bind_rows(eq_2, eq_lt, eq_gt)
+
+  } else if (paired == TRUE) {
+
+    paired_gt <- tibble::tibble(
+      alternative = "greater",
+      statistic = t_stat,
+      df = df,
+      estimate = mean(diff_df$diff),
+      lower_ci = qt(conf_level, df, lower.tail = TRUE) * pooled_se + mean(diff_df$diff),
+      upper_ci = Inf,
+      p_value = pt(t_stat, df, lower.tail = FALSE)
+    )
+
+    paired_lt <- tibble::tibble(
+      alternative = "less",
+      statistic = t_stat,
+      df = df,
+      estimate = mean(diff_df$diff),
+      lower_ci = -Inf,
+      upper_ci = qt(conf_level, df, lower.tail = FALSE) * pooled_se + mean(diff_df$diff),
+      p_value = pt(t_stat, df, lower.tail = TRUE)
+    )
+
+    paired_2 <- tibble::tibble(
+      alternative = "two.sided",
+      statistic = t_stat,
+      df = df,
+      estimate = mean(diff_df$diff),
+      lower_ci = mean(diff_df$diff) + qt((1 - conf_level)/2, df) * pooled_se,
+      upper_ci = mean(diff_df$diff) + qt((1 - conf_level)/2, df, lower.tail = FALSE) * pooled_se,
+      p_value = 2 * pt(-abs(t_stat), df)
+    )
+
+    hypothesis_tests <- bind_rows(paired_2, paired_lt, paired_gt)
+
 
   } else {
-
-
 
     hypothesis_tests <- c("two.sided", "less", "greater") %>%
       purrr::map_df(.x = .,
