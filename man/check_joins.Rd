@@ -11,7 +11,7 @@ check_joins(x, y, by = NULL)
 lazy data frames (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
 more details.}
 
-\item{by}{A join specification created with \code{\link[=join_by]{join_by()}}, or a character
+\item{by}{A join specification created with \code{\link[dplyr:join_by]{dplyr::join_by()}}, or a character
 vector of variables to join by.
 
 If \code{NULL}, the default, \verb{*_join()} will perform a natural join, using all
@@ -19,18 +19,19 @@ variables in common across \code{x} and \code{y}. A message lists the variables 
 that you can check they're correct; suppress the message by supplying \code{by}
 explicitly.
 
-To join on different variables between \code{x} and \code{y}, use a \code{\link[=join_by]{join_by()}}
+To join on different variables between \code{x} and \code{y}, use a \code{\link[dplyr:join_by]{dplyr::join_by()}}
 specification. For example, \code{join_by(a == b)} will match \code{x$a} to \code{y$b}.
 
-To join by multiple variables, use a \code{\link[=join_by]{join_by()}} specification with
+To join by multiple variables, use a \code{\link[dplyr:join_by]{dplyr::join_by()}} specification with
 multiple expressions. For example, \code{join_by(a == b, c == d)} will match
 \code{x$a} to \code{y$b} and \code{x$c} to \code{y$d}. If the column names are the same between
 \code{x} and \code{y}, you can shorten this by listing only the variable names, like
 \code{join_by(a, c)}.
 
-\code{\link[=join_by]{join_by()}} can also be used to perform inequality, rolling, and overlap
-joins. See the documentation at \link[=join_by]{?join_by} for details on
-these types of joins.
+\code{\link[dplyr:join_by]{dplyr::join_by()}} can also be used to perform inequality, rolling, and overlap
+joins. See the documentation at
+\code{\link[dplyr:join_by]{dplyr::join_by()}} for details on these types of
+joins.
 
 For simple equality joins, you can alternatively specify a character vector
 of variable names to join by. For example, \code{by = c("a", "b")} joins \code{x$a}

@@ -30,7 +30,10 @@ and labels.
 \examples{
 \dontrun{
 # Raw_data can be downloaded from here and saved to disc
-# https://www.cambridge.org/us/academic/subjects/psychology/psychology-research-methods-and-statistics/statistics-using-ibm-spss-integrative-approach-3rd-edition?format=PB&isbn=9781107461222
+# See Cambridge guide to SPSS:
+# https://www.cambridge.org/us/academic/subjects/psychology/
+# psychology-research-methods-and-statistics/
+# statistics-using-ibm-spss-integrative-approach-3rd-edition?format=PB&isbn=9781107461222
 raw_data <- haven::read_spss(file = "/Users/latour/Dropbox/code/R/qualtrics/Wages.sav")
 cleaned <- clean_spss_data(raw_data, method = "forcats")
 str(cleaned$data)

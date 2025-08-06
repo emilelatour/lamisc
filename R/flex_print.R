@@ -277,7 +277,7 @@ flex_print <- function(x,
 
   if (!is.null(footer)) {
 
-    title <- stringr::str_squish(footer)
+    footer <- stringr::str_squish(footer)
 
     x <- x |>
       flextable::add_footer_lines(footer) |>
