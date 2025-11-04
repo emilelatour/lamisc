@@ -488,7 +488,7 @@ calc_ttest <- function(data,
 
 
     result$variance_check <- result$variance_check %>%
-      mutate(dplyr::across(.cols = c(x, n),
+      mutate(dplyr::across(.cols = c(n),
                            .fns = ~ scales::number(x = .,
                                                    accuracy = 1.0)),
              dplyr::across(.cols = c(skewness, sd, ratio),
