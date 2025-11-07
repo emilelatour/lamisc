@@ -10,6 +10,7 @@ calc_ttest_2(
   by = NULL,
   mu = 0,
   paired = FALSE,
+  id_col = NULL,
   var_equal = FALSE,
   df_form = "Satterthwaite",
   conf_level = 0.95,
@@ -19,6 +20,7 @@ calc_ttest_2(
   show_alternative = FALSE,
   include_perm = FALSE,
   n_perms = 10000,
+  seed = NULL,
   include_np = FALSE
 )
 }
@@ -33,6 +35,9 @@ calc_ttest_2(
 means if you are performing a two sample test).}
 
 \item{paired}{A logical indicating whether you want a paired t-test.}
+
+\item{id_col}{Column containing IDs for matching records when paired is true,
+if applicable. Default is to align by row order.}
 
 \item{var_equal}{logical variable indicating whether to treat the two
 variances as being equal. If TRUE then the pooled variance is used to
@@ -69,6 +74,10 @@ in addition to the t-test. Default is FALSE.}
 
 \item{n_perms}{Number of permutations to perform for the permutation test.
 Default is 10000.}
+
+\item{seed}{Optional numeric value to set the random seed for reproducibility
+when performing permutation tests. If NULL (default), results will vary
+slightly between runs.}
 
 \item{include_np}{Logical indicating whether to perform a non-parametric test
 (Wilcoxon rank-sum or Mann-Whitney U test) in addition to the t-test. Default is FALSE.}

@@ -13,6 +13,7 @@ calc_ttest_1(
   show_alternative = FALSE,
   include_perm = FALSE,
   n_perms = 10000,
+  seed = NULL,
   include_np = FALSE
 )
 }
@@ -41,6 +42,10 @@ in addition to the t-test. Default is FALSE.}
 
 \item{n_perms}{Number of permutations to perform for the permutation test.
 Default is 10000.}
+
+\item{seed}{Optional numeric value to set the random seed for reproducibility
+when performing permutation tests. If NULL (default), results will vary
+slightly between runs.}
 
 \item{include_np}{Logical indicating whether to perform a non-parametric test
 (Wilcoxon rank-sum or Mann-Whitney U test) in addition to the t-test. Default is FALSE.}

@@ -16,6 +16,8 @@
 #' @param mu A number indicating the true value of the mean (or difference in
 #'   means if you are performing a two sample test).
 #' @param paired A logical indicating whether you want a paired t-test.
+#' @param id_col Column containing IDs for matching records when paired is true,
+#'   if applicable. Default is to align by row order.
 #' @param var_equal  logical variable indicating whether to treat the two
 #'   variances as being equal. If TRUE then the pooled variance is used to
 #'   estimate the variance otherwise if FALSE then unequal variance is assumed
@@ -43,6 +45,9 @@
 #'   in addition to the t-test. Default is FALSE.
 #' @param n_perms Number of permutations to perform for the permutation test.
 #'   Default is 10000.
+#' @param seed Optional numeric value to set the random seed for reproducibility
+#'   when performing permutation tests. If NULL (default), results will vary
+#'   slightly between runs.
 #' @param include_np Logical indicating whether to perform a non-parametric test
 #'   (Wilcoxon rank-sum or Mann-Whitney U test) in addition to the t-test. Default is FALSE.
 #' @param fmt_res Logical whether to format estimates and p-values for the summary_stats,
@@ -55,24 +60,13 @@
 #'
 #' @importFrom broom tidy
 #' @importFrom car leveneTest
-#' @importFrom dplyr bind_rows
-#' @importFrom dplyr case_when
-#' @importFrom dplyr filter
-#' @importFrom dplyr group_by
-#' @importFrom dplyr mutate
-#' @importFrom dplyr pull
-#' @importFrom dplyr rename
-#' @importFrom dplyr select
-#' @importFrom dplyr summarise
-#' @importFrom dplyr ungroup
+#' @importFrom dplyr bind_rows case_when filter group_by mutate pull rename select summarise ungroup
 #' @importFrom forcats fct_rev
 #' @importFrom glue glue
 #' @importFrom janitor clean_names
-#' @importFrom purrr map_df
-#' @importFrom rlang enquo
-#' @importFrom rlang quo_name
-#' @importFrom stats pt
-#' @importFrom stats qt
+#' @importFrom purrr map_df map_dbl
+#' @importFrom rlang enquo quo_name quo_is_null sym
+#' @importFrom stats pt qt t.test var.test bartlett.test fligner.test sd
 #' @importFrom tibble tibble
 #'
 #' @return A list
@@ -381,6 +375,7 @@ calc_ttest <- function(data,
                        by = NULL,
                        mu = 0,
                        paired = FALSE,
+                       id_col = NULL,
                        var_equal = FALSE,
                        df_form = "Satterthwaite",
                        conf_level = 0.95,
@@ -392,6 +387,7 @@ calc_ttest <- function(data,
                        n_perms = 10000,
                        include_np = FALSE,
                        fmt_res = FALSE,
+                       seed = NULL,
                        accuracy = 0.1, ...) {
 
   # Fix no visible binding for global variable
@@ -406,8 +402,9 @@ calc_ttest <- function(data,
 
   group_var <- rlang::enquo(by)
   var <- rlang::enquo(var)
+  id_col <- rlang::enquo(id_col)
 
-  #### T-test --------------------------------
+  # T-test
 
   # Perform one-sample t-test if by is NULL.
   # Perform two-sample t-test otherwise
@@ -423,7 +420,8 @@ calc_ttest <- function(data,
                            show_alternative = show_alternative,
                            include_perm = include_perm,
                            n_perms = n_perms,
-                           include_np = include_np)
+                           include_np = include_np,
+                           seed = seed)
 
   } else {
 
@@ -432,6 +430,7 @@ calc_ttest <- function(data,
                            by = !! group_var,
                            mu = mu,
                            paired = paired,
+                           id_col = !! id_col,
                            var_equal = var_equal,
                            df_form = df_form,
                            conf_level = conf_level,
@@ -441,14 +440,15 @@ calc_ttest <- function(data,
                            show_alternative = show_alternative,
                            include_perm = include_perm,
                            n_perms = n_perms,
-                           include_np = include_np)
+                           include_np = include_np,
+                           seed = seed)
 
 
 
   }
 
 
-  #### Format results if applicable --------------------------------
+  # Format results if applicable
 
   if (fmt_res) {
 
@@ -554,6 +554,9 @@ calc_ttest <- function(data,
 #'   Default is 10000.
 #' @param include_np Logical indicating whether to perform a non-parametric test
 #'   (Wilcoxon rank-sum or Mann-Whitney U test) in addition to the t-test. Default is FALSE.
+#' @param seed Optional numeric value to set the random seed for reproducibility
+#'   when performing permutation tests. If NULL (default), results will vary
+#'   slightly between runs.
 #' @param fmt_res Logical whether to format estimates and p-values for the summary_stats,
 #'   hypothesis_tests, tests_of_homogeneity_of_variance, and variance_check.
 #' @param accuracy A number to round to. Use (e.g.) 0.01 to show 2 decimal
@@ -561,26 +564,6 @@ calc_ttest <- function(data,
 #'   ensure breaks have the minimum number of digits needed to show the
 #'   difference between adjacent values.
 #' @param ... Additional arguments passed to `scales::number()`
-#'
-#' @importFrom broom tidy
-#' @importFrom car leveneTest
-#' @importFrom dplyr bind_rows
-#' @importFrom dplyr case_when
-#' @importFrom dplyr filter
-#' @importFrom dplyr group_by
-#' @importFrom dplyr mutate
-#' @importFrom dplyr pull
-#' @importFrom dplyr rename
-#' @importFrom dplyr select
-#' @importFrom dplyr summarise
-#' @importFrom dplyr ungroup
-#' @importFrom forcats fct_rev
-#' @importFrom glue glue
-#' @importFrom janitor clean_names
-#' @importFrom purrr map_df
-#' @importFrom rlang enquo
-#' @importFrom rlang quo_name
-#' @importFrom tibble tibble
 #'
 #' @return
 #' A list
@@ -612,6 +595,7 @@ calc_ttest_i <- function(n1, m1, s1,
                          include_perm = FALSE,
                          n_perms = 10000,
                          include_np = FALSE,
+                         seed = NULL,
                          fmt_res = FALSE,
                          accuracy = 0.1, ...) {
 
@@ -667,7 +651,7 @@ calc_ttest_i <- function(n1, m1, s1,
   }
 
 
-  #### Format results if applicable --------------------------------
+  # Format results if applicable
 
   if (fmt_res) {
 
@@ -720,20 +704,11 @@ calc_ttest_i <- function(n1, m1, s1,
 #'   in addition to the t-test. Default is FALSE.
 #' @param n_perms Number of permutations to perform for the permutation test.
 #'   Default is 10000.
+#' @param seed Optional numeric value to set the random seed for reproducibility
+#'   when performing permutation tests. If NULL (default), results will vary
+#'   slightly between runs.
 #' @param include_np Logical indicating whether to perform a non-parametric test
 #'   (Wilcoxon rank-sum or Mann-Whitney U test) in addition to the t-test. Default is FALSE.
-#'
-#' @importFrom broom tidy
-#' @importFrom dplyr mutate
-#' @importFrom dplyr pull
-#' @importFrom dplyr rename
-#' @importFrom dplyr select
-#' @importFrom dplyr summarise
-#' @importFrom glue glue
-#' @importFrom janitor clean_names
-#' @importFrom purrr map_df
-#' @importFrom rlang enquo
-#' @importFrom rlang quo_name
 #'
 #' @keywords internal
 
@@ -746,6 +721,7 @@ calc_ttest_1 <- function(data,
                          show_alternative = FALSE,
                          include_perm = FALSE,
                          n_perms = 10000,
+                         seed = NULL,
                          include_np = FALSE) {
 
   # Fix no visible binding for global variable
@@ -763,7 +739,7 @@ calc_ttest_1 <- function(data,
   alt_hypothesis <- NULL
   prob <- NULL
 
-
+  if (!is.null(seed)) set.seed(seed)
 
   var <- rlang::enquo(var)
 
@@ -771,7 +747,7 @@ calc_ttest_1 <- function(data,
     dplyr::rename(y = !! var) %>%
     dplyr::select(y)
 
-  #### Summary stats --------------------------------
+  # Summary stats
 
   summary_stats <- data %>%
     summarise(n = length(y),
@@ -792,7 +768,7 @@ calc_ttest_1 <- function(data,
                   -upper_qt)
 
 
-  #### Hypothesis test --------------------------------
+  # Hypothesis test
 
   grp1 <- data %>%
     dplyr::pull(y)
@@ -816,13 +792,13 @@ calc_ttest_1 <- function(data,
   method <- "One-sample t-test"
 
 
-  #### Hypothesis text for output --------------------------------
+  # Hypothesis text for output
 
-  ## Null ----------------
+  # Null
 
   difference <- glue::glue("mean = mean({rlang::quo_name(var)})\nHo: mean = {mu}")
 
-  ## Alternative ----------------
+  # Alternative
 
   if (show_alternative == TRUE) {
 
@@ -841,14 +817,14 @@ calc_ttest_1 <- function(data,
   }
 
 
-  #### Results in a list --------------------------------
+  # Results in a list
 
   result_list <- list(summary_stats = summary_stats,
                       difference = difference,
                       method = method,
                       hypothesis_tests = hypothesis_tests)
 
-  #### Permutation Test --------------------------------
+  # Permutation Test
 
   if (include_perm) {
 
@@ -925,7 +901,7 @@ calc_ttest_1 <- function(data,
 
   }
 
-  #### Non-Parametric Test --------------------------------
+  # Non-Parametric Test
   if (include_np) {
 
     np_res <- tibble::tibble(
@@ -940,9 +916,9 @@ calc_ttest_1 <- function(data,
   }
 
 
-  #### Additional results --------------------------------
+  # Additional results
 
-  ## Calculate cohen's d ----------------
+  # Calculate cohen's d
 
   if (show_cohens_d == TRUE) {
 
@@ -953,7 +929,7 @@ calc_ttest_1 <- function(data,
   }
 
 
-  #### Return a list --------------------------------
+  # Return a list
 
   return(result_list)
 
@@ -969,6 +945,8 @@ calc_ttest_1 <- function(data,
 #' @param mu A number indicating the true value of the mean (or difference in
 #'   means if you are performing a two sample test).
 #' @param paired A logical indicating whether you want a paired t-test.
+#' @param id_col Column containing IDs for matching records when paired is true,
+#'   if applicable. Default is to align by row order.
 #' @param var_equal  logical variable indicating whether to treat the two
 #'   variances as being equal. If TRUE then the pooled variance is used to
 #'   estimate the variance otherwise if FALSE then unequal variance is assumed
@@ -996,28 +974,12 @@ calc_ttest_1 <- function(data,
 #'   in addition to the t-test. Default is FALSE.
 #' @param n_perms Number of permutations to perform for the permutation test.
 #'   Default is 10000.
+#' @param seed Optional numeric value to set the random seed for reproducibility
+#'   when performing permutation tests. If NULL (default), results will vary
+#'   slightly between runs.
 #' @param include_np Logical indicating whether to perform a non-parametric test
 #'   (Wilcoxon rank-sum or Mann-Whitney U test) in addition to the t-test. Default is FALSE.
 #'
-#' @importFrom broom tidy
-#' @importFrom car leveneTest
-#' @importFrom dplyr bind_rows
-#' @importFrom dplyr case_when
-#' @importFrom dplyr filter
-#' @importFrom dplyr group_by
-#' @importFrom dplyr mutate
-#' @importFrom dplyr pull
-#' @importFrom dplyr rename
-#' @importFrom dplyr select
-#' @importFrom dplyr summarise
-#' @importFrom dplyr ungroup
-#' @importFrom forcats fct_rev
-#' @importFrom glue glue
-#' @importFrom janitor clean_names
-#' @importFrom purrr map_df
-#' @importFrom rlang enquo
-#' @importFrom rlang quo_name
-#' @importFrom tibble tibble
 #'
 #' @keywords internal
 calc_ttest_2 <- function(data,
@@ -1025,6 +987,7 @@ calc_ttest_2 <- function(data,
                          by = NULL,
                          mu = 0,
                          paired = FALSE,
+                         id_col = NULL,
                          var_equal = FALSE,
                          df_form = "Satterthwaite",
                          conf_level = 0.95,
@@ -1034,6 +997,7 @@ calc_ttest_2 <- function(data,
                          show_alternative = FALSE,
                          include_perm = FALSE,
                          n_perms = 10000,
+                         seed = NULL,
                          include_np = FALSE) {
 
   # Fix no visible binding for global variable
@@ -1058,6 +1022,156 @@ calc_ttest_2 <- function(data,
 
   group_var <- rlang::enquo(by)
   var <- rlang::enquo(var)
+  id_col <- rlang::enquo(id_col)
+
+
+  if (paired == TRUE) {
+
+    result <- .paired_ttest_2(data = data,
+                              var = !! var,
+                              by = !! group_var,
+                              mu = mu,
+                              paired = TRUE,
+                              id_col = !! id_col,
+                              var_equal = var_equal,
+                              df_form = df_form,
+                              conf_level = conf_level,
+                              check_variance = check_variance,
+                              reverse_groups = reverse_groups,
+                              show_cohens_d = show_cohens_d,
+                              show_alternative = show_alternative,
+                              include_perm = include_perm,
+                              n_perms = n_perms,
+                              seed = seed,
+                              include_np = include_np)
+
+  } else {
+
+    result <- .unpaired_ttest_2(data = data,
+                                var = !! var,
+                                by = !! group_var,
+                                mu = mu,
+                                paired = FALSE,
+                                id_col = !! id_col,
+                                var_equal = var_equal,
+                                df_form = df_form,
+                                conf_level = conf_level,
+                                check_variance = check_variance,
+                                reverse_groups = reverse_groups,
+                                show_cohens_d = show_cohens_d,
+                                show_alternative = show_alternative,
+                                include_perm = include_perm,
+                                n_perms = n_perms,
+                                seed = seed,
+                                include_np = include_np)
+  }
+
+  return(result)
+
+}
+
+
+#' Internal function - calculates the skewness of a variable
+#'
+#' @param x A (non-empty) numeric vector of data values.
+#'
+#' @keywords internal
+
+skewness <-  function(x, na.rm = FALSE) {
+
+  if (na.rm) {
+    x <- na.omit(x)
+  }
+
+  m3 <- mean((x - mean(x)) ^ 3)
+  skewness <- m3 / (sd(x) ^ 3)
+  skewness
+}
+
+# #' Internal function - Conducts the modified Levene's test for homoscedastic populations.
+# #'
+# #' https://rdrr.io/cran/asbio/man/modlevene.test.html
+# #'
+# #' The modified Levene's test is a test for homoscedasticity that (unlike the
+# #' classic F-test) is robust to violations of normality (Conover et al. 1981).
+# #' In a Modified Levene's test we calculate d_{ij}=|e_{ij} - \tilde{e}_{i}|
+# #' where \tilde{e}_i is the ith factor level residual median. We then run an
+# #' ANOVA on the d_{ij}'s. If the p-value is < α, we reject the null and conclude
+# #' that the population error variances are not equal.
+# #'
+# #' @param data A data frame or tibble.
+# #' @param y A (non-empty) numeric vector of data values.
+# #' @param x A factor (or character) with two levels giving the corresponding groups.
+# #'
+# #' @keywords internal
+# mod_levene_test <- function(data, y, x) {
+#
+#   lm1 <- with(data, lm(y ~ x))
+#
+#   aug_data <- broom::augment(lm1, data)
+#
+#
+#   medians <- sapply(split(aug_data$.resid, aug_data$x), median, na.rm = TRUE)
+#   resid.y <- abs(aug_data$.resid - medians[aug_data$x])
+#   res <- list()
+#   res <- anova(lm(resid.y ~ aug_data$x))
+#
+#   broom::tidy(res) %>%
+#     janitor::clean_names() %>%
+#     dplyr::slice(1) %>%
+#     dplyr::select(statistic,
+#                   p_value) %>%
+#     dplyr::mutate(method = "Modified Levene's test",
+#                   null = "Population error variances are equal.")
+# }
+
+
+
+
+
+.paired_ttest_2 <- function(data,
+                            var,
+                            by = NULL,
+                            mu = 0,
+                            paired = TRUE,
+                            id_col = NULL,
+                            var_equal = FALSE,
+                            df_form = "Satterthwaite",
+                            conf_level = 0.95,
+                            check_variance = FALSE,
+                            reverse_groups = FALSE,
+                            show_cohens_d = FALSE,
+                            show_alternative = FALSE,
+                            include_perm = FALSE,
+                            n_perms = 10000,
+                            seed = NULL,
+                            include_np = FALSE) {
+
+  # Fix no visible binding for global variable
+  x <- NULL
+  y <- NULL
+  qt <- NULL
+  lower_qt <- NULL
+  upper_qt <- NULL
+  estimate <- NULL
+  pt <- NULL
+  alternative <- NULL
+  statistic <- NULL
+  parameter <- NULL
+  conf_low <- NULL
+  conf_high <- NULL
+  p_value <- NULL
+  alt_hypothesis <- NULL
+  prob <- NULL
+  diff_means <- NULL
+  complete_pair <- NULL
+
+
+  if (!is.null(seed)) set.seed(seed)
+
+  group_var <- rlang::enquo(by)
+  var <- rlang::enquo(var)
+  id_col <- rlang::enquo(id_col)
 
 
   if (reverse_groups) {
@@ -1068,13 +1182,453 @@ calc_ttest_2 <- function(data,
 
   }
 
-  data <- data %>%
-    dplyr::rename(x = !! group_var,
-                  y = !! var) %>%
-    dplyr::select(x, y)
+
+  if (rlang::quo_is_null(id_col)) {
+
+    data <- data %>%
+      dplyr::rename(x = !! group_var,
+                    y = !! var) %>%
+      dplyr::select(x, y)
+
+  } else {
+
+    data <- data %>%
+      dplyr::rename(x = !! group_var,
+                    y = !! var) %>%
+      dplyr::select(!! id_col, x, y)
+
+  }
+
+  # Detect unique group labels
+  grp_levels <- levels(factor(data$x))
+
+  if (length(grp_levels) != 2) {
+    stop("Paired t-test requires exactly two levels of the grouping variable.")
+  }
+
+  # Calculate the difference
+
+  grp1 <- data %>% dplyr::filter(x == grp_levels[1]) %>% dplyr::pull(y)
+  grp2 <- data %>% dplyr::filter(x == grp_levels[2]) %>% dplyr::pull(y)
 
 
-  #### Summary stats by group --------------------------------
+  # Calculate the degrees of freedom and SD
+
+  method <- "Paired t-test"
+
+  # Identify ID column if present (other than x or y)
+  if (rlang::quo_is_null(id_col)) {
+
+    id_var <- NULL
+
+  } else {
+
+    id_var <- rlang::sym(id_col)
+
+  }
+
+  # Pivot wider if an ID column is found
+  if (!is.null(id_var)) {
+    diff_df <- data %>%
+      mutate(x = dplyr::case_when(
+        x == grp_levels[1] ~ "grp1",
+        x == grp_levels[2] ~ "grp2",
+        .default = NA_character_)) |>
+      tidyr::pivot_wider(names_from = x,
+                         values_from = y) |>
+      mutate(diff = grp1 - grp2,
+             complete_pair = !is.na(diff))
+
+  } else {
+    # Default: align by row order
+    diff_df <- tibble::tibble(
+      grp1 = grp1,
+      grp2 = grp2,
+      diff = grp1 - grp2) %>%
+      dplyr::mutate(complete_pair = !is.na(diff))
+  }
+
+  # If not complete, then NA for all
+  diff_df <- diff_df |>
+    mutate(grp1 = dplyr::if_else(complete_pair, grp1, NA),
+           grp2 = dplyr::if_else(complete_pair, grp2, NA),
+           diff = dplyr::if_else(complete_pair, diff, NA))
+
+  # Compute summary stats
+  m1 <- mean(diff_df$grp1, na.rm = TRUE)
+  m2 <- mean(diff_df$grp2, na.rm = TRUE)
+  sd  <- stats::sd(diff_df$diff, na.rm = TRUE)
+  n_complete <- sum(diff_df$complete_pair)
+  df  <- n_complete - 1
+
+  t_stat    <- mean(diff_df$diff, na.rm = TRUE) / (sd / sqrt(n_complete))
+  pooled_se <- sd / sqrt(n_complete)
+  df_stmt   <- glue::glue("degrees of freedom = {scales::number(x = df, accuracy = 1.0)}")
+
+
+  # Calculate difference for summary stats
+
+  diff_res <- diff_df %>%
+    summarise(group = "diff",
+              n = length(complete_pair),
+              complete = sum(complete_pair),
+              missing = sum(!complete_pair),
+              mean = mean(diff, na.rm = TRUE),
+              sd = sd(diff, na.rm = TRUE)) %>%
+    mutate(se = sd / sqrt(complete),
+           lower_qt = qt(p = (1 - conf_level) / 2,
+                         df = complete - 1,
+                         lower.tail = TRUE),
+           upper_qt = qt(p = (1 - conf_level) / 2,
+                         df = complete - 1,
+                         lower.tail = FALSE),
+           lower_ci = mean + lower_qt * se,  # lower_qt should be negative
+           upper_ci = mean + upper_qt * se) %>%
+    dplyr::rename(group = 1) %>%
+    dplyr::select(-lower_qt,
+                  -upper_qt)
+
+  by_group_df <- diff_df |>
+    tidyr::pivot_longer(cols = c(grp1, grp2),
+                        names_to = "x",
+                        values_to = "y") |>
+    mutate(x = factor(x,
+                      levels = c("grp1",
+                                 "grp2"),
+                      labels = grp_levels),
+           y = dplyr::if_else(complete_pair, y, NA)) |>
+    group_by(x) %>%
+    summarise(n = length(y),
+              complete = sum(complete_pair),
+              missing = sum(!complete_pair),
+              mean = mean(y, na.rm = TRUE),
+              sd = sd(y, na.rm = TRUE),
+              .groups = "keep") %>%
+    mutate(se = sd / sqrt(complete),
+           lower_qt = qt(p = (1 - conf_level) / 2,
+                         df = complete - 1,
+                         lower.tail = TRUE),
+           upper_qt = qt(p = (1 - conf_level) / 2,
+                         df = complete - 1,
+                         lower.tail = FALSE),
+           lower_ci = mean + lower_qt * se,
+           upper_ci = mean + upper_qt * se) %>%
+    dplyr::rename(group = 1) %>%
+    dplyr::select(-lower_qt,
+                  -upper_qt) %>%
+    mutate(group = as.character(group)) %>%
+    dplyr::ungroup()
+
+  summary_stats <- dplyr::bind_rows(by_group_df, diff_res)
+
+
+  # Perform hypothesis tests
+
+  if (var_equal == TRUE) {
+
+    eq_gt <- tibble::tibble(
+      alternative = "greater",
+      statistic = t_stat,
+      df = df,
+      estimate = m1 - m2,
+      lower_ci = qt(conf_level, df, lower.tail = TRUE) * pooled_se + (m1 - m2),
+      upper_ci = Inf,
+      p_value = pt(t_stat, df, lower.tail = FALSE)
+    )
+
+    eq_lt <- tibble::tibble(
+      alternative = "less",
+      statistic = t_stat,
+      df = df,
+      estimate = m1 - m2,
+      lower_ci = -Inf,
+      upper_ci = qt(conf_level, df, lower.tail = FALSE) * pooled_se + (m1 - m2),
+      p_value = pt(t_stat, df, lower.tail = TRUE)
+    )
+
+    eq_2 <- tibble::tibble(
+      alternative = "two.sided",
+      statistic = t_stat,
+      df = df,
+      estimate = m1 - m2,
+      lower_ci = (m1 - m2) + qt((1 - conf_level)/2, df) * pooled_se,
+      upper_ci = (m1 - m2) + qt((1 - conf_level)/2, df, lower.tail = FALSE) * pooled_se,
+      p_value = 2 * pt(-abs(t_stat), df)
+    )
+
+    hypothesis_tests <- bind_rows(eq_2, eq_lt, eq_gt)
+
+  } else {
+
+    paired_gt <- tibble::tibble(
+      alternative = "greater",
+      statistic = t_stat,
+      df = df,
+      estimate = mean(diff_df$diff, na.rm = TRUE),
+      lower_ci = qt(conf_level, df, lower.tail = TRUE) * pooled_se + estimate,
+      upper_ci = Inf,
+      p_value = pt(t_stat, df, lower.tail = FALSE)
+    )
+
+    paired_lt <- tibble::tibble(
+      alternative = "less",
+      statistic = t_stat,
+      df = df,
+      estimate = mean(diff_df$diff, na.rm = TRUE),
+      lower_ci = -Inf,
+      upper_ci = qt(conf_level, df, lower.tail = FALSE) * pooled_se + estimate,
+      p_value = pt(t_stat, df, lower.tail = TRUE)
+    )
+
+    paired_2 <- tibble::tibble(
+      alternative = "two.sided",
+      statistic = t_stat,
+      df = df,
+      estimate = mean(diff_df$diff, na.rm = TRUE),
+      lower_ci = estimate + qt((1 - conf_level)/2, df) * pooled_se,
+      upper_ci = estimate + qt((1 - conf_level)/2, df, lower.tail = FALSE) * pooled_se,
+      p_value = 2 * pt(-abs(t_stat), df)
+    )
+
+    hypothesis_tests <- bind_rows(paired_2, paired_lt, paired_gt)
+
+  }
+
+
+  # Hypothesis text for output
+
+  # Null
+
+  difference <- glue::glue("diff = mean({summary_stats$group[[1]]} - {summary_stats$group[[2]]})\nHo: diff = {mu}")
+
+
+  # Alternative
+
+  if (show_alternative == TRUE) {
+
+    hypothesis_tests <- hypothesis_tests %>%
+      mutate(alt_hypothesis = dplyr::case_when(
+        alternative == 'two.sided' ~ glue::glue('Ha: diff != {mu}'),
+        alternative == 'less' ~ glue::glue('Ha: diff < {mu}'),
+        alternative == 'greater' ~ glue::glue('Ha: diff > {mu}')),
+        prob = c("Pr(|T| > |t|) = ",
+                 "Pr(T < t) = ",
+                 "Pr(T > t) = ")) %>%
+      dplyr::select(alternative:upper_ci,
+                    alt_hypothesis,
+                    prob,
+                    p_value)
+
+
+  }
+
+
+  # Results in a list
+
+  result_list <- list(summary_stats = summary_stats,
+                      difference = difference,
+                      method = method,
+                      df = df_stmt,
+                      hypothesis_tests = hypothesis_tests)
+
+
+  # Additional results
+
+  if (check_variance == TRUE) {
+
+    message("Variance checks not applicable for paired data")
+
+  }
+
+  if (show_cohens_d == TRUE) {
+
+    # Calculate cohen's d
+
+    cohens_d <- summary_stats[4, "mean"] / summary_stats[4, "sd"]
+
+    result_list[["cohens_d"]] <- cohens_d
+
+  }
+
+
+  # Permutation test
+
+  if (include_perm) {
+
+    # observed
+    observed <- mean(diff_df$diff, na.rm = TRUE) - mu
+
+    perm_results <- numeric(n_perms)
+
+    diffs <- diff_df$diff
+
+    for (i in seq_len(n_perms)) {
+      signs <- sample(c(-1, 1), length(diffs), replace = TRUE)
+      perm_results[i] <- mean(diffs * signs, na.rm = TRUE) - mu
+    }
+
+    two_sided <- mean(abs(perm_results) >= abs(observed))
+    greater   <- mean(perm_results >= observed)
+    less      <- mean(perm_results <  observed)
+
+    perm_test <- tibble::tibble(
+      alternative = c("two.sided", "less", "greater"),
+      p_value_perm_test = c(two_sided, less, greater)
+    )
+
+    result_list[["hypothesis_tests"]] <- result_list[["hypothesis_tests"]] |>
+      dplyr::left_join(perm_test, by = "alternative")
+
+    result_list[["observed_difference"]] <- observed
+    result_list[["permutation_distribution"]] <- tibble::tibble(test_stat = perm_results)
+
+  }
+
+
+
+  # Wilcoxon test / Mann Whitney
+
+  if (include_np) {
+
+    grp1 <- data %>%
+      filter(x == unique(data$x)[1]) %>%
+      pull(y)
+    grp2 <- data %>%
+      filter(x == unique(data$x)[2]) %>%
+      pull(y)
+
+    np_res <- tibble::tibble(
+      alternative = c("two.sided",
+                      "less",
+                      "greater")) |>
+      mutate(p_value_non_param = purrr::map_dbl(.x = alternative,
+                                                .f = ~ wilcox.test(x = grp1,
+                                                                   y = grp2,
+                                                                   mu = mu,
+                                                                   paired = TRUE,
+                                                                   alternative = .x)$p.value))
+
+
+    result_list[["hypothesis_tests"]] <- result_list[["hypothesis_tests"]] |>
+      dplyr::left_join(np_res,
+                       by = "alternative")
+
+
+  }
+
+
+  # Return a list
+
+  return(result_list)
+
+}
+
+
+
+
+
+
+
+
+.unpaired_ttest_2 <- function(data,
+                              var,
+                              by = NULL,
+                              mu = 0,
+                              paired = FALSE,
+                              id_col = NULL,
+                              var_equal = FALSE,
+                              df_form = "Satterthwaite",
+                              conf_level = 0.95,
+                              check_variance = FALSE,
+                              reverse_groups = FALSE,
+                              show_cohens_d = FALSE,
+                              show_alternative = FALSE,
+                              include_perm = FALSE,
+                              n_perms = 10000,
+                              seed = NULL,
+                              include_np = FALSE) {
+
+
+
+  # Fix no visible binding for global variable
+  x <- NULL
+  y <- NULL
+  qt <- NULL
+  lower_qt <- NULL
+  upper_qt <- NULL
+  estimate <- NULL
+  pt <- NULL
+  alternative <- NULL
+  statistic <- NULL
+  parameter <- NULL
+  conf_low <- NULL
+  conf_high <- NULL
+  p_value <- NULL
+  alt_hypothesis <- NULL
+  prob <- NULL
+  diff_means <- NULL
+
+
+  if (!is.null(seed)) set.seed(seed)
+
+  group_var <- rlang::enquo(by)
+  var <- rlang::enquo(var)
+  id_col <- rlang::enquo(id_col)
+
+  # Fix no visible binding for global variable
+  x <- NULL
+  y <- NULL
+  qt <- NULL
+  lower_qt <- NULL
+  upper_qt <- NULL
+  estimate <- NULL
+  pt <- NULL
+  alternative <- NULL
+  statistic <- NULL
+  parameter <- NULL
+  conf_low <- NULL
+  conf_high <- NULL
+  p_value <- NULL
+  alt_hypothesis <- NULL
+  prob <- NULL
+  diff_means <- NULL
+
+
+
+  group_var <- rlang::enquo(by)
+  var <- rlang::enquo(var)
+  id_col <- rlang::enquo(id_col)
+
+
+  if (reverse_groups) {
+
+    data <- data %>%
+      mutate(!! rlang::quo_name(group_var) := as.factor(!! group_var),
+             !! rlang::quo_name(group_var) := forcats::fct_rev(!! group_var))
+
+  }
+
+
+  if (rlang::quo_is_null(id_col)) {
+
+    data <- data %>%
+      dplyr::rename(x = !! group_var,
+                    y = !! var) %>%
+      dplyr::select(x, y)
+
+  } else {
+
+    data <- data %>%
+      dplyr::rename(x = !! group_var,
+                    y = !! var) %>%
+      dplyr::select(!! id_col, x, y)
+
+  }
+
+  grp_levels <- levels(factor(data$x))
+
+
+  # Summary stats by group
 
   by_group_df <- data %>%
     group_by(x) %>%
@@ -1099,7 +1653,7 @@ calc_ttest_2 <- function(data,
     mutate(group = as.character(group)) %>%
     dplyr::ungroup()
 
-  #### Summary stats for all combined --------------------------------
+  # Summary stats for all combined
 
   combined <- data %>%
     summarise(group = "combined",
@@ -1122,47 +1676,16 @@ calc_ttest_2 <- function(data,
                   -upper_qt)
 
 
-  #### Calculate the difference --------------------------------
+  # Calculate the difference
 
-  grp1 <- data %>%
-    dplyr::filter(x == by_group_df[["group"]][[1]]) %>%
-    dplyr::pull(y)
-
-  grp2 <- data %>%
-    dplyr::filter(x == by_group_df[["group"]][[2]]) %>%
-    dplyr::pull(y)
+  grp1 <- data %>% dplyr::filter(x == grp_levels[1]) %>% dplyr::pull(y)
+  grp2 <- data %>% dplyr::filter(x == grp_levels[2]) %>% dplyr::pull(y)
 
 
-  #### Calculate the degrees of freedom and SD --------------------------------
+  # Calculate the degrees of freedom and SD
 
-  ## Paired t-test ----------------
-  if (paired == TRUE) {
-
-    method <- "Paired t-test"
-
-    if (length(grp1) != length(grp2)) {
-      stop("Groups must have the same number of observations")
-    }
-
-    diff_df <- tibble::tibble(
-      grp1 = grp1,
-      grp2 = grp2,
-      diff = grp1 - grp2)
-
-    m1 <- mean(grp1, na.rm = TRUE)
-    m2 <- mean(grp2, na.rm = TRUE)
-    sd <- sd(diff_df$diff, na.rm = TRUE)
-
-    df <- length(diff_df$diff) - 1
-
-    t_stat <- mean(diff_df$diff, na.rm = TRUE) / (sd(diff_df$diff, na.rm = TRUE) / sqrt(nrow(diff_df)))
-    pooled_se <- sd(diff_df$diff, na.rm = TRUE) / sqrt(nrow(diff_df))
-
-    df_stmt <- glue::glue("degrees of freedom = {scales::number(x = df, accuracy = 1.0)}")
-
-
-    ## Unpaired, unequal variance with Welch's degrees of freedom ----------------
-  } else if (var_equal == FALSE & df_form == "Welch") {
+  # Unpaired, unequal variance with Welch's degrees of freedom
+  if (var_equal == FALSE & df_form == "Welch") {
 
     method <- "Two-sample t-test with unequal variances"
 
@@ -1197,7 +1720,7 @@ calc_ttest_2 <- function(data,
     df_stmt <- glue::glue("{df_form}'s degrees of freedom = {scales::number(x = df, accuracy = 0.00001)}")
 
 
-    ## Unpaired, unequal variance with Satterthwaite's degrees of freedom ----------------
+    # Unpaired, unequal variance with Satterthwaite's degrees of freedom
   } else if (var_equal == FALSE & df_form == "Satterthwaite") {
 
     method <- "Two-sample t-test with unequal variances"
@@ -1228,7 +1751,7 @@ calc_ttest_2 <- function(data,
 
     df_stmt <- glue::glue("{df_form}'s degrees of freedom = {scales::number(x = df, accuracy = 0.00001)}")
 
-    ## Unpaired, equal variance ----------------
+    # Unpaired, equal variance
 
   } else if (var_equal == TRUE & paired == FALSE) {
 
@@ -1257,61 +1780,31 @@ calc_ttest_2 <- function(data,
 
   }
 
-  #### Calculate difference for summary stats --------------------------------
+  # Calculate difference for summary stats
 
-  if (paired == TRUE) {
-    diff_res <- diff_df %>%
-      summarise(group = "diff",
-                n = length(diff),
-                complete = sum(!is.na(diff)),
-                missing = sum(is.na(diff)),
-                mean = mean(diff, na.rm = TRUE),
-                sd = sd(diff, na.rm = TRUE)) %>%
-      mutate(se = sd / sqrt(n),
-             lower_qt = qt(p = (1 - conf_level) / 2,
-                           df = n - 1,
-                           lower.tail = TRUE),
-             upper_qt = qt(p = (1 - conf_level) / 2,
-                           df = n - 1,
-                           lower.tail = FALSE),
-             lower_ci = mean + lower_qt * se,
-             upper_ci = mean + upper_qt * se) %>%
-      dplyr::rename(group = 1) %>%
-      dplyr::select(-lower_qt,
-                    -upper_qt)
+  diff_res <- tibble::tibble(
+    group = "diff",
+    mean = m1 - m2,
+    se = pooled_se,
+    sd = sd,
+    lower_qt = qt(p = (1 - conf_level) / 2,
+                  df = df,
+                  lower.tail = TRUE),
+    upper_qt = qt(p = (1 - conf_level) / 2,
+                  df = df,
+                  lower.tail = FALSE),
+    lower_ci = mean + lower_qt * se,
+    upper_ci = mean + upper_qt * se) %>%
+    dplyr::rename(group = 1) %>%
+    dplyr::select(-lower_qt,
+                  -upper_qt)
 
-    summary_stats <- dplyr::bind_rows(by_group_df,
-                                      diff_res)
-
-  } else {
-
-    diff_res <- tibble::tibble(
-      group = "diff",
-      mean = m1 - m2,
-      se = pooled_se,
-      sd = sd,
-      lower_qt = qt(p = (1 - conf_level) / 2,
-                    df = df,
-                    lower.tail = TRUE),
-      upper_qt = qt(p = (1 - conf_level) / 2,
-                    df = df,
-                    lower.tail = FALSE),
-      lower_ci = mean + lower_qt * se,
-      upper_ci = mean + upper_qt * se) %>%
-      dplyr::rename(group = 1) %>%
-      dplyr::select(-lower_qt,
-                    -upper_qt)
-
-    summary_stats <- dplyr::bind_rows(by_group_df,
-                                      combined,
-                                      diff_res)
+  summary_stats <- dplyr::bind_rows(by_group_df,
+                                    combined,
+                                    diff_res)
 
 
-  }
-
-
-
-  #### Perform hypothesis tests --------------------------------
+  # Perform hypothesis tests
 
   # Note: m1 - m2 follows the order of factor levels.
   # Set reverse_groups = TRUE in calc_ttest() to flip comparison direction.
@@ -1384,75 +1877,6 @@ calc_ttest_2 <- function(data,
 
     hypothesis_tests <- bind_rows(satter_2, satter_lt, satter_gt)
 
-  } else if (var_equal == TRUE & paired == FALSE) {
-
-    eq_gt <- tibble::tibble(
-      alternative = "greater",
-      statistic = t_stat,
-      df = df,
-      estimate = m1 - m2,
-      lower_ci = qt(conf_level, df, lower.tail = TRUE) * pooled_se + (m1 - m2),
-      upper_ci = Inf,
-      p_value = pt(t_stat, df, lower.tail = FALSE)
-    )
-
-    eq_lt <- tibble::tibble(
-      alternative = "less",
-      statistic = t_stat,
-      df = df,
-      estimate = m1 - m2,
-      lower_ci = -Inf,
-      upper_ci = qt(conf_level, df, lower.tail = FALSE) * pooled_se + (m1 - m2),
-      p_value = pt(t_stat, df, lower.tail = TRUE)
-    )
-
-    eq_2 <- tibble::tibble(
-      alternative = "two.sided",
-      statistic = t_stat,
-      df = df,
-      estimate = m1 - m2,
-      lower_ci = (m1 - m2) + qt((1 - conf_level)/2, df) * pooled_se,
-      upper_ci = (m1 - m2) + qt((1 - conf_level)/2, df, lower.tail = FALSE) * pooled_se,
-      p_value = 2 * pt(-abs(t_stat), df)
-    )
-
-    hypothesis_tests <- bind_rows(eq_2, eq_lt, eq_gt)
-
-  } else if (paired == TRUE) {
-
-    paired_gt <- tibble::tibble(
-      alternative = "greater",
-      statistic = t_stat,
-      df = df,
-      estimate = mean(diff_df$diff),
-      lower_ci = qt(conf_level, df, lower.tail = TRUE) * pooled_se + mean(diff_df$diff),
-      upper_ci = Inf,
-      p_value = pt(t_stat, df, lower.tail = FALSE)
-    )
-
-    paired_lt <- tibble::tibble(
-      alternative = "less",
-      statistic = t_stat,
-      df = df,
-      estimate = mean(diff_df$diff),
-      lower_ci = -Inf,
-      upper_ci = qt(conf_level, df, lower.tail = FALSE) * pooled_se + mean(diff_df$diff),
-      p_value = pt(t_stat, df, lower.tail = TRUE)
-    )
-
-    paired_2 <- tibble::tibble(
-      alternative = "two.sided",
-      statistic = t_stat,
-      df = df,
-      estimate = mean(diff_df$diff),
-      lower_ci = mean(diff_df$diff) + qt((1 - conf_level)/2, df) * pooled_se,
-      upper_ci = mean(diff_df$diff) + qt((1 - conf_level)/2, df, lower.tail = FALSE) * pooled_se,
-      p_value = 2 * pt(-abs(t_stat), df)
-    )
-
-    hypothesis_tests <- bind_rows(paired_2, paired_lt, paired_gt)
-
-
   } else {
 
     hypothesis_tests <- c("two.sided", "less", "greater") %>%
@@ -1477,17 +1901,13 @@ calc_ttest_2 <- function(data,
   }
 
 
-  #### Hypothesis text for output --------------------------------
+  # Hypothesis text for output
 
-  ## Null ----------------
+  # Null
 
-  if (paired == TRUE) {
-    difference <- glue::glue("diff = mean({summary_stats$group[[1]]} - {summary_stats$group[[2]]})\nHo: diff = {mu}")
-  } else {
-    difference <- glue::glue("diff = mean({summary_stats$group[[1]]}) - mean({summary_stats$group[[2]]})\nHo: diff = {mu}")
-  }
+  difference <- glue::glue("diff = mean({summary_stats$group[[1]]}) - mean({summary_stats$group[[2]]})\nHo: diff = {mu}")
 
-  ## Alternative ----------------
+  # Alternative
 
   if (show_alternative == TRUE) {
 
@@ -1508,72 +1928,70 @@ calc_ttest_2 <- function(data,
   }
 
 
-  #### Test for equal variance --------------------------------
+  # Test for equal variance
 
-  if (paired != TRUE) {
+  bartlett_res <- data %>%
+    with(., bartlett.test(y ~ x)) %>%
+    broom::tidy(.) %>%
+    janitor::clean_names() %>%
+    mutate(null = "Equal variances") %>%
+    dplyr::select(-parameter)
 
-    bartlett_res <- data %>%
-      with(., bartlett.test(y ~ x)) %>%
-      broom::tidy(.) %>%
-      janitor::clean_names() %>%
-      mutate(null = "Equal variances") %>%
-      dplyr::select(-parameter)
+  levene_res <- data %>%
+    mutate(x = factor(x)) %>%
+    with(., car::leveneTest(y ~ x)) %>%
+    broom::tidy() %>%
+    janitor::clean_names() %>%
+    dplyr::select(statistic,
+                  p_value) %>%
+    mutate(method = "Levene's test",
+           null = "Equal variances")
 
-    levene_res <- data %>%
-      mutate(x = factor(x)) %>%
-      with(., car::leveneTest(y ~ x)) %>%
-      broom::tidy() %>%
-      janitor::clean_names() %>%
-      dplyr::select(statistic,
-                    p_value) %>%
-      mutate(method = "Levene's test",
-             null = "Equal variances")
+  # mod_levene_res <- data %>%
+  #   mutate(x = factor(x)) %>%
+  #   mod_levene_test(data = .,
+  #                   y = y,
+  #                   x = x)
 
-    # mod_levene_res <- data %>%
-    #   mutate(x = factor(x)) %>%
-    #   mod_levene_test(data = .,
-    #                   y = y,
-    #                   x = x)
-
-    fligner_res <- data %>%
-      mutate(x = factor(x)) %>%
-      with(., fligner.test(y ~ x)) %>%
-      broom::tidy() %>%
-      janitor::clean_names() %>%
-      dplyr::select(statistic,
-                    p_value) %>%
-      mutate(method = "Fligner-Killeen test",
-             null = "Equal variances")
+  fligner_res <- data %>%
+    mutate(x = factor(x)) %>%
+    with(., fligner.test(y ~ x)) %>%
+    broom::tidy() %>%
+    janitor::clean_names() %>%
+    dplyr::select(statistic,
+                  p_value) %>%
+    mutate(method = "Fligner-Killeen test",
+           null = "Equal variances")
 
 
-    f_test <- data %>%
-      mutate(x = factor(x)) %>%
-      with(., var.test(y ~ x))
+  f_test <- data %>%
+    mutate(x = factor(x)) %>%
+    with(., var.test(y ~ x))
 
-    f_test_res <- tibble::tibble(
-      statistic = f_test$statistic,
-      p_value = f_test$p.value,
-      method = "F test to compare two variances",
-      null = "Equal variances")
+  f_test_res <- tibble::tibble(
+    statistic = f_test$statistic,
+    p_value = f_test$p.value,
+    method = "F test to compare two variances",
+    null = "Equal variances")
 
-    tests_of_homogeneity_of_variance <- dplyr::bind_rows(bartlett_res,
-                                                         levene_res,
-                                                         # mod_levene_res,
-                                                         fligner_res,
-                                                         f_test_res)
+  tests_of_homogeneity_of_variance <- dplyr::bind_rows(bartlett_res,
+                                                       levene_res,
+                                                       # mod_levene_res,
+                                                       fligner_res,
+                                                       f_test_res)
 
-    variance_check <- data %>%
-      group_by(x) %>%
-      summarise(n = dplyr::n(),
-                skewness = skewness(y, na.rm = TRUE),
-                sd = sd(y, na.rm = TRUE)) %>%
-      mutate(ratio = max(by_group_df$sd) / min(by_group_df$sd),
-             interpret = "Skew same direction, similar sample size, ratio < 2")
-
-  }
+  variance_check <- data %>%
+    group_by(x) %>%
+    summarise(n = dplyr::n(),
+              skewness = skewness(y, na.rm = TRUE),
+              sd = sd(y, na.rm = TRUE)) %>%
+    mutate(ratio = max(by_group_df$sd) / min(by_group_df$sd),
+           interpret = "Skew same direction, similar sample size, ratio < 2")
 
 
-  #### Results in a list --------------------------------
+
+
+  # Results in a list
 
   result_list <- list(summary_stats = summary_stats,
                       difference = difference,
@@ -1582,7 +2000,7 @@ calc_ttest_2 <- function(data,
                       hypothesis_tests = hypothesis_tests)
 
 
-  #### Additional results --------------------------------
+  # Additional results
 
   if (check_variance == TRUE) {
 
@@ -1593,7 +2011,7 @@ calc_ttest_2 <- function(data,
 
   if (show_cohens_d == TRUE) {
 
-    ## Calculate cohen's d ----------------
+    # Calculate cohen's d
 
     cohens_d <- summary_stats[4, "mean"] / summary_stats[4, "sd"]
 
@@ -1602,7 +2020,7 @@ calc_ttest_2 <- function(data,
   }
 
 
-  #### Permutation test --------------------------------
+  # Permutation test
 
   if (include_perm) {
 
@@ -1667,7 +2085,7 @@ calc_ttest_2 <- function(data,
   }
 
 
-  #### Wilcoxon test / Mann Whitney --------------------------------
+  # Wilcoxon test / Mann Whitney
 
   if (include_np) {
 
@@ -1686,7 +2104,7 @@ calc_ttest_2 <- function(data,
                                                 .f = ~ wilcox.test(x = grp1,
                                                                    y = grp2,
                                                                    mu = mu,
-                                                                   paired = paired,
+                                                                   paired = FALSE,
                                                                    alternative = .x)$p.value))
 
 
@@ -1698,71 +2116,8 @@ calc_ttest_2 <- function(data,
   }
 
 
-  #### Return a list --------------------------------
+  # Return a list
 
   return(result_list)
 
 }
-
-
-#' Internal function - calculates the skewness of a variable
-#'
-#' @param x A (non-empty) numeric vector of data values.
-#'
-#' @keywords internal
-
-skewness <-  function(x, na.rm = FALSE) {
-
-  if (na.rm) {
-    x <- na.omit(x)
-  }
-
-  m3 <- mean((x - mean(x)) ^ 3)
-  skewness <- m3 / (sd(x) ^ 3)
-  skewness
-}
-
-#' Internal function - Conducts the modified Levene's test for homoscedastic populations.
-#'
-#' https://rdrr.io/cran/asbio/man/modlevene.test.html
-#'
-#' The modified Levene's test is a test for homoscedasticity that (unlike the
-#' classic F-test) is robust to violations of normality (Conover et al. 1981).
-#' In a Modified Levene's test we calculate d_{ij}=|e_{ij} - \tilde{e}_{i}|
-#' where \tilde{e}_i is the ith factor level residual median. We then run an
-#' ANOVA on the d_{ij}'s. If the p-value is < α, we reject the null and conclude
-#' that the population error variances are not equal.
-#'
-#' @param data A data frame or tibble.
-#' @param y A (non-empty) numeric vector of data values.
-#' @param x A factor (or character) with two levels giving the corresponding groups.
-#'
-#' @importFrom broom augment
-#' @importFrom broom tidy
-#' @importFrom dplyr mutate
-#' @importFrom dplyr select
-#' @importFrom dplyr slice
-#' @importFrom janitor clean_names
-#'
-#' @keywords internal
-# mod_levene_test <- function(data, y, x) {
-#
-#   lm1 <- with(data, lm(y ~ x))
-#
-#   aug_data <- broom::augment(lm1, data)
-#
-#
-#   medians <- sapply(split(aug_data$.resid, aug_data$x), median, na.rm = TRUE)
-#   resid.y <- abs(aug_data$.resid - medians[aug_data$x])
-#   res <- list()
-#   res <- anova(lm(resid.y ~ aug_data$x))
-#
-#   broom::tidy(res) %>%
-#     janitor::clean_names() %>%
-#     dplyr::slice(1) %>%
-#     dplyr::select(statistic,
-#                   p_value) %>%
-#     dplyr::mutate(method = "Modified Levene's test",
-#                   null = "Population error variances are equal.")
-# }
-
