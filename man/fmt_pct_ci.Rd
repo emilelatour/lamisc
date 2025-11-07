@@ -11,6 +11,7 @@ fmt_pct_ci(
   ci_level = 0.95,
   estimate_suffix = "\%",
   bounds_suffix = "",
+  show_ci_label = TRUE,
   dash = c("en", "rmd", "hyphen", "to"),
   pad_dash = FALSE,
   accuracy = NULL,
@@ -18,6 +19,7 @@ fmt_pct_ci(
   prefix = "",
   big.mark = "",
   decimal.mark = ".",
+  ci_brackets = "()",
   trim = TRUE,
   ...
 )
@@ -37,6 +39,10 @@ fmt_pct_ci(
 
 \item{bounds_suffix}{Suffix applied to the confidence interval bounds
 (default is \code{""}). Generally left blank to avoid repeating \verb{\%}.}
+
+\item{show_ci_label}{Logical; if TRUE (default), includes the confidence level
+label (e.g., "95\% CI:") before the interval bounds. If FALSE, only the
+bounds are shown, producing output like "45\% (41–49)".}
 
 \item{dash}{Character string indicating how to display the separator between
 bounds. Options are \code{"en"} (en dash, default), \code{"rmd"} (two hyphens,
@@ -58,6 +64,10 @@ which knit to an en dash in R Markdown), \code{"hyphen"}, or \code{"to"}.}
 
 \item{decimal.mark}{Character used as decimal point (passed to
 \code{\link[=fmt_pct]{fmt_pct()}}).}
+
+\item{ci_brackets}{Character string giving the characters used to enclose the
+confidence interval. Default is \code{"()"}; use \code{"[]"} for square brackets or
+any two-character string (e.g., \code{"<>"}).}
 
 \item{trim}{Logical; if \code{TRUE} (default), removes trailing zeros after
 decimal marks. Passed to \code{\link[=fmt_pct]{fmt_pct()}}.}

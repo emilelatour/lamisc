@@ -15,6 +15,9 @@
 #'   (default is `"%"`). Use `""` for tables when `%` is already in the header.
 #' @param bounds_suffix Suffix applied to the confidence interval bounds
 #'   (default is `""`). Generally left blank to avoid repeating `%`.
+#' @param show_ci_label Logical; if TRUE (default), includes the confidence level
+#'   label (e.g., "95% CI:") before the interval bounds. If FALSE, only the
+#'   bounds are shown, producing output like "45% (41–49)".
 #' @param dash Character string indicating how to display the separator between
 #'   bounds. Options are `"en"` (en dash, default), `"rmd"` (two hyphens,
 #'   which knit to an en dash in R Markdown), `"hyphen"`, or `"to"`.
@@ -29,6 +32,9 @@
 #'   [lamisc::fmt_pct()]).
 #' @param decimal.mark Character used as decimal point (passed to
 #'   [lamisc::fmt_pct()]).
+#' @param ci_brackets Character string giving the characters used to enclose the
+#'   confidence interval. Default is `"()"`; use `"[]"` for square brackets or
+#'   any two-character string (e.g., `"<>"`).
 #' @param trim Logical; if `TRUE` (default), removes trailing zeros after
 #'   decimal marks. Passed to [lamisc::fmt_pct()].
 #' @param ... Additional arguments passed on to [lamisc::fmt_pct()].
@@ -60,6 +66,7 @@ fmt_pct_ci <- function(p, lower_ci, upper_ci,
                        ci_level = 0.95,
                        estimate_suffix = "%",   # "" for tables with % in header
                        bounds_suffix   = "",    # usually "" to avoid % in CI
+                       show_ci_label = TRUE,
                        dash = c("en", "rmd", "hyphen", "to"),
                        pad_dash = FALSE,
                        accuracy = NULL,
@@ -67,6 +74,7 @@ fmt_pct_ci <- function(p, lower_ci, upper_ci,
                        prefix = "",
                        big.mark = "",
                        decimal.mark = ".",
+                       ci_brackets = "()",
                        trim = TRUE, ...) {
 
   dash <- match.arg(dash)
@@ -79,6 +87,10 @@ fmt_pct_ci <- function(p, lower_ci, upper_ci,
   if (pad_dash && dash %in% c("en", "rmd", "hyphen")) {
     dash_chr <- paste0(" ", dash_chr, " ")
   }
+
+  # Parentheses or brackes etc
+  left_bracket  <- substr(ci_brackets, 1, 1)
+  right_bracket <- substr(ci_brackets, 2, 2)
 
   # CI label
   level_label <- paste0(round(ci_level * 100), "%")
@@ -110,7 +122,12 @@ fmt_pct_ci <- function(p, lower_ci, upper_ci,
                            trim = trim, ...)
 
 
-  out <- glue::glue("{est} ({level_label} CI: {lower}{dash_chr}{upper})")
+  if (show_ci_label) {
+    out <- glue::glue("{est} {left_bracket}{level_label} CI: {lower}{dash_chr}{upper}{right_bracket}")
+  } else {
+    out <- glue::glue("{est} {left_bracket}{lower}{dash_chr}{upper}{right_bracket}")
+  }
+
 
   return(out)
 }
