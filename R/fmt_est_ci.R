@@ -46,13 +46,15 @@
 #'
 #' # Default: text-style output
 #' tibble(est = 12.3, lower_ci = 9.8, upper_ci = 14.7) |>
-#'   mutate(est_ci = fmt_est_ci(est, lower_ci, upper_ci))
+#'   mutate(est_ci = fmt_est_ci(est, lower_ci, upper_ci, accuracy = 0.1))
 #' #> "12.3 (95% CI: 9.8–14.7)"
 #'
 #' # Without CI label, with spaces around en dash
 #' tibble(est = 12.3, lower_ci = 9.8, upper_ci = 14.7) |>
 #'   mutate(est_ci = fmt_est_ci(est, lower_ci, upper_ci,
-#'                              show_ci_label = FALSE, pad_dash = TRUE))
+#'                              accuracy = 0.1,
+#'                              show_ci_label = FALSE,
+#'                              pad_dash = TRUE))
 #' #> "12.3 (9.8 – 14.7)"
 #'
 #' @export
