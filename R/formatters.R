@@ -182,6 +182,7 @@ fmt_pct <- function(x,
 #' @param decimal.mark The character to be used to indicate the numeric
 #'   decimal point.
 #' @param add_p Add "P =" before the value?
+#' @param p_lbl Character to use for "P = ". Default, uppercase "P".
 #' @param x A numeric vector of p-values.
 #' @param as_factor Logical; if TRUE, a factor is returned
 #' @export
@@ -194,6 +195,7 @@ fmt_pvl <- function(x,
                     accuracy = .001,
                     decimal.mark = ".",
                     add_p = FALSE,
+                    p_lbl = "P",
                     as_factor = FALSE) {
   res <- fmt_num(
     x,
@@ -202,7 +204,7 @@ fmt_pvl <- function(x,
     big.mark = ""
   )
 
-  if (add_p) res <- paste0("P = ", res)
+  if (add_p) res <- paste0(p_lbl, " = ", res)
 
   below <- fmt_num(accuracy,
                    accuracy = accuracy,
@@ -210,7 +212,7 @@ fmt_pvl <- function(x,
                    big.mark = "")
 
   if (add_p) {
-    below <- paste0("P < ", below)
+    below <- paste0(p_lbl, " < ", below)
   } else {
     below <- paste0("< ", below)
   }

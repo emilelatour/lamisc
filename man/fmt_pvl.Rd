@@ -9,6 +9,7 @@ fmt_pvl(
   accuracy = 0.001,
   decimal.mark = ".",
   add_p = FALSE,
+  p_lbl = "P",
   as_factor = FALSE
 )
 }
@@ -21,6 +22,8 @@ fmt_pvl(
 decimal point.}
 
 \item{add_p}{Add "P =" before the value?}
+
+\item{p_lbl}{Character to use for "P = ". Default, uppercase "P".}
 
 \item{as_factor}{Logical; if TRUE, a factor is returned}
 }
