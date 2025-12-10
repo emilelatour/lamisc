@@ -828,8 +828,12 @@ calc_ttest_1 <- function(data,
 
   if (include_perm) {
 
-    # Center the data around the null hypothesis
-    centered_data <- grp1 - mu
+    if (!is.null(seed)) {
+      set.seed(seed)
+    }
+
+    # Drop NAs and center around the null
+    centered_data <- grp1[!is.na(grp1)] - mu
 
     # Calculate observed test statistic
     observed <- mean(centered_data, na.rm = TRUE)
@@ -2024,8 +2028,17 @@ skewness <-  function(x, na.rm = FALSE) {
 
   if (include_perm) {
 
+    # Optionally make permutations reproducible
+    if (!is.null(seed)) {
+      set.seed(seed)
+    }
+
+    # Work with complete cases only
+    perm_data <- data %>%
+      dplyr::filter(!is.na(y))
+
     # Calculate observed difference in means
-    observed <- data %>%
+    observed <- perm_data %>%
       group_by(x) %>%
       summarise(n = dplyr::n(),
                 mean = mean(y, na.rm = TRUE)) %>%
@@ -2033,10 +2046,10 @@ skewness <-  function(x, na.rm = FALSE) {
       pull(diff_means)
 
     # Get the values from the data in a vector
-    var_values <- data$y
+    var_values <- perm_data$y
 
     # Get the group sizes
-    group_sizes <- data %>%
+    group_sizes <- perm_data %>%
       group_by(x) %>%
       summarise(n = n()) %>%
       pull(n)
@@ -2076,11 +2089,7 @@ skewness <-  function(x, na.rm = FALSE) {
                        by = "alternative")
 
     result_list[["observed_difference"]] <- observed
-
-    # Convert perm_results into a data frame
-    perm_results <- tibble::tibble(test_stat = perm_results)
-
-    result_list[["permutation_distribution"]] <- perm_results
+    result_list[["permutation_distribution"]] <- tibble::tibble(test_stat = perm_results)
 
   }
 
