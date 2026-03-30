@@ -1,0 +1,364 @@
+---
+title: "Quarto Reference"
+subtitle: "Syntax cheatsheet for HTML documents"
+author: "Emile Latour"
+date: "today"
+author-title: "By"
+published-title: "Date"
+toc: true
+toc_float:
+  collapsed: false
+format:
+  html:
+    link-external-newwindow: true
+    toc-location: left
+    number-sections: true
+    number-depth: 4
+    code-tools: true
+    code-fold: true
+    self-contained: true
+    embed-resources: true
+    linkcolor: blue
+execute:
+  echo: true
+  eval: false
+editor_options:
+  chunk_output_type: console
+---
+
+> **How to use this doc:** This is a living reference, not a template to fill in.
+> Copy the snippets you need, paste them into your analysis, and delete the rest.
+> Render this doc to see each element in action.
+
+```{r}
+#| label: setup
+#| include: false
+#| eval: true
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+
+# Callout Boxes
+
+Five types are available: `note`, `tip`, `warning`, `caution`, and `important`.
+
+## Default appearance
+
+::: {.callout-note}
+This is a **note** callout. Good for supplementary information.
+:::
+
+::: {.callout-tip}
+This is a **tip** callout. Good for helpful suggestions.
+:::
+
+::: {.callout-warning}
+This is a **warning** callout. Good for things the reader should watch out for.
+:::
+
+::: {.callout-caution}
+This is a **caution** callout. Similar to warning but slightly softer.
+:::
+
+::: {.callout-important}
+This is an **important** callout. Use sparingly.
+:::
+
+## With a custom title
+
+::: {.callout-note}
+## A custom title goes here
+
+Body text goes here. The `##` heading inside the div sets the title.
+:::
+
+## Collapsible (collapsed by default)
+
+::: {.callout-caution collapse="true"}
+## Click to expand
+
+This content is hidden until the reader expands it. Useful for lengthy
+asides, proofs, or supplementary detail you don't want to dominate the page.
+:::
+
+## Collapsible (expanded by default)
+
+::: {.callout-tip collapse="false"}
+## Expanded by default, but collapsible
+
+The reader can collapse this if they want.
+:::
+
+## Appearance variants
+
+```
+appearance = "default"   # icon + coloured left border + shaded background
+appearance = "simple"    # icon + coloured left border, no shaded background  
+appearance = "minimal"   # coloured left border only, no icon
+```
+
+::: {.callout-note appearance="simple"}
+## Simple appearance
+
+No shaded background.
+:::
+
+::: {.callout-note appearance="minimal"}
+## Minimal appearance
+
+Just the left border — very low visual weight.
+:::
+
+## Without icon
+
+::: {.callout-note icon=false}
+## No icon
+
+The icon is suppressed with `icon=false`.
+:::
+
+
+# Tabsets
+
+Tabsets let you show alternative content (e.g. plot vs table, or Model A vs B)
+without cluttering the page.
+
+## Basic tabset
+
+::: {.panel-tabset}
+
+### Tab one
+
+Content for the first tab. Can be prose, code output, a plot — anything.
+
+### Tab two
+
+Content for the second tab.
+
+### Tab three
+
+Content for the third tab.
+
+:::
+
+## Tabset with code and plot
+
+::: {.panel-tabset}
+
+### Plot
+
+```{r}
+#| eval: true
+#| echo: false
+
+ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g, colour = species)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "Penguin size", x = "Flipper length (mm)", y = "Body mass (g)") +
+  theme_minimal()
+```
+
+### Data
+
+```{r}
+#| eval: true
+#| echo: false
+
+penguins |>
+  head(10) |>
+  knitr::kable()
+```
+
+### Code
+
+```{r}
+#| eval: false
+#| echo: true
+
+ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g, colour = species)) +
+  geom_point(alpha = 0.7) +
+  labs(title = "Penguin size", x = "Flipper length (mm)", y = "Body mass (g)") +
+  theme_minimal()
+```
+
+:::
+
+
+# Columns
+
+## Two equal columns
+
+::: {.columns}
+
+::: {.column width="50%"}
+**Left column**
+
+Any content here — prose, a list, a plot, a table.
+:::
+
+::: {.column width="50%"}
+**Right column**
+
+Content here.
+:::
+
+:::
+
+## Unequal columns
+
+::: {.columns}
+
+::: {.column width="30%"}
+**Narrow sidebar**
+
+Good for a legend, a note, or a key takeaway.
+:::
+
+::: {.column width="5%"}
+<!-- spacer -->
+:::
+
+::: {.column width="65%"}
+**Wider main content**
+
+The 5% spacer column adds breathing room between the two.
+:::
+
+:::
+
+## Three columns
+
+::: {.columns}
+
+::: {.column width="33%"}
+Column 1
+:::
+
+::: {.column width="33%"}
+Column 2
+:::
+
+::: {.column width="33%"}
+Column 3
+:::
+
+:::
+
+
+# Font Size
+
+Scale text up or down inline using a `div` with a `style` attribute.
+
+::: {style="font-size: 150%;"}
+This text is 150% of normal size.
+:::
+
+::: {style="font-size: 75%;"}
+This text is 75% of normal size. Good for fine print or captions under custom figures.
+:::
+
+Common values: `50%`, `75%`, `90%`, `110%`, `125%`, `150%`, `200%`.
+
+
+# Code Chunk Annotation
+
+Add numbered callouts to lines of code with `#<N>` comments.
+The annotations appear below the chunk.
+
+```{r}
+#| eval: true
+
+set.seed(20240101)        #<1>
+x <- rnorm(100, mean = 0) #<2>
+mean(x)                   #<3>
+```
+
+1. Set the seed for reproducibility.
+2. Draw 100 samples from a standard normal distribution.
+3. Compute and print the sample mean.
+
+
+# Figure Layout
+
+## Side-by-side figures
+
+```{r}
+#| eval: true
+#| echo: false
+#| layout-ncol: 2
+#| fig-cap:
+#|   - "Flipper length vs body mass"
+#|   - "Flipper length vs bill length"
+
+ggplot(penguins, aes(flipper_length_mm, body_mass_g, colour = species)) +
+  geom_point(alpha = 0.7) + theme_minimal() + theme(legend.position = "bottom")
+
+ggplot(penguins, aes(flipper_length_mm, bill_length_mm, colour = species)) +
+  geom_point(alpha = 0.7) + theme_minimal() + theme(legend.position = "bottom")
+```
+
+## Figure with caption and cross-reference
+
+```{r}
+#| label: fig-penguins
+#| fig-cap: "Body mass versus flipper length for three penguin species."
+#| eval: true
+#| echo: false
+
+ggplot(penguins, aes(flipper_length_mm, body_mass_g, colour = species)) +
+  geom_point(alpha = 0.7) +
+  theme_minimal()
+```
+
+Then refer to it in prose as `@fig-penguins` → @fig-penguins.
+
+
+# Inline Code Values
+
+Pull values from R directly into prose so numbers never get out of sync.
+
+```{r}
+#| eval: true
+#| include: false
+
+n_penguins <- nrow(penguins)
+mean_mass  <- round(mean(penguins$body_mass_g, na.rm = TRUE))
+```
+
+> The dataset contains `r n_penguins` penguins with a mean body mass of
+> `r scales::comma(mean_mass)` g.
+
+
+# Useful YAML Options (quick reference)
+
+```yaml
+format:
+  html:
+    toc: true                    # table of contents
+    toc-location: left           # left | right | body
+    number-sections: true        # section numbering
+    number-depth: 4              # how deep to number (H4 and above)
+    code-fold: true              # collapsible code chunks
+    code-tools: true             # show/hide all code button
+    self-contained: true         # single portable HTML file
+    embed-resources: true        # embed fonts/images
+    theme: flatly                # bootswatch theme name
+    linkcolor: blue
+    mainfont: Open Sans
+    monofont: Fira Code
+execute:
+  echo: false      # hide code by default
+  warning: false   # suppress warnings
+  message: false   # suppress messages
+  freeze: auto     # only re-render when source changes
+```
+
+
+# Useful Links
+
+- [Quarto HTML format reference](https://quarto.org/docs/reference/formats/html.html)
+- [Quarto callouts](https://quarto.org/docs/authoring/callouts.html)
+- [Quarto figures](https://quarto.org/docs/authoring/figures.html)
+- [Quarto code chunks](https://quarto.org/docs/reference/cells/cells-knitr.html)
+- [Bootswatch themes](https://bootswatch.com/)

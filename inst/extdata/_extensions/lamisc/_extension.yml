@@ -1,0 +1,6 @@
+title: lamisc
+author: Emile Latour
+version: 0.1.0
+contributes:
+  formats:
+    html: default

@@ -59,6 +59,7 @@ Suggests:
     raters, 
     rmarkdown,
     roxygen2, 
+    rstudioapi, 
     titanic, 
     vcd
 Depends: 
