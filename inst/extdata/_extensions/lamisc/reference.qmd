@@ -10,6 +10,10 @@ toc_float:
   collapsed: false
 format:
   html:
+    theme: flatly
+    mainfont: "Lato"
+    fontsize: 1.1em
+    linestretch: 1.6s
     link-external-newwindow: true
     toc-location: left
     number-sections: true
