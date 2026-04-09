@@ -96,14 +96,14 @@ pacman::p_load(
 )
 
 #### Other packages ----------------------------- 
-
-library(lamisc)       # devtools::install_github("emilelatour/lamisc") 
-library(lagree)       # devtools::install_github("emilelatour/lagree")  
-library(latable)      # devtools::install_github("emilelatour/latable")
-library(laviz)        # devtools::install_github("emilelatour/laviz") 
-library(purposeful)   # devtools::install_github("emilelatour/purposeful")
-library(redcaptools)  # devtools::install_github("emilelatour/redcaptools")
-library(tidytableone) # devtools::install_github("emilelatour/tidytableone") 
+# install.packages("pak")  # if needed
+library(lamisc)       # pak::pak("emilelatour/lamisc") 
+library(lagree)       # pak::pak("emilelatour/lagree")  
+library(latable)      # pak::pak("emilelatour/latable")
+library(laviz)        # pak::pak("emilelatour/laviz") 
+library(purposeful)   # pak::pak("emilelatour/purposeful")
+library(redcaptools)  # pak::pak("emilelatour/redcaptools")
+library(tidytableone) # pak::pak("emilelatour/tidytableone") 
 
 ```
 

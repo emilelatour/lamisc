@@ -2,36 +2,68 @@
 % Please edit documentation in R/use_quarto_template.R
 \name{use_quarto_template}
 \alias{use_quarto_template}
-\title{Create a new Quarto document from the lamisc template}
+\title{Create a new Quarto document from the lamisc skeleton template}
 \usage{
-use_quarto_template(file_name = "analysis", subdir = TRUE, open = TRUE)
+use_quarto_template(
+  file_name = "analysis",
+  path = ".",
+  subdir = TRUE,
+  open = TRUE
+)
 }
 \arguments{
-\item{file_name}{Character string. Name for the new \code{.qmd} file (without
-extension). If \code{subdir = TRUE} a sub-directory with this name is also
-created and the file is placed inside it. Defaults to \code{"analysis"}.}
+\item{file_name}{A single non-empty character string giving the base name of
+the new Quarto document (without the \code{.qmd} extension). Also used as the
+subdirectory name when \code{subdir = TRUE}. Default is \code{"analysis"}.}
 
-\item{subdir}{Logical. If \code{TRUE} (default) a sub-directory named
-\code{file_name} is created and the file is written there. Set to \code{FALSE} to
-write directly into the current working directory.}
+\item{path}{A single character string giving the parent directory in which to
+create the file (or subdirectory). Relative paths are resolved from the
+current working directory, which in an RStudio project is typically the
+project root. If the directory does not exist it will be created. Default
+is \code{"."} (the current working directory).}
 
-\item{open}{Logical. If \code{TRUE} (default) the new file is opened in the
-RStudio editor via \code{\link[utils:file.edit]{utils::file.edit()}}.}
+\item{subdir}{Logical. If \code{TRUE} (the default), a subdirectory named
+\code{file_name} is created inside \code{path} and the \code{.qmd} file is placed inside
+it. If \code{FALSE}, the file is placed directly in \code{path}.}
+
+\item{open}{Logical. If \code{TRUE} (the default), the newly created file is
+opened in the editor. Uses \code{\link[rstudioapi:navigateToFile]{rstudioapi::navigateToFile()}} when RStudio is
+available, otherwise falls back to \code{\link[utils:file.edit]{utils::file.edit()}}.}
 }
 \value{
-The path to the new \code{.qmd} file, invisibly.
+The path to the newly created \code{.qmd} file, invisibly.
 }
 \description{
-Copies the lamisc skeleton \code{.qmd} into the current working directory (or a
-named sub-directory) and opens it for editing. Mirrors the pattern used by
-\code{rmarkdown::draft()} but for Quarto.
+Copies the lamisc skeleton \code{.qmd} template into a specified location,
+optionally creating a subdirectory to keep the file self-contained. The
+new file is opened in the editor automatically.
+}
+\details{
+The skeleton template is stored in the lamisc package at
+\verb{inst/extdata/_extensions/lamisc/skeleton.qmd} and is located at runtime
+via \code{\link[base:system.file]{base::system.file()}}. If the skeleton cannot be found, the function
+will prompt you to re-install lamisc from GitHub.
+
+The \code{path} and \code{subdir} arguments interact as follows:\tabular{lll}{
+   \code{path} \tab \code{subdir} \tab Output location \cr
+   \code{"."} \tab \code{TRUE} \tab \code{./file_name/file_name.qmd} \cr
+   \code{"."} \tab \code{FALSE} \tab \code{./file_name.qmd} \cr
+   \code{"code"} \tab \code{TRUE} \tab \code{code/file_name/file_name.qmd} \cr
+   \code{"code"} \tab \code{FALSE} \tab \code{code/file_name.qmd} \cr
+}
 }
 \examples{
 \dontrun{
-# Creates ./my-analysis/my-analysis.qmd and opens it
-use_quarto_template("my-analysis")
+# Create analysis.qmd in a new subfolder at the project root
+use_quarto_template()
 
-# Creates ./report.qmd in the current directory without opening
-use_quarto_template("report", subdir = FALSE, open = FALSE)
+# Create a named file directly in the project root (no subfolder)
+use_quarto_template("01_data_cleaning", subdir = FALSE)
+
+# Create a file directly inside an existing "code" folder
+use_quarto_template("10_draft_analysis", path = "code", subdir = FALSE)
+
+# Create a file inside a new subfolder within "code"
+use_quarto_template("10_draft_analysis", path = "code", subdir = TRUE)
 }
 }
