@@ -12,9 +12,9 @@
 #'   current working directory, which in an RStudio project is typically the
 #'   project root. If the directory does not exist it will be created. Default
 #'   is `"."` (the current working directory).
-#' @param subdir Logical. If `TRUE` (the default), a subdirectory named
+#' @param subdir Logical. If `TRUE`, a subdirectory named
 #'   `file_name` is created inside `path` and the `.qmd` file is placed inside
-#'   it. If `FALSE`, the file is placed directly in `path`.
+#'   it. If `FALSE` (the default), the file is placed directly in `path`.
 #' @param open Logical. If `TRUE` (the default), the newly created file is
 #'   opened in the editor. Uses [rstudioapi::navigateToFile()] when RStudio is
 #'   available, otherwise falls back to [utils::file.edit()].
@@ -54,7 +54,7 @@
 #' }
 use_quarto_template <- function(file_name = "analysis",
                                 path      = ".",
-                                subdir    = TRUE,
+                                subdir    = FALSE,
                                 open      = TRUE) {
   stopifnot(
     "`file_name` must be a single non-empty character string" =

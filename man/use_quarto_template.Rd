@@ -7,7 +7,7 @@
 use_quarto_template(
   file_name = "analysis",
   path = ".",
-  subdir = TRUE,
+  subdir = FALSE,
   open = TRUE
 )
 }
@@ -22,9 +22,9 @@ current working directory, which in an RStudio project is typically the
 project root. If the directory does not exist it will be created. Default
 is \code{"."} (the current working directory).}
 
-\item{subdir}{Logical. If \code{TRUE} (the default), a subdirectory named
+\item{subdir}{Logical. If \code{TRUE}, a subdirectory named
 \code{file_name} is created inside \code{path} and the \code{.qmd} file is placed inside
-it. If \code{FALSE}, the file is placed directly in \code{path}.}
+it. If \code{FALSE} (the default), the file is placed directly in \code{path}.}
 
 \item{open}{Logical. If \code{TRUE} (the default), the newly created file is
 opened in the editor. Uses \code{\link[rstudioapi:navigateToFile]{rstudioapi::navigateToFile()}} when RStudio is

@@ -10,8 +10,8 @@ toc_float:
   collapsed: false
 format:
   html:
-    theme: flatly
-    mainfont: "Lato"
+    theme: cosmo
+    mainfont: "Arial"
     fontsize: 1.1em
     linestretch: 1.6
     link-external-newwindow: true
