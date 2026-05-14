@@ -2,69 +2,44 @@
 % Please edit documentation in R/make_cuminc_df.R
 \name{make_cuminc_df}
 \alias{make_cuminc_df}
-\title{Calculate data frame of cumulative incidence.}
+\title{Calculate cumulative incidence from Kaplan-Meier}
 \usage{
 make_cuminc_df(data, time, event, ..., type = "right", extend = FALSE)
 }
 \arguments{
-\item{data}{A data frame or tibble}
+\item{data}{A data frame.}
 
-\item{time}{Vector of integer event times. For right censored data, this is
-the follow up time. For interval data, the first argument is the starting
-time for the interval.}
+\item{time}{Unquoted name of the time-to-event variable.}
 
-\item{event}{The status indicator, normally 0=alive, 1=dead. Other choices
-are TRUE/FALSE (TRUE = death) or 1/2 (2=death). For interval censored data,
-the status indicator is 0=right censored, 1=event at time, 2=left censored,
-3=interval censored. For multiple enpoint data the event variable will be a
-factor, whose first level is treated as censoring. Although unusual, the
-event indicator can be omitted, in which case all subjects are assumed to
-have an event.}
+\item{event}{Unquoted name of the event indicator (0 = censored, 1 = event).}
 
-\item{...}{Unquoted names of variables to group by. Prefer factor or
-character classes.}
+\item{...}{Optional unquoted grouping variables.}
 
-\item{type}{character string specifying the type of censoring. Possible
-values are "right", "left", "counting", "interval", "interval2" or
-"mstate".}
+\item{type}{Type of censoring; passed to \code{\link[survival:Surv]{survival::Surv()}}.}
 
-\item{extend}{logical value: if TRUE, prints information for all specified
-times, even if there are no subjects left at the end of the specified
-times. This is only valid if the times argument is present.}
+\item{extend}{Passed to \code{\link[survival:summary.survfit]{survival::summary.survfit()}}.}
 }
 \value{
-A tibble
+A tibble with columns: grouping variables (if any), \code{time}, \code{n_risk},
+\code{n_event}, \code{surv}, \code{lower_ci}, \code{upper_ci}, \code{cum_inc}, \code{cum_inc_lower},
+\code{cum_inc_upper}.
 }
 \description{
-Allows for easy grouping by catogories to get survival data from a Kaplan
-Meier object as well as the cumulative incidence. TODO -- Confidence interval
-for cumulative incidence.
+Returns a tibble of the KM survival curve and the corresponding cumulative
+incidence (1 - S(t)) with confidence intervals on both scales, at every
+event/censoring time. Optionally stratified by one or more grouping variables.
+}
+\details{
+Cumulative-incidence CIs are derived by flipping the KM survival bounds
+(\code{cum_inc_lower = 1 - upper_ci}, \code{cum_inc_upper = 1 - lower_ci}). For a true
+competing-risks analysis, use \code{\link[tidycmprsk:cuminc]{tidycmprsk::cuminc()}} instead.
 }
 \examples{
-library(dplyr)
 library(survival)
 
-#### Data for example --------------------------------
-# View the preloaded data
-dplyr::glimpse(aml)
+# Single curve
+make_cuminc_df(aml, time, status)
 
-## Create a variable for smoke ----------------
-df <- aml \%>\%
-  mutate(smoke = sample(c("Yes", "No"), size = 23, replace = TRUE)) \%>\%
-  tibble::as_tibble()
-df
-
-#### Example #1 --------------------------------
-
-make_cuminc_df(data = df,
-               time = time,
-               event = status,
-               smoke)
-
-#### Example #2 --------------------------------
-
-make_cuminc_df(data = df,
-               time = time,
-               event = status,
-               x, smoke)
+# Stratified
+make_cuminc_df(aml, time, status, x)
 }

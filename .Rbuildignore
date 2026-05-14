@@ -4,3 +4,8 @@
 ^README\.md$
 ^LICENSE\.md$
 ^data-raw$
+^\.positai$
+^\.claude$
+^\.git$
+^\.github$
+^renv$

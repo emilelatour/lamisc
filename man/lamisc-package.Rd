@@ -25,5 +25,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Emile Latour \email{latour@ohsu.edu}
 
+Authors:
+\itemize{
+  \item Emile Latour \email{latour@ohsu.edu}
+}
+
 }
 \keyword{internal}

@@ -1,97 +1,71 @@
-
-#' @title
-#' Calculate data frame of cumulative incidence.
+#' Calculate cumulative incidence from Kaplan-Meier
 #'
-#' @description
-#' Allows for easy grouping by catogories to get survival data from a Kaplan
-#' Meier object as well as the cumulative incidence. TODO -- Confidence interval
-#' for cumulative incidence.
+#' Returns a tibble of the KM survival curve and the corresponding cumulative
+#' incidence (1 - S(t)) with confidence intervals on both scales, at every
+#' event/censoring time. Optionally stratified by one or more grouping variables.
 #'
-#' @param data A data frame or tibble
-#' @param time Vector of integer event times. For right censored data, this is
-#'   the follow up time. For interval data, the first argument is the starting
-#'   time for the interval.
-#' @param event The status indicator, normally 0=alive, 1=dead. Other choices
-#'   are TRUE/FALSE (TRUE = death) or 1/2 (2=death). For interval censored data,
-#'   the status indicator is 0=right censored, 1=event at time, 2=left censored,
-#'   3=interval censored. For multiple enpoint data the event variable will be a
-#'   factor, whose first level is treated as censoring. Although unusual, the
-#'   event indicator can be omitted, in which case all subjects are assumed to
-#'   have an event.
-#' @param ... Unquoted names of variables to group by. Prefer factor or
-#'   character classes.
-#' @param type character string specifying the type of censoring. Possible
-#'   values are "right", "left", "counting", "interval", "interval2" or
-#'   "mstate".
-#' @param extend logical value: if TRUE, prints information for all specified
-#'   times, even if there are no subjects left at the end of the specified
-#'   times. This is only valid if the times argument is present.
+#' Cumulative-incidence CIs are derived by flipping the KM survival bounds
+#' (`cum_inc_lower = 1 - upper_ci`, `cum_inc_upper = 1 - lower_ci`). For a true
+#' competing-risks analysis, use [tidycmprsk::cuminc()] instead.
 #'
+#' @param data A data frame.
+#' @param time Unquoted name of the time-to-event variable.
+#' @param event Unquoted name of the event indicator (0 = censored, 1 = event).
+#' @param ... Optional unquoted grouping variables.
+#' @param type Type of censoring; passed to [survival::Surv()].
+#' @param extend Passed to [survival::summary.survfit()].
 #'
-#' @importFrom dplyr group_by
-#' @importFrom dplyr mutate
-#' @importFrom janitor clean_names
-#' @importFrom purrr map
-#' @importFrom rlang enquo
-#' @importFrom rlang enquos
-#' @importFrom rlang expr
-#' @importFrom rlang get_expr
-#' @importFrom stats as.formula
-#' @importFrom survival survfit
-#' @importFrom tibble as_tibble
-#' @importFrom tidyr nest
-#' @importFrom tidyr unnest
-#'
-#' @return A tibble
+#' @return A tibble with columns: grouping variables (if any), `time`, `n_risk`,
+#'   `n_event`, `surv`, `lower_ci`, `upper_ci`, `cum_inc`, `cum_inc_lower`,
+#'   `cum_inc_upper`.
 #'
 #' @export
 #'
 #' @examples
-#' library(dplyr)
 #' library(survival)
 #'
-#' #### Data for example --------------------------------
-#' # View the preloaded data
-#' dplyr::glimpse(aml)
+#' # Single curve
+#' make_cuminc_df(aml, time, status)
 #'
-#' ## Create a variable for smoke ----------------
-#' df <- aml %>%
-#'   mutate(smoke = sample(c("Yes", "No"), size = 23, replace = TRUE)) %>%
-#'   tibble::as_tibble()
-#' df
-#'
-#' #### Example #1 --------------------------------
-#'
-#' make_cuminc_df(data = df,
-#'                time = time,
-#'                event = status,
-#'                smoke)
-#'
-#' #### Example #2 --------------------------------
-#'
-#' make_cuminc_df(data = df,
-#'                time = time,
-#'                event = status,
-#'                x, smoke)
-
-
+#' # Stratified
+#' make_cuminc_df(aml, time, status, x)
 make_cuminc_df <- function(data, time, event, ...,
                            type = "right", extend = FALSE) {
 
-  time <- rlang::enquo(time)
-  event <- rlang::enquo(event)
-  group_vars <- rlang::enquos(...)
+  # Silence R CMD check
+  .surv_time <- .surv_event <- NULL
 
-  data %>%
-    group_by(!!! group_vars) %>%
+  df <- data %>%
+    dplyr::mutate(
+      .surv_time  = {{ time }},
+      .surv_event = {{ event }}
+    )
+
+  fit_one_group <- function(d) {
+    fit <- survival::survfit(
+      survival::Surv(time = .surv_time, event = .surv_event, type = type) ~ 1,
+      data = d
+    )
+    s <- summary(fit, times = sort(unique(c(0, fit$time))), extend = extend)
+
+    tibble::tibble(
+      time          = s$time,
+      n_risk        = s$n.risk,
+      n_event       = s$n.event,
+      surv          = s$surv,
+      lower_ci      = s$lower,
+      upper_ci      = s$upper,
+      cum_inc       = 1 - s$surv,
+      cum_inc_lower = 1 - s$upper,
+      cum_inc_upper = 1 - s$lower
+    )
+  }
+
+  df %>%
+    dplyr::group_by(...) %>%
     tidyr::nest() %>%
-    mutate(res = purrr::map(.x = data,
-                            .f = ~ .calc_surv(data = .x,
-                                              time = !! time,
-                                              event = !! event,
-                                              type = type,
-                                              extend = extend))) %>%
-    tidyr::unnest(res)
-
-
+    dplyr::mutate(res = purrr::map(data, fit_one_group)) %>%
+    dplyr::select(-data) %>%
+    tidyr::unnest(res) %>%
+    dplyr::ungroup()
 }
