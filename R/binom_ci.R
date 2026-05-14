@@ -66,15 +66,15 @@ binom_ci <- function(x, n,
                             method = method[1],
                             rand = rand,
                             tol = tol,
-                            std_est = std_est) |>
-    tibble::as_tibble() |>
-    janitor::clean_names() |>
+                            std_est = std_est) %>%
+    tibble::as_tibble() %>%
+    janitor::clean_names() %>%
     dplyr::rename(percentage = est,
                   lower_ci = lwr_ci,
                   upper_ci = upr_ci)
 
   if (formatted) {
-    res <- res |>
+    res <- res %>%
       mutate(dplyr::across(.cols = dplyr::everything(),
                            .fns = ~ lamisc::fmt_pct(x = .,
                                                     accuracy = accuracy)))
