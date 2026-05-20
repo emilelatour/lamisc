@@ -62,10 +62,6 @@ options(scipen = 999)
 
 
 #### Packages --------------------------------------
-
-options(repos = c(CRAN = "https://cran.rstudio.com"))
-
-#### Packages --------------------------------------
 # Load the packages to be used.
 
 ## Define the repository for packages ----------------
