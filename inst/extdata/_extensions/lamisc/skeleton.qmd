@@ -17,7 +17,8 @@ format:
     link-external-newwindow: true
     toc-location: left
     number-sections: true
-    number-depth: 4
+    toc-depth: 3
+    number-depth: 3
     code-tools: true
     code-fold: true
     self-contained: true

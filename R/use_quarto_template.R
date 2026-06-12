@@ -92,7 +92,7 @@ use_quarto_template <- function(file_name = "analysis",
   if (!nzchar(skeleton_path)) {
     stop(
       "Could not find the lamisc skeleton template. ",
-      "Try re-installing lamisc with `devtools::install_github('emilelatour/lamisc')`."
+      "Try re-installing lamisc with `pak::pak('emilelatour/lamisc')`."
     )
   }
 
