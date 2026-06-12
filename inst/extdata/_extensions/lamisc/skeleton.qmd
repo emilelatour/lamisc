@@ -113,14 +113,18 @@ library(tidytableone) # pak::pak("emilelatour/tidytableone")
 ```
 
 
-# Background
+# Overview
 
-<!-- Describe the project, research question, and relevant context. -->
+<!-- Brief orientation for a collaborator: project, purpose of this report, data source and extract date. -->
 
 
 # Data
 
 <!-- Describe the data source, any inclusion/exclusion criteria, and sample size. -->
+
+## Missing data
+
+<!-- Missingness for the key analysis variables and how it was handled (complete-case, imputation, exclusion). -->
 
 
 # Analysis
