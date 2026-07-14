@@ -5,9 +5,6 @@ author: "Emile Latour"
 date: "today"
 author-title: "By"
 published-title: "Date"
-toc: true
-toc_float:
-  collapsed: false
 format:
   html:
     theme: cosmo
@@ -15,13 +12,13 @@ format:
     fontsize: 1.1em
     linestretch: 1.6
     link-external-newwindow: true
+    toc: true
     toc-location: left
     number-sections: true
     toc-depth: 3
     number-depth: 3
     code-tools: true
     code-fold: true
-    self-contained: true
     embed-resources: true
     linkcolor: blue
 execute:
@@ -45,7 +42,7 @@ knitr::opts_chunk$set(
   echo       = FALSE,
   error      = TRUE,
   message    = FALSE,
-  warning    = FALSE,
+  warning    = TRUE,
   comment    = NA,
   tidy       = FALSE,
   dpi        = 150,
