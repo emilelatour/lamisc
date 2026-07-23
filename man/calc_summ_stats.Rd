@@ -3,45 +3,89 @@
 \name{calc_summ_stats}
 \alias{calc_summ_stats}
 \alias{calc_summ_stats_t}
-\title{Title
-Calculate summary / descriptive statistics}
+\title{Calculate summary / descriptive statistics}
 \usage{
-calc_summ_stats(.data, ...)
+calc_summ_stats(.data, ..., overall = FALSE, overall_label = "All")
 
-calc_summ_stats_t(.data, ...)
+calc_summ_stats_t(.data, ..., overall = FALSE, overall_label = "All")
 }
 \arguments{
-\item{.data}{A tbl}
+\item{.data}{A tbl.}
 
-\item{...}{Variables to summarise}
+\item{...}{Variables to summarise. For \code{calc_summ_stats_t()}, name-value
+pairs defining the variables to derive and then summarise.}
+
+\item{overall}{Logical. When \code{.data} is grouped, should an overall summary be
+added on top of the group-level rows? Silently ignored when \code{.data} is
+ungrouped. Defaults to \code{FALSE}.}
+
+\item{overall_label}{Character scalar placed in the grouping columns for the
+overall rows. Defaults to \code{"All"}. Errors if the label is already a value
+in one of the grouping columns.}
 }
 \value{
-A tbl
+A tbl.
 }
 \description{
-This function provide some brief overview statstics for selected variables of
-a tbl_df. Number of observations (n), complete observations (complete),
-missing observations (missing); mean, standard deviation (sd), minimum value
-(p0), maximum value (p100), median (p50), interquartile rane (p25, p75).
+Provides brief overview statistics for selected variables of a \code{tbl_df}:
+number of observations (n), complete observations (complete), missing
+observations (missing); mean, standard deviation (sd), minimum value (p0),
+25th/50th/75th percentiles (p25, p50, p75), maximum value (p100), range, and
+coefficient of variation (CV).
+
+\code{calc_summ_stats()} summarises existing columns. \code{calc_summ_stats_t()}
+derives variables on the fly (via a \code{transmute()} step) and then summarises
+them.
+
+When \code{.data} is grouped and \code{overall = TRUE}, an overall (ungrouped) summary
+is added above the group-level rows.
+}
+\details{
+When \code{overall = TRUE} and \code{.data} is grouped, the grouping columns come back
+as \strong{factors}, with \code{overall_label} as the first level. That is what floats
+the overall rows to the top and keeps the remaining group order intact. Watch
+for this if you join the result against something else downstream, since a
+factor-to-character join will warn. Ungrouped calls, and grouped calls with
+\code{overall = FALSE}, leave the grouping columns untouched.
+
+With more than one grouping variable, you get a single set of overall rows
+with \code{overall_label} repeated across every grouping column. Full marginals
+(each grouping variable summarised on its own) are not produced.
+
+Because \code{overall} and \code{overall_label} follow \code{...}, a derived variable in
+\code{calc_summ_stats_t()} cannot be named \code{overall} or \code{overall_label}.
+
+Only numeric variables are supported.
 }
 \examples{
-library(dplyr)
-library(ggplot2)  # to get the starwars data set
+library(dplyr)  # the starwars data set lives here
 
-# descriptive stats for height and mass
+# Descriptive stats for height and mass
 starwars \%>\%
-  calc_summ_stats(
-    height, mass
-  )
+  calc_summ_stats(height, mass)
 
 # Grouped by gender
 starwars \%>\%
   group_by(gender) \%>\%
-  calc_summ_stats(
-    height, mass
-  )
+  calc_summ_stats(height, mass)
 
-# Derive variables within function then summarise
+# ... with an overall summary on top
+starwars \%>\%
+  group_by(gender) \%>\%
+  calc_summ_stats(height, mass, overall = TRUE)
+
+# A different label for the overall rows
+starwars \%>\%
+  group_by(gender) \%>\%
+  calc_summ_stats(height, mass, overall = TRUE, overall_label = "Total")
+
+# Multiple grouping variables: one set of overall rows, label in every
+# grouping column
+starwars \%>\%
+  group_by(sex, gender) \%>\%
+  calc_summ_stats(height, overall = TRUE)
+
+# Derive variables within the function, then summarise
 starwars \%>\%
   calc_summ_stats_t(
     heightm = height / 100,
@@ -56,10 +100,16 @@ starwars \%>\%
     bmi = mass / heightm^2
   )
 
-# Doesn't work with factors/characters as of 2018-01-19
+# ... with an overall summary on top
+starwars \%>\%
+  group_by(gender) \%>\%
+  calc_summ_stats_t(
+    heightm = height / 100,
+    bmi = mass / heightm^2,
+    overall = TRUE
+  )
+
+# Numeric variables only; factors and characters are not supported
 # starwars \%>\%
-#   calc_summ_stats(
-#   height, mass, gender
-#  )
-
+#   calc_summ_stats(height, mass, gender)
 }
