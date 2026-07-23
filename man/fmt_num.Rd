@@ -34,31 +34,39 @@ fmt_pct(
 \arguments{
 \item{x}{A numeric vector to format.}
 
-\item{accuracy}{Number to round to, \code{NULL} for automatic guess.}
+\item{accuracy}{A single positive number to round to, or \code{NULL} to guess
+from the range of \code{x}. Vectors of length greater than one are an error.}
 
 \item{scale}{A scaling factor: \code{x} will be multiply by \code{scale} before
 formating (useful if the underlying data is on another scale,
 e.g. for computing percentages or thousands).}
 
-\item{prefix, suffix}{Symbols to display before and after value.}
+\item{prefix, suffix}{Symbols to display before and after value. Ignored
+when \code{as_numeric = TRUE}.}
 
-\item{big.mark}{Character used between every 3 digits to separate thousands.}
+\item{big.mark}{Character used between every 3 digits to separate thousands.
+Ignored when \code{as_numeric = TRUE}.}
 
 \item{decimal.mark}{The character to be used to indicate the numeric
-decimal point.}
+decimal point. Ignored when \code{as_numeric = TRUE}.}
 
 \item{trim}{Logical, if \code{FALSE}, values are right-justified to a common
-width (see \code{\link[base:format]{base::format()}}).}
+width (see \code{\link[base:format]{base::format()}}). Ignored when \code{as_numeric = TRUE}.}
 
-\item{as_numeric}{Logical; if TRUE, a numeric value is returned}
+\item{as_numeric}{Logical; if \code{TRUE}, the rounded value is returned as a
+numeric vector on the scaled basis. Cannot be combined with \code{as_factor}.}
 
-\item{as_factor}{Logical; if TRUE, a factor is returned}
+\item{as_factor}{Logical; if \code{TRUE}, a factor is returned, with levels
+ordered by the underlying numeric value. Cannot be combined with
+\code{as_numeric}.}
 
-\item{...}{Other arguments passed on to \code{\link[base:format]{base::format()}}.}
+\item{...}{Other arguments passed on to \code{\link[base:format]{base::format()}}. Note that
+\code{\link[base:format]{base::format()}} does not reject unknown arguments, so a misspelled
+argument name will be silently ignored.}
 }
 \value{
-\verb{*_format()} returns a function with single parameter
-\code{x}, a numeric vector, that returns a character vector.
+A character vector the same length as \code{x}; a numeric vector if
+\code{as_numeric = TRUE}, or a factor if \code{as_factor = TRUE}.
 }
 \description{
 A set of functions to format numeric values:
@@ -71,7 +79,23 @@ All formatters allow you to re-\code{scale} (multiplicatively), to round to
 specified \code{accuracy}, to add custom \code{suffix} and \code{prefix} and to specify
 \code{decimal.mark} and \code{big.mark}.
 
-The functions were adapted directly from the \code{scales} package.
+The functions were adapted from the \code{scales} package, with two deliberate
+differences: \code{accuracy} must be a single value (vectorised, per-element
+accuracy is not supported) and is validated rather than allowed to produce
+\code{NA}.
+}
+\details{
+When \code{as_numeric = TRUE} the rounded value is returned directly, without a
+round trip through \code{\link[base:format]{base::format()}}. Two consequences:
+\itemize{
+\item The value is returned on the \strong{scaled} basis, so
+\code{fmt_pct(0.5, as_numeric = TRUE)} returns \code{50}, matching what would have
+been displayed.
+\item \code{prefix}, \code{suffix}, \code{big.mark}, \code{decimal.mark}, and \code{trim} are ignored,
+since they only affect the character representation.
+}
+
+\code{as_numeric} and \code{as_factor} are mutually exclusive.
 }
 \examples{
 v <- c(12.3, 4, 12345.789, 0.0002)
@@ -87,6 +111,10 @@ fmt_num(w, big.mark = ",")
 fmt_num(w, accuracy = .001)
 fmt_num(w, accuracy = .001, decimal.mark = ",")
 fmt_num(w, accuracy = .5)
+
+# Numeric return is on the scaled basis
+fmt_num(12345.789, accuracy = .1, as_numeric = TRUE)
+fmt_pct(0.5, as_numeric = TRUE)
 fmt_pct(x = runif(10))
 fmt_pct(x = c(1, runif(10)), trim = FALSE)
 }

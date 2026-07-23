@@ -10,13 +10,16 @@ fmt_pvl(
   decimal.mark = ".",
   add_p = FALSE,
   p_lbl = "P",
+  allow_one = FALSE,
   as_factor = FALSE
 )
 }
 \arguments{
 \item{x}{A numeric vector of p-values.}
 
-\item{accuracy}{Number to round to.}
+\item{accuracy}{A single number greater than 0 and less than 1 to round to.
+Unlike \code{\link[=fmt_num]{fmt_num()}}, \code{NULL} is not accepted, since guessing precision from
+the observed p-values is not meaningful.}
 
 \item{decimal.mark}{The character to be used to indicate the numeric
 decimal point.}
@@ -25,19 +28,49 @@ decimal point.}
 
 \item{p_lbl}{Character to use for "P = ". Default, uppercase "P".}
 
-\item{as_factor}{Logical; if TRUE, a factor is returned}
+\item{allow_one}{Logical; if \code{TRUE}, p-values at or near 1 are printed as-is
+(e.g. \code{1.000}) rather than as \verb{> 1 - accuracy} (e.g. \verb{> 0.999}).}
+
+\item{as_factor}{Logical; if \code{TRUE}, a factor is returned, with levels
+ordered by the underlying numeric value.}
 }
 \value{
-\code{pvalue_format} returns a function with single parameter
-\code{x}, a numeric vector, that returns a character vector.
+A character vector the same length as \code{x}, or a factor if
+\code{as_factor = TRUE}.
 }
 \description{
-Formatter for p-values, adding a symbol "<" for small p-values. Adapted
-directly from \code{scales} package.
+Formatter for p-values, substituting a bound for values too small or too
+large to display at the requested \code{accuracy}. Values below \code{accuracy} are
+shown as \verb{< accuracy} (e.g. \verb{< 0.001}); values above \code{1 - accuracy} are
+shown as \verb{> 1 - accuracy} (e.g. \verb{> 0.999}) unless \code{allow_one = TRUE}.
+Adapted from the \code{scales} package.
 }
+\section{Caveats}{
+
+\code{x} is not checked against the range [0, 1]; an out-of-range value will be
+formatted as if it were a valid p-value.
+
+\code{NA} values are returned as \code{NA}, except when \code{add_p = TRUE}, where they are
+rendered as \code{"P = NA"} so that the label is present in every cell of a
+results column. Combining \code{add_p = TRUE} with \code{as_factor = TRUE} therefore
+keeps \code{"P = NA"} as a factor level and emits a parsing warning; use one or
+the other.
+
+With \code{as_factor = TRUE}, a bound such as \code{"> 0.999"} and a literal \code{"0.999"}
+parse to the same numeric value and may be ordered arbitrarily with respect
+to each other.
+}
+
 \examples{
 p <- c(.50, 0.12, .045, .011, .009, .00002, NA)
 fmt_pvl(p)
 fmt_pvl(p, accuracy = .01)
 fmt_pvl(p, add_p = TRUE)
+
+# Upper bound and allow_one
+q <- c(0.0002, 0.045, 0.9996, 1.000, NA)
+fmt_pvl(q)
+fmt_pvl(q, allow_one = TRUE)
+fmt_pvl(q, accuracy = .1)
+fmt_pvl(q, accuracy = .1, allow_one = TRUE)
 }
