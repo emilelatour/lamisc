@@ -148,234 +148,286 @@ import(readxl)
 import(rlang)
 import(tibble)
 import(tidyr)
-importFrom(DescTools,BinomCI)
-importFrom(DescTools,JarqueBeraTest)
-importFrom(DescTools,ShapiroFranciaTest)
+importFrom(DescTools,
+  BinomCI,
+  JarqueBeraTest,
+  ShapiroFranciaTest
+)
 importFrom(Hmisc,num.intercepts)
 importFrom(Rmpfr,mpfr)
-importFrom(boot,boot)
-importFrom(boot,boot.ci)
+importFrom(boot,
+  boot,
+  boot.ci
+)
 importFrom(broom,tidy)
 importFrom(car,leveneTest)
-importFrom(corrplot,corrMatOrder)
-importFrom(corrplot,corrplot)
-importFrom(dplyr,"%>%")
-importFrom(dplyr,across)
-importFrom(dplyr,add_count)
-importFrom(dplyr,all_of)
-importFrom(dplyr,any_of)
-importFrom(dplyr,arrange)
-importFrom(dplyr,bind_cols)
-importFrom(dplyr,bind_rows)
-importFrom(dplyr,case_match)
-importFrom(dplyr,case_when)
-importFrom(dplyr,coalesce)
-importFrom(dplyr,count)
-importFrom(dplyr,distinct)
-importFrom(dplyr,everything)
-importFrom(dplyr,filter)
-importFrom(dplyr,glimpse)
-importFrom(dplyr,group_by)
-importFrom(dplyr,group_vars)
-importFrom(dplyr,if_else)
-importFrom(dplyr,left_join)
-importFrom(dplyr,mutate)
-importFrom(dplyr,mutate_all)
-importFrom(dplyr,mutate_at)
-importFrom(dplyr,n)
-importFrom(dplyr,n_distinct)
-importFrom(dplyr,one_of)
-importFrom(dplyr,pick)
-importFrom(dplyr,pull)
-importFrom(dplyr,rename)
-importFrom(dplyr,row_number)
-importFrom(dplyr,select)
-importFrom(dplyr,slice)
-importFrom(dplyr,summarise)
-importFrom(dplyr,transmute)
-importFrom(dplyr,ungroup)
-importFrom(dplyr,vars)
-importFrom(flextable,add_footer_lines)
-importFrom(flextable,add_header_lines)
-importFrom(flextable,align)
-importFrom(flextable,autofit)
-importFrom(flextable,bold)
-importFrom(flextable,flextable)
-importFrom(flextable,font)
-importFrom(flextable,fontsize)
-importFrom(flextable,fp_border_default)
-importFrom(flextable,hline)
-importFrom(flextable,hline_top)
-importFrom(flextable,set_flextable_defaults)
-importFrom(flextable,set_header_labels)
-importFrom(flextable,width)
-importFrom(forcats,as_factor)
-importFrom(forcats,fct_drop)
-importFrom(forcats,fct_expand)
-importFrom(forcats,fct_inorder)
-importFrom(forcats,fct_recode)
-importFrom(forcats,fct_reorder)
-importFrom(forcats,fct_rev)
-importFrom(forcats,fct_unique)
-importFrom(forcats,lvls_revalue)
-importFrom(fs,dir_create)
-importFrom(fs,dir_exists)
-importFrom(fs,path_tidy)
-importFrom(ggplot2,aes)
-importFrom(ggplot2,geom_histogram)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,ggsave)
-importFrom(ggplot2,labs)
-importFrom(ggplot2,stat_function)
+importFrom(corrplot,
+  corrMatOrder,
+  corrplot
+)
+importFrom(dplyr,
+  "%>%",
+  across,
+  add_count,
+  all_of,
+  any_of,
+  arrange,
+  bind_cols,
+  bind_rows,
+  case_match,
+  case_when,
+  coalesce,
+  count,
+  distinct,
+  everything,
+  filter,
+  glimpse,
+  group_by,
+  group_vars,
+  if_else,
+  left_join,
+  mutate,
+  mutate_all,
+  mutate_at,
+  n,
+  n_distinct,
+  one_of,
+  pick,
+  pull,
+  rename,
+  row_number,
+  select,
+  slice,
+  summarise,
+  transmute,
+  ungroup,
+  vars
+)
+importFrom(flextable,
+  add_footer_lines,
+  add_header_lines,
+  align,
+  autofit,
+  bold,
+  flextable,
+  font,
+  fontsize,
+  fp_border_default,
+  hline,
+  hline_top,
+  set_flextable_defaults,
+  set_header_labels,
+  width
+)
+importFrom(forcats,
+  as_factor,
+  fct_drop,
+  fct_expand,
+  fct_inorder,
+  fct_recode,
+  fct_reorder,
+  fct_rev,
+  fct_unique,
+  lvls_revalue
+)
+importFrom(fs,
+  dir_create,
+  dir_exists,
+  path_tidy
+)
+importFrom(ggplot2,
+  aes,
+  geom_histogram,
+  ggplot,
+  ggsave,
+  labs,
+  stat_function
+)
 importFrom(glue,glue)
 importFrom(grDevices,colorRampPalette)
-importFrom(gt,cell_text)
-importFrom(gt,cells_column_labels)
-importFrom(gt,cells_column_spanners)
-importFrom(gt,cols_align)
-importFrom(gt,cols_label)
-importFrom(gt,cols_width)
-importFrom(gt,gt)
-importFrom(gt,md)
-importFrom(gt,opt_row_striping)
-importFrom(gt,px)
-importFrom(gt,tab_footnote)
-importFrom(gt,tab_header)
-importFrom(gt,tab_options)
-importFrom(gt,tab_style)
+importFrom(gt,
+  cell_text,
+  cells_column_labels,
+  cells_column_spanners,
+  cols_align,
+  cols_label,
+  cols_width,
+  gt,
+  md,
+  opt_row_striping,
+  px,
+  tab_footnote,
+  tab_header,
+  tab_options,
+  tab_style
+)
 importFrom(irr,agree)
-importFrom(janitor,adorn_pct_formatting)
-importFrom(janitor,adorn_totals)
-importFrom(janitor,clean_names)
-importFrom(janitor,excel_numeric_to_date)
-importFrom(janitor,make_clean_names)
-importFrom(janitor,tabyl)
-importFrom(kableExtra,add_header_above)
-importFrom(kableExtra,column_spec)
-importFrom(kableExtra,kable_styling)
-importFrom(knitr,is_latex_output)
-importFrom(knitr,kable)
-importFrom(knitr,opts_knit)
+importFrom(janitor,
+  adorn_pct_formatting,
+  adorn_totals,
+  clean_names,
+  excel_numeric_to_date,
+  make_clean_names,
+  tabyl
+)
+importFrom(kableExtra,
+  add_header_above,
+  column_spec,
+  kable_styling
+)
+importFrom(knitr,
+  is_latex_output,
+  kable,
+  opts_knit
+)
 importFrom(labelled,var_label)
-importFrom(lubridate,as.duration)
-importFrom(lubridate,days)
-importFrom(lubridate,ddays)
-importFrom(lubridate,dhours)
-importFrom(lubridate,dminutes)
-importFrom(lubridate,dseconds)
-importFrom(lubridate,dweeks)
-importFrom(lubridate,dyears)
-importFrom(lubridate,hms)
-importFrom(lubridate,hour)
-importFrom(lubridate,hours)
-importFrom(lubridate,interval)
-importFrom(lubridate,minute)
-importFrom(lubridate,minutes)
-importFrom(lubridate,parse_date_time)
-importFrom(lubridate,second)
-importFrom(lubridate,seconds)
-importFrom(lubridate,weeks)
-importFrom(lubridate,years)
+importFrom(lubridate,
+  as.duration,
+  days,
+  ddays,
+  dhours,
+  dminutes,
+  dseconds,
+  dweeks,
+  dyears,
+  hms,
+  hour,
+  hours,
+  interval,
+  minute,
+  minutes,
+  parse_date_time,
+  second,
+  seconds,
+  weeks,
+  years
+)
 importFrom(magrittr,"%>%")
-importFrom(nlme,corMatrix)
-importFrom(nlme,corSymm)
-importFrom(nlme,gls)
-importFrom(nlme,varIdent)
+importFrom(nlme,
+  corMatrix,
+  corSymm,
+  gls,
+  varIdent
+)
 importFrom(nortest,ad.test)
 importFrom(officer,fp_border)
-importFrom(openxlsx,addWorksheet)
-importFrom(openxlsx,createWorkbook)
-importFrom(openxlsx,saveWorkbook)
-importFrom(openxlsx,writeData)
+importFrom(openxlsx,
+  addWorksheet,
+  createWorkbook,
+  saveWorkbook,
+  writeData
+)
 importFrom(psych,cohen.kappa)
-importFrom(purrr,map)
-importFrom(purrr,map2)
-importFrom(purrr,map_dbl)
-importFrom(purrr,map_df)
-importFrom(purrr,map_int)
-importFrom(purrr,pluck)
-importFrom(purrr,set_names)
-importFrom(purrr,walk2)
-importFrom(readr,parse_number)
-importFrom(readr,write_csv)
-importFrom(readxl,excel_sheets)
-importFrom(readxl,read_excel)
-importFrom(rlang,"!!!")
-importFrom(rlang,.data)
-importFrom(rlang,enexpr)
-importFrom(rlang,enexprs)
-importFrom(rlang,enquo)
-importFrom(rlang,enquos)
-importFrom(rlang,ensym)
-importFrom(rlang,ensyms)
-importFrom(rlang,expr)
-importFrom(rlang,exprs)
-importFrom(rlang,get_expr)
-importFrom(rlang,list2)
-importFrom(rlang,quo)
-importFrom(rlang,quo_is_null)
-importFrom(rlang,quo_name)
-importFrom(rlang,quos)
-importFrom(rlang,set_names)
-importFrom(rlang,sym)
-importFrom(rlang,syms)
-importFrom(scales,number)
-importFrom(scales,percent)
+importFrom(purrr,
+  map,
+  map2,
+  map_dbl,
+  map_df,
+  map_int,
+  pluck,
+  set_names,
+  walk2
+)
+importFrom(readr,
+  parse_number,
+  write_csv
+)
+importFrom(readxl,
+  excel_sheets,
+  read_excel
+)
+importFrom(rlang,
+  "!!!",
+  .data,
+  enexpr,
+  enexprs,
+  enquo,
+  enquos,
+  ensym,
+  ensyms,
+  expr,
+  exprs,
+  get_expr,
+  list2,
+  quo,
+  quo_is_null,
+  quo_name,
+  quos,
+  set_names,
+  sym,
+  syms
+)
+importFrom(scales,
+  number,
+  percent
+)
 importFrom(sjlabelled,get_label)
 importFrom(srvyr,as_survey_design)
-importFrom(stats,as.formula)
-importFrom(stats,bartlett.test)
-importFrom(stats,binom.test)
-importFrom(stats,chisq.test)
-importFrom(stats,coef)
-importFrom(stats,complete.cases)
-importFrom(stats,cor)
-importFrom(stats,cor.test)
-importFrom(stats,dnorm)
-importFrom(stats,fisher.test)
-importFrom(stats,fligner.test)
-importFrom(stats,ks.test)
-importFrom(stats,lm)
-importFrom(stats,model.matrix)
-importFrom(stats,na.omit)
-importFrom(stats,pchisq)
-importFrom(stats,pnorm)
-importFrom(stats,predict)
-importFrom(stats,pt)
-importFrom(stats,qchisq)
-importFrom(stats,qnorm)
-importFrom(stats,qt)
-importFrom(stats,quantile)
-importFrom(stats,sd)
-importFrom(stats,setNames)
-importFrom(stats,shapiro.test)
-importFrom(stats,symnum)
-importFrom(stats,t.test)
-importFrom(stats,uniroot)
-importFrom(stats,var.test)
-importFrom(stats,vcov)
-importFrom(stringr,str_extract)
-importFrom(stringr,str_locate)
-importFrom(stringr,str_pad)
-importFrom(stringr,str_remove_all)
-importFrom(stringr,str_replace)
-importFrom(stringr,str_replace_all)
-importFrom(stringr,str_squish)
-importFrom(stringr,str_sub)
-importFrom(stringr,str_trim)
+importFrom(stats,
+  as.formula,
+  bartlett.test,
+  binom.test,
+  chisq.test,
+  coef,
+  complete.cases,
+  cor,
+  cor.test,
+  dnorm,
+  fisher.test,
+  fligner.test,
+  ks.test,
+  lm,
+  model.matrix,
+  na.omit,
+  pchisq,
+  pnorm,
+  predict,
+  pt,
+  qchisq,
+  qnorm,
+  qt,
+  quantile,
+  sd,
+  setNames,
+  shapiro.test,
+  symnum,
+  t.test,
+  uniroot,
+  var.test,
+  vcov
+)
+importFrom(stringr,
+  str_extract,
+  str_locate,
+  str_pad,
+  str_remove_all,
+  str_replace,
+  str_replace_all,
+  str_squish,
+  str_sub,
+  str_trim
+)
 importFrom(survey,as.svydesign2)
-importFrom(survival,Surv)
-importFrom(survival,survfit)
-importFrom(tibble,as_tibble)
-importFrom(tibble,enframe)
-importFrom(tibble,rownames_to_column)
-importFrom(tibble,tibble)
-importFrom(tidyr,complete)
-importFrom(tidyr,crossing)
-importFrom(tidyr,fill)
-importFrom(tidyr,pivot_longer)
-importFrom(tidyr,spread)
-importFrom(tidyr,unnest)
+importFrom(survival,
+  Surv,
+  survfit
+)
+importFrom(tibble,
+  as_tibble,
+  enframe,
+  rownames_to_column,
+  tibble
+)
+importFrom(tidyr,
+  complete,
+  crossing,
+  fill,
+  pivot_longer,
+  spread,
+  unnest
+)
 importFrom(tools,file_path_sans_ext)
-importFrom(utils,help.search)
-importFrom(utils,installed.packages)
+importFrom(utils,
+  help.search,
+  installed.packages
+)
