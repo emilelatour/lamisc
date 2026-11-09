@@ -40,6 +40,8 @@
 #' @importFrom purrr map2
 #' @importFrom tibble tibble
 #'
+#' @export
+#'
 #' @return A tibble with one row per measure and columns:
 #'   - `measure`: Sensitivity, Specificity, PPV, NPV, Accuracy, Prevalence.
 #'   - `n`: The numerator count.
@@ -75,4 +77,4 @@
 #'                 reference = ifelse(reference, "Yes", "No"))
 #' diag_accuracy(tab_yn, positive = "Yes")
 #'
-#' @export
+
